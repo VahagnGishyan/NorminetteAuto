@@ -238,6 +238,10 @@ void FileEditor::separateBySpaces(const ushint indexLine, std::vector<std::strin
         }
     }
 }
+std::string FileEditor::at(const ushort index) const
+{
+    return m_data.at(index);
+}
 
 //Operators
 std::string FileEditor::operator[] (const ushort index) const

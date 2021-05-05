@@ -37,8 +37,10 @@ public:
     std::string getFileName()  const;
     std::vector<std::string> separateBySpaces(const ushint indexLine);
     void separateBySpaces(const ushint indexLine, std::vector<std::string> newLine);
+    std::string at(const ushort index) const;
 
     //Operators
     std::string operator[] (const ushort index) const;
+
 };
 
