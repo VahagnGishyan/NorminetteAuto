@@ -24,8 +24,11 @@ public:
 
     void addLineBetween(const shint indexLine, const shint indexSymbol, const std::string& newData);
 
-    void deleteInLineRight(const shint indexLine, const shint indexSymbol);
-    void deleteInLineLeft(const shint indexLine, const shint indexSymbol);
+    void deleteInLineWithIndexLeft(const shint indexLine, const shint indexSymbol);
+    void deleteInLineWithIndexRight(const shint indexLine, const shint indexSymbol);
+
+    void setLineIndex(int index, const std::string& newLine);
+    std::string getLineIndex(int index) const;
     //void deleteInLineIndexStartToIndexEnd(const shint indexLine, const shint indexStart, const shint indexEnd);
 
     //for file
@@ -37,7 +40,6 @@ public:
     std::string getFileName()  const;
     std::vector<std::string> separateBySpaces(const ushint indexLine);
     void separateBySpaces(const ushint indexLine, std::vector<std::string> newLine);
-    std::string at(const ushort index) const;
 
     //Operators
     std::string operator[] (const ushort index) const;

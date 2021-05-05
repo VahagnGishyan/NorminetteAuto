@@ -102,7 +102,18 @@ void FileEditor::addLineBetween(const shint indexLine, const shint indexSymbol, 
     m_data[indexLine] = registLeft + newData + registRight;
 }
 
-void FileEditor::deleteInLineRight(const shint indexLine, const shint indexSymbol)
+void FileEditor::deleteInLineWithIndexLeft(const shint indexLine, const shint indexSymbol)
+{
+    std::string registRight = "";
+    const ushint size = getIndexLineEnd(indexLine);
+    for (unsigned short index = indexSymbol; index < size; ++index)
+    {
+        registRight += m_data[indexLine][index];
+    }
+
+    m_data[indexLine] = registRight;
+}
+void FileEditor::deleteInLineWithIndexRight(const shint indexLine, const shint indexSymbol)
 {
     std::string registLeft = "";
 
@@ -113,16 +124,14 @@ void FileEditor::deleteInLineRight(const shint indexLine, const shint indexSymbo
 
     m_data[indexLine] = registLeft;
 }
-void FileEditor::deleteInLineLeft(const shint indexLine, const shint indexSymbol)
-{
-    std::string registRight = "";
-    const ushint size = getIndexLineEnd(indexLine);
-    for (unsigned short index = indexSymbol; index < size; ++index)
-    {
-        registRight += m_data[indexLine][index];
-    }
 
-    m_data[indexLine] = registRight;
+void FileEditor::setLineIndex(int index, const std::string& newLine)
+{
+    m_data.at(index) = newLine;
+}
+std::string FileEditor::getLineIndex(int index) const
+{
+    return m_data.at(index);
 }
 
 //for file
@@ -237,10 +246,6 @@ void FileEditor::separateBySpaces(const ushint indexLine, std::vector<std::strin
             word += symbol;
         }
     }
-}
-std::string FileEditor::at(const ushort index) const
-{
-    return m_data.at(index);
 }
 
 //Operators

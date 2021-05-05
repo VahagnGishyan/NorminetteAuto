@@ -10,8 +10,19 @@ private:
     //std::vector<bool>               m_ErrorStatusRegister;
 public:
     //initialization 
-    NorminetteCorrector();
-    NorminetteCorrector(std::string filename);
+    NorminetteCorrector() : FileEditor(), m_startLine(0)
+    {
+
+    }
+    NorminetteCorrector(std::string filename) : FileEditor(filename), m_startLine(12)
+    {
+
+    }
+
+    //for work
+    int searchSymbolsInLine(const std::string& line, const std::string& symbols);
+    int searchSymbolsInLineIndex(int index, const std::string& symbols);
+    void divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight);
 
     //For corrector
     void correctAll(); 
@@ -27,6 +38,14 @@ public:
 
     //Block 1, basic check
     void preliminaryCorrectingFileFormat();
+    void bracketsMustBeOnNewLine();
+    void semicolonMustBeOnNewLine();
+    void unnecessarySpaces();
+    void deleteBlankLines();
+
+
+    void correctTabulations();
+    void correctBrackets();
 };
 
 

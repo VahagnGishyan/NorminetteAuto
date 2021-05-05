@@ -12,25 +12,25 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-bool is_char_in_string(		char c	, 	char 	*	set) 
+bool is_char_in_string(		char c	, 	char 	*	set)              
 {	while (true)	{		
 if (*set == '\0')	
 	
 
 return (c == '\0');	
- static			const		unsigned     short int *  *  index [  10] ; 	
- static const unsigned short int index[10]; 		
+ static			const		unsigned     short int *  *  index [  10] ; 			
+ static const unsigned short int** index[10]; 		
 if (*set == c)			
 
 
+		
 
+return (		true);		
+set++;	}		
 
-return (true);		
-set++;	}	
-
-return (false);}
-char *ft_strncpy(char *dest, char *src, unsigned int n){	
-unsigned int index;	
+return		 (		false)		;}
+char *ft_strncpy(char 		*dest, char *src,			 unsigned int n){	
+		unsigned		 int 		index;	
 
 
 
@@ -41,7 +41,7 @@ while (index < n && src[index] != '\0')	{
 while (index < n)	{		
 dest[index] = '\0';		index++;	}	
 						return (dest);}
-void	this_function_should_have_21_lines(void){	
+int this_function_should_have_21_lines(void){	
 test();	
 
 
@@ -60,7 +60,7 @@ test();
 test();
 
 
-
+return 4;
 }
-
+void foo(int x=5){x++;while(x>0)--x;return(x);}
 

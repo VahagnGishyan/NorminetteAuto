@@ -1,13 +1,60 @@
 #include "NorminetteCorrector.h"
 
-//initialization 
-NorminetteCorrector::NorminetteCorrector() : FileEditor()
+//for work
+int NorminetteCorrector::searchSymbolsInLine(const std::string& line, const std::string& symbols)
 {
+    //function return negative, if symbol is not faund
 
+    const std::string& reservData = line;
+    for (ushint start = 0; start < reservData.size(); ++start)
+    {
+        for (ushint index = 0; index < symbols.size(); ++index)
+        {
+            if (reservData[start] == symbols[index])
+                return start;
+        }
+    }
+    return -1;
 }
-NorminetteCorrector::NorminetteCorrector(std::string filename) : FileEditor(filename)
+int NorminetteCorrector::searchSymbolsInLineIndex(int argIndex, const std::string& symbols)
 {
+    //function return negative, if symbol is not faund
 
+    std::string reservData = getLineIndex(argIndex);
+    for (ushint start = 0; start < reservData.size(); ++start)
+    {
+        for (ushint index = 0; index < symbols.size(); ++index)
+        {
+            if (reservData[start] == symbols[index])
+                return start;
+        }
+    }
+    return -1;
+}
+void NorminetteCorrector::divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight)
+{
+    std::string line = FileEditor::getLineIndex(indexLine);
+    
+    //std::string leftData = "";
+    std::string middleData = "";
+    std::string rightData = "";
+
+    for (ushint index = indexLeft; index <= indexRight; ++index)
+    {
+        middleData += line[index];
+    }
+
+    for (ushint index = indexRight + 1; index < line.size(); ++index)
+    {
+        rightData += line[index];
+    }
+
+    //targmanel angleren
+    //left Data-yi hamar imast chuni nor togh steghcel
+    //arden toghy ka, parzapes toghy poxum enq yst mer uzaci
+    FileEditor::deleteInLineWithIndexRight(indexLine, indexLeft - 1);
+    FileEditor::addNewLineIndex(indexLine + 1, middleData);
+    FileEditor::addNewLineIndex(indexLine + 2, rightData);
 }
 
 //For corrector
@@ -19,7 +66,10 @@ void NorminetteCorrector::correctAll()
         return;
     }
 
+    print();
+    preliminaryCorrectingFileFormat();
 
+    print();
 }
 
 //Block 1, basic check
@@ -64,12 +114,12 @@ bool NorminetteCorrector::checkFormatHeading42()
 
     for (; start < heading42FormatLineSize; ++start)
     {
-        if (FileEditor::at(start)[0] != '/')
+        if (FileEditor::getLineIndex(start)[0] != '/')
             return true;
-        if(FileEditor::at(start).size() != 80)
+        if(FileEditor::getLineIndex(start).size() != 80)
             return true;
     }
-    if (at(heading42FormatLineSize).size() != 0)
+    if (FileEditor::getLineIndex(heading42FormatLineSize).size() != 0)
        addNewLineIndex(heading42FormatLineSize, "");
     m_startLine = heading42FormatLineSize + 1;
     return false;
@@ -80,12 +130,12 @@ bool NorminetteCorrector::checkPreprocessor()
     unsigned short start = m_startLine;
     for (; start < dataLineCount; ++start)
     {
-        if (at(start)[0] != '#')
+        if (getLineIndex(start)[0] != '#')
         {
             break;
         }
     }
-    if (at(start).size() != 0)
+    if (getLineIndex(start).size() != 0)
         addNewLineIndex(start, "");
     m_startLine = start + 1;
     return false;
@@ -94,5 +144,86 @@ bool NorminetteCorrector::checkPreprocessor()
 //Block 1, basic check
 void NorminetteCorrector::preliminaryCorrectingFileFormat()
 {
-
+    bracketsMustBeOnNewLine();
+    semicolonMustBeOnNewLine();
+    unnecessarySpaces();
+    deleteBlankLines();
 }
+
+void NorminetteCorrector::bracketsMustBeOnNewLine()
+{
+    for (ushint start = m_startLine + 1; start < size(); ++start)
+    {
+        int index = -1;
+        std::string line = getLineIndex(start);
+
+        if (line == "{" || line == "}")
+            continue;
+
+        index = searchSymbolsInLine(line, "{}");
+        if (index >= 0)
+        {
+            divideLineIntoThreeNewLines(start, index, index);
+            ++start;
+        }
+    }
+}
+void NorminetteCorrector::semicolonMustBeOnNewLine()
+{
+    for (ushint start = m_startLine + 1; start < size(); ++start)
+    {
+        std::string line = getLineIndex(start);
+        int index = searchSymbolsInLine(line, ";");
+        
+        if (index < 0)
+            continue;
+
+        int indexEnd = FileEditor::getIndexLineEnd(start) - 1;
+        if (index < indexEnd)
+        {
+            divideLineIntoThreeNewLines(start, index + 1, indexEnd);
+        }
+    }
+}
+void NorminetteCorrector::unnecessarySpaces()
+{
+    ushint endLine = size();
+
+    for (ushint start = m_startLine; start < endLine; ++start)
+    {
+        std::vector<std::string> reservData;
+        reservData = FileEditor::separateBySpaces(start);
+
+        if (reservData.empty())
+            continue;
+
+        std::string newLine = reservData[0];
+        for (ushint index = 1; index < reservData.size(); ++index)
+        {
+            newLine += " " + reservData[index];
+        }
+        FileEditor::setLineIndex(start, newLine);
+    }
+}
+void NorminetteCorrector::deleteBlankLines()
+{
+    for (ushint start = m_startLine; start < size(); ++start)
+    {
+        std::string line = FileEditor::getLineIndex(start);
+        
+        if (line.empty())
+        {
+            FileEditor::deleteLineIndex(start);
+        }
+    }
+}
+//void NorminetteCorrector::correctTabulations()
+//{
+//    //correctBrackets
+//}
+//void NorminetteCorrector::correctBrackets()
+//{
+//
+//}
+
+
