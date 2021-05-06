@@ -25,6 +25,8 @@ if (*set == '\0')
 
 
 if(x>4&&y<5)++x;
+else if(x<3)--x;
+else --y;
 while(x<10)++x;
 
 

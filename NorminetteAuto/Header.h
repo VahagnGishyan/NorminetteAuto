@@ -1,7 +1,8 @@
 #pragma once
 
 #include <iostream>
-//#include <assert.h>
+//Asert for testing
+#include <assert.h>
 #include <vector>
 //#include <array>
 #include <string>

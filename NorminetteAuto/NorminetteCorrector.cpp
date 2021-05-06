@@ -259,28 +259,11 @@ void NorminetteCorrector::correctInsideLine()
 
     for (ushint indexLine = 0; indexLine < text.size(); ++indexLine)
     {
-        correctReturns(indexLine,text);
-    }
-
-    for (ushint indexLine = 0; indexLine < text.size(); ++indexLine)
-    {
         std::vector<std::string>& line = text[indexLine];
-
-        std::string newline;
-
-        if (line.empty())
-            continue;
-
-        newline += line[0];
-        for (ushint index = 1; index < line.size(); ++index)
-        {
-            newline += " " + line[index];
-        }
-        FileEditor::setLineIndex(indexLine + m_startLine, newline);
+        correctReturns(line);
     }
 
-    for (ushint start = size() - 1; start >= text.size() + m_startLine; --start)
-        FileEditor::deleteLineBack();
+    updata(text);
 }
 
 std::vector<std::string> NorminetteCorrector::separateByKeySymbols(ushint lineStart)
@@ -368,6 +351,59 @@ void NorminetteCorrector::deleteLineInTextIndex(const unsigned short indexLine, 
         text[index] = text[index + 1];
     }
     text.pop_back();
+}
+void NorminetteCorrector::updata(std::vector< std::vector<std::string>>& text)
+{
+    ushint cycles = std::min((int)text.size(), size() - m_startLine);
+
+    for (ushint indexLine = 0; indexLine < cycles; ++indexLine)
+    {
+        std::vector<std::string>& line = text[indexLine];
+
+        std::string newline;
+
+        if (line.empty())
+            continue;
+
+        newline += line[0];
+        for (ushint index = 1; index < line.size(); ++index)
+        {
+            newline += " " + line[index];
+        }
+        FileEditor::setLineIndex(indexLine + m_startLine, newline);
+    }
+    if ((int)text.size() > size() - m_startLine)
+    {
+        for (ushint start = cycles; start < text.size(); ++start)
+        {
+            std::vector<std::string>& line = text[start];
+
+            std::string newline;
+
+            if (line.empty())
+                continue;
+
+            newline += line[0];
+            for (ushint index = 1; index < line.size(); ++index)
+            {
+                newline += " " + line[index];
+            }
+            FileEditor::addNewLineBack(newline);
+        }
+    }
+    else if ((int)text.size() < size() - m_startLine)
+    {
+        for (ushint indexLine = cycles; indexLine < size(); ++indexLine)
+        {
+            FileEditor::deleteLineBack();
+        }
+    }
+    else
+    {
+        return;
+    }
+
+
 }
 
 void NorminetteCorrector::correctSemicolon(ushint& indexLine, std::vector< std::vector<std::string>>& text)
@@ -535,12 +571,12 @@ void NorminetteCorrector::correctWhile(ushint& indexLine, std::vector< std::vect
     addNewLineInTextIndex(indexLine + 1, text, newData);
 }
 
-void NorminetteCorrector::correctReturns(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::correctReturns(std::vector<std::string>& line)
 {
-    std::vector<std::string> line = text[indexLine];
+
     const std::string keyWord = "return";
 
-    if (line.size() < 2 || !searchInWords(line, keyWord))
+    if (line.size() < 3  || !searchInWords(line, keyWord))
         return;
 
     //for testing, not for relise
@@ -554,11 +590,13 @@ void NorminetteCorrector::correctReturns(ushint& indexLine, std::vector< std::ve
     data.push_back(line.front());
     data.push_back("(");
 
-    for (ushint index = 2; index < line.size() - 1; ++index)
+    for (ushint index = 1; index < line.size() - 1; ++index)
     {
         data.push_back(line[index]);
     }
 
     data.push_back(")");
     data.push_back(line.back());
+
+    line = data;
 }
