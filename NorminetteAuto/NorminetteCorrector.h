@@ -39,13 +39,13 @@ public:
     //Block 1, basic check
     void preliminaryCorrectingFileFormat();
     void bracketsMustBeOnNewLine();
-    void semicolonMustBeOnNewLine();
+    void correctSemicolon();
+    void afterSemicolonMustBeEmpty();
     void unnecessarySpaces();
     void deleteBlankLines();
 
 
     void correctTabulations();
-    void correctBrackets();
 };
 
 

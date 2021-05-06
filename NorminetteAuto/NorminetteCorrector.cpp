@@ -145,7 +145,7 @@ bool NorminetteCorrector::checkPreprocessor()
 void NorminetteCorrector::preliminaryCorrectingFileFormat()
 {
     bracketsMustBeOnNewLine();
-    semicolonMustBeOnNewLine();
+    correctSemicolon();
     unnecessarySpaces();
     deleteBlankLines();
 }
@@ -168,7 +168,12 @@ void NorminetteCorrector::bracketsMustBeOnNewLine()
         }
     }
 }
-void NorminetteCorrector::semicolonMustBeOnNewLine()
+void NorminetteCorrector::correctSemicolon()
+{
+    afterSemicolonMustBeEmpty();
+
+}
+void NorminetteCorrector::afterSemicolonMustBeEmpty()
 {
     for (ushint start = m_startLine + 1; start < size(); ++start)
     {
@@ -195,7 +200,10 @@ void NorminetteCorrector::unnecessarySpaces()
         reservData = FileEditor::separateBySpaces(start);
 
         if (reservData.empty())
+        {
+            FileEditor::setLineIndex(start, "");
             continue;
+        }
 
         std::string newLine = reservData[0];
         for (ushint index = 1; index < reservData.size(); ++index)
@@ -214,6 +222,7 @@ void NorminetteCorrector::deleteBlankLines()
         if (line.empty())
         {
             FileEditor::deleteLineIndex(start);
+            --start;
         }
     }
 }
