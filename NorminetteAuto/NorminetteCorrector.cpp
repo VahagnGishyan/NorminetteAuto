@@ -68,7 +68,9 @@ void NorminetteCorrector::correctAll()
 
     print();
     preliminaryCorrectingFileFormat();
+    print();
 
+    correctInsideLine();
     print();
 }
 
@@ -141,18 +143,17 @@ bool NorminetteCorrector::checkPreprocessor()
     return false;
 }
 
-//Block 1, basic check
+//Block 2, Preliminary Correcting File Format
 void NorminetteCorrector::preliminaryCorrectingFileFormat()
 {
-    bracketsMustBeOnNewLine();
-    correctSemicolon();
+    bracesMustBeOnNewLine();
+    afterSemicolonMustBeEmpty();
     unnecessarySpaces();
     deleteBlankLines();
 }
-
-void NorminetteCorrector::bracketsMustBeOnNewLine()
+void NorminetteCorrector::bracesMustBeOnNewLine()
 {
-    for (ushint start = m_startLine + 1; start < size(); ++start)
+    for (ushint start = m_startLine; start < size(); ++start)
     {
         int index = -1;
         std::string line = getLineIndex(start);
@@ -168,14 +169,9 @@ void NorminetteCorrector::bracketsMustBeOnNewLine()
         }
     }
 }
-void NorminetteCorrector::correctSemicolon()
-{
-    afterSemicolonMustBeEmpty();
-
-}
 void NorminetteCorrector::afterSemicolonMustBeEmpty()
 {
-    for (ushint start = m_startLine + 1; start < size(); ++start)
+    for (ushint start = m_startLine; start < size(); ++start)
     {
         std::string line = getLineIndex(start);
         int index = searchSymbolsInLine(line, ";");
@@ -234,5 +230,79 @@ void NorminetteCorrector::deleteBlankLines()
 //{
 //
 //}
+
+//Block 3, correct Inside Line
+void NorminetteCorrector::correctInsideLine()
+{
+    for (ushint start = m_startLine; start < size(); ++start)
+    {
+        std::vector<std::string> words = FileEditor::separateBySpaces(start);
+        separateByKeySymbols(words);
+        //for test
+        std::string line;
+
+        if (words.empty())
+            continue;
+
+        line += words[0];
+        for (ushint index = 1; index < words.size(); ++index)
+        {
+            line += " " + words[index];
+        }
+        FileEditor::setLineIndex(start, line);
+    }
+}
+void NorminetteCorrector::separateByKeySymbols(std::vector<std::string>& data)
+{
+    std::vector<std::string> newData;
+    ushint size = static_cast<ushint>(data.size());
+    for (ushint start = 0; start < size; ++start)
+    {
+        std::string Words = data[start];
+        std::string word = "";
+        for (ushint index = 0; index < Words.size(); ++index)
+        {
+
+            const char symbol = Words[index];
+
+            if (symbol == ',')
+                std::cout << "";
+
+            if (!std::isalpha(symbol) && !std::isdigit(symbol) && symbol != '_')
+            {
+                if (word.empty())
+                {
+                    word += symbol;
+                    newData.push_back(word);
+                    word = "";
+                    continue;
+                }
+                
+                newData.push_back(word);
+                
+
+                if (!std::isspace(symbol))
+                {
+                    word = symbol;
+                    newData.push_back(word);
+                    word = "";
+                }
+                else
+                {
+                    word = "";
+                }
+            }
+            else
+            {
+                word += symbol;
+            }
+        }
+        if (word.empty())
+            continue;
+        newData.push_back(word);
+    }
+
+    data = newData;
+}
 
 

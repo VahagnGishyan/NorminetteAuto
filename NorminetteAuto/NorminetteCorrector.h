@@ -36,14 +36,18 @@ public:
     bool checkFormatHeading42();
     bool checkPreprocessor();
 
-    //Block 1, basic check
+    //Block 2, Preliminary Correcting File Format
     void preliminaryCorrectingFileFormat();
-    void bracketsMustBeOnNewLine();
-    void correctSemicolon();
+    void bracesMustBeOnNewLine();
+    //void correctSemicolon();
     void afterSemicolonMustBeEmpty();
     void unnecessarySpaces();
     void deleteBlankLines();
 
+    //Block 3, correct Inside Line
+    void correctInsideLine();
+    void separateByKeySymbols(std::vector<std::string>& data);
+    //key symbols, " ", (), [], =, +, ...
 
     void correctTabulations();
 };
