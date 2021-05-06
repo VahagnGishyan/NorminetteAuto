@@ -56,13 +56,14 @@ public:
     void updata(std::vector< std::vector<std::string>>& text);
 
     void correctSemicolon(ushint& start, std::vector< std::vector<std::string>>& text);
-    void aloneSemicolonRaiseUp(ushint& start, std::vector< std::vector<std::string>>& words);
+    void aloneSemicolonRaiseUp(ushint& start, std::vector< std::vector<std::string>>& text);
     void deleteUnnecessarySemicolon(ushint& indexLine, std::vector< std::vector<std::string>>& text);
-    void beforeSemicolonShouldBeNoSpace(ushint& start, std::vector< std::vector<std::string>>& words);
+    void beforeSemicolonShouldBeNoSpace(ushint& start, std::vector< std::vector<std::string>>& text);
 
-    void correctIfWhile(ushint& start, std::vector< std::vector<std::string>>& words);
-    void correctIf(ushint& indexLine, std::vector< std::vector<std::string>>& words);
-    void correctWhile(ushint& indexLine, std::vector< std::vector<std::string>>& words);
+    void correctIfWhileElse(ushint& start, std::vector< std::vector<std::string>>& text);
+    void correctIf(ushint& indexLine, std::vector< std::vector<std::string>>& text);
+    void correctWhile(ushint& indexLine, std::vector< std::vector<std::string>>& text);
+    void correctElse(ushint& indexLine, std::vector< std::vector<std::string>>& text);
 
     void correctReturns(std::vector<std::string> &text);
 

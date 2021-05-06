@@ -254,7 +254,7 @@ void NorminetteCorrector::correctInsideLine()
 
     for (ushint indexLine = 0; indexLine < text.size(); ++indexLine)
     {
-        correctIfWhile(indexLine, text);
+        correctIfWhileElse(indexLine, text);
     }
 
     for (ushint indexLine = 0; indexLine < text.size(); ++indexLine)
@@ -459,15 +459,11 @@ void NorminetteCorrector::beforeSemicolonShouldBeNoSpace(ushint& indexLine, std:
 
 }
 
-void NorminetteCorrector::correctIfWhile(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::correctIfWhileElse(ushint& indexLine, std::vector< std::vector<std::string>>& text)
 {
-
-
     correctIf(indexLine, text);
     correctWhile(indexLine, text);
-
-
-
+    correctElse(indexLine, text);
 }
 void NorminetteCorrector::correctIf(ushint& indexLine, std::vector< std::vector<std::string>>& text)
 {
@@ -564,6 +560,46 @@ void NorminetteCorrector::correctWhile(ushint& indexLine, std::vector< std::vect
     }
 
     for (ushint index = line.size() - 1; index > start; --index)
+    {
+        line.pop_back();
+    }
+
+    addNewLineInTextIndex(indexLine + 1, text, newData);
+}
+void NorminetteCorrector::correctElse(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+{
+    //after else should be no space
+
+    std::vector<std::string>& line = text[indexLine];
+    const std::string keyWord = "else";
+
+    if (!searchInWords(line, keyWord))
+    {
+        return;
+    }
+
+    if (line.size() < 2)
+        return;
+
+    ushint start = 0;
+    while (line[start] != keyWord && start < line.size())
+        ++start;
+    ++start;
+
+    if (start == line.size() - 1)
+        return;
+
+    if (line[start] == "if")
+        return;
+
+    std::vector<std::string> newData;
+
+    for (ushint index = start; index < line.size(); ++index)
+    {
+        newData.push_back(line[index]);
+    }
+
+    for (ushint index = line.size() - 1; index > start - 1; --index)
     {
         line.pop_back();
     }
