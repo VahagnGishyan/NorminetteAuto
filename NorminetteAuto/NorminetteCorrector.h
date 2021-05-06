@@ -26,6 +26,7 @@ public:
 
     //For corrector
     void correctAll(); 
+    
 
 public:
     // heto dardznel mi masy private
@@ -46,8 +47,16 @@ public:
 
     //Block 3, correct Inside Line
     void correctInsideLine();
-    void separateByKeySymbols(std::vector<std::string>& data);
+    std::vector<std::string> separateByKeySymbols(ushint lineStart);
     //key symbols, " ", (), [], =, +, ...
+    void correctSemicolon(ushint& start, std::vector< std::vector<std::string>>& text);
+    void aloneSemicolonRaiseUp(ushint& start, std::vector< std::vector<std::string>>& words);
+    void deleteUnnecessarySemicolon(ushint& indexLine, std::vector< std::vector<std::string>>& text);
+    void beforeSemicolonShouldBeNoSpace(ushint& start, std::vector< std::vector<std::string>>& words);
+
+
+    void correctReturns(std::vector<std::string>& words);
+    
 
     void correctTabulations();
 };

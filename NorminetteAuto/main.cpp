@@ -7,6 +7,8 @@ int main()
     NorminetteCorrector object("data.txt");
     //object.print();
 
+    ;;
+
     object.correctAll();
 
     std::cout << std::endl << "End work main.cpp" << std::endl;

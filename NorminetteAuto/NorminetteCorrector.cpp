@@ -234,31 +234,52 @@ void NorminetteCorrector::deleteBlankLines()
 //Block 3, correct Inside Line
 void NorminetteCorrector::correctInsideLine()
 {
+    std::vector< std::vector<std::string>> text;
+
     for (ushint start = m_startLine; start < size(); ++start)
     {
-        std::vector<std::string> words = FileEditor::separateBySpaces(start);
-        separateByKeySymbols(words);
-        //for test
-        std::string line;
+        std::vector<std::string> line = separateByKeySymbols(start);
+        text.push_back(line);
+    }
+    //skzbunq, 
+    //Stroev grnac metodnery chpetq a poxen m_data-n u bun texty 
+    //menak karan poxen line-ery, 
+    //line-ery popoxelov berum enq verjnakan tesqi
+    //vorn el verjum  poxum a m_data-yi parunakutyuny.
 
-        if (words.empty())
+    for(ushint indexLine = 0; indexLine < text.size();++indexLine)
+    {
+        correctSemicolon(indexLine, text);
+        //correctReturns(words);
+
+        //
+
+        std::vector<std::string>& line = text[indexLine];
+
+        std::string newline;
+
+        if (line.empty())
             continue;
 
-        line += words[0];
-        for (ushint index = 1; index < words.size(); ++index)
+        newline += line[0];
+        for (ushint index = 1; index < line.size(); ++index)
         {
-            line += " " + words[index];
+            newline += " " + line[index];
         }
-        FileEditor::setLineIndex(start, line);
+        FileEditor::setLineIndex(indexLine + m_startLine, newline);
     }
+
+    for (ushint start = size() - 1; start >= text.size() + m_startLine; --start)
+        FileEditor::deleteLineBack();
 }
-void NorminetteCorrector::separateByKeySymbols(std::vector<std::string>& data)
+std::vector<std::string> NorminetteCorrector::separateByKeySymbols(ushint lineStart)
 {
-    std::vector<std::string> newData;
-    ushint size = static_cast<ushint>(data.size());
+    std::vector<std::string> words = FileEditor::separateBySpaces(lineStart);
+    std::vector<std::string> newWords;
+    ushint size = static_cast<ushint>(words.size());
     for (ushint start = 0; start < size; ++start)
     {
-        std::string Words = data[start];
+        std::string Words = words[start];
         std::string word = "";
         for (ushint index = 0; index < Words.size(); ++index)
         {
@@ -273,18 +294,18 @@ void NorminetteCorrector::separateByKeySymbols(std::vector<std::string>& data)
                 if (word.empty())
                 {
                     word += symbol;
-                    newData.push_back(word);
+                    newWords.push_back(word);
                     word = "";
                     continue;
                 }
                 
-                newData.push_back(word);
+                newWords.push_back(word);
                 
 
                 if (!std::isspace(symbol))
                 {
                     word = symbol;
-                    newData.push_back(word);
+                    newWords.push_back(word);
                     word = "";
                 }
                 else
@@ -299,10 +320,61 @@ void NorminetteCorrector::separateByKeySymbols(std::vector<std::string>& data)
         }
         if (word.empty())
             continue;
-        newData.push_back(word);
+        newWords.push_back(word);
     }
 
-    data = newData;
+    words = newWords;
+    return words;
+}
+void NorminetteCorrector::correctSemicolon(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+{
+    if (text[indexLine].size() == 1 && text[indexLine][0] == ";")
+    {
+        aloneSemicolonRaiseUp(indexLine, text);
+    }
+    deleteUnnecessarySemicolon(indexLine, text);
+    if (!text[indexLine].empty() && text[indexLine].back() == ";")
+    {
+        beforeSemicolonShouldBeNoSpace(indexLine, text);
+    }
+    
+}
+void NorminetteCorrector::aloneSemicolonRaiseUp(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+{
+    if (indexLine == 9)
+        std::cout;
+    text[indexLine - 1].back() = text[indexLine - 1].back() + ";";
+    
+    for (ushint start = indexLine; start < text.size() - 1; ++start)
+    {
+        text[start] = text[start + 1];
+    }
+    text.pop_back();
+
+    --indexLine;
+}
+void NorminetteCorrector::deleteUnnecessarySemicolon(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+{
+    std::string line = text[indexLine].back();
+
+    if (line.empty() || line.size() == 1 || line.back() != ';')
+        return;
+    for (shint index = line.size() - 2; index >= 0; --index)
+    {
+        if (line[index] == ';')
+            line.pop_back();
+    }
+
+    text[indexLine].back() = line;
+}
+void NorminetteCorrector::beforeSemicolonShouldBeNoSpace(ushint& start, std::vector< std::vector<std::string>>& text)
+{
+
 }
 
+
+void NorminetteCorrector::correctReturns(std::vector<std::string>& words)
+{
+    /*for(ushint start)*/
+}
 
