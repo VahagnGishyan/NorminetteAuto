@@ -63,7 +63,7 @@ public:
     void correctIf(ushint& indexLine, std::vector< std::vector<std::string>>& words);
     void correctWhile(ushint& indexLine, std::vector< std::vector<std::string>>& words);
 
-    void correctReturns(std::vector<std::string>& line);
+    void correctReturns(ushint& indexLine, std::vector< std::vector<std::string>>& text);
 
 
 

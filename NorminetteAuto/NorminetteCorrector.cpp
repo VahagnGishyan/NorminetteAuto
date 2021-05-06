@@ -259,6 +259,11 @@ void NorminetteCorrector::correctInsideLine()
 
     for (ushint indexLine = 0; indexLine < text.size(); ++indexLine)
     {
+        correctReturns(indexLine,text);
+    }
+
+    for (ushint indexLine = 0; indexLine < text.size(); ++indexLine)
+    {
         std::vector<std::string>& line = text[indexLine];
 
         std::string newline;
@@ -530,37 +535,30 @@ void NorminetteCorrector::correctWhile(ushint& indexLine, std::vector< std::vect
     addNewLineInTextIndex(indexLine + 1, text, newData);
 }
 
-void NorminetteCorrector::correctReturns(std::vector<std::string>& line)
+void NorminetteCorrector::correctReturns(ushint& indexLine, std::vector< std::vector<std::string>>& text)
 {
-    //const std::string keyWord = "return";
+    std::vector<std::string> line = text[indexLine];
+    const std::string keyWord = "return";
 
-    //if (line.size() < 2 || !searchInWords(line, keyWord))
-    //    return;
+    if (line.size() < 2 || !searchInWords(line, keyWord))
+        return;
 
-    //if (line.front() != keyWord)
-    //{
+    //for testing, not for relise
+    assert(line.front() == keyWord && "Whil be a return");
 
-    //}
+    if (line[1] == "(")
+        return;
 
-    //
+    std::vector<std::string> data;
 
-    //if (line[0] != keyWord)
-    //{
-    //    std::cerr << "Error in correctReturns, return is not first word" << std::endl;
-    //    std::cerr << "line[0] == " << line[0] << std::endl;
-    //}
+    data.push_back(line.front());
+    data.push_back("(");
 
+    for (ushint index = 2; index < line.size() - 1; ++index)
+    {
+        data.push_back(line[index]);
+    }
 
-
-    //std::vector<std::string> data;
-    //data.push_back(line.front());
-    //data.push_back("(");
-    //for (ushint index = 2; index < line.size() - 1; ++index)
-    //{
-    //    if(line[index] != ";" || index)
-    //    data.push_back(line[index]);
-    //}
-    //data.push_back(")");
-    //data.push_back(line.back());
-
+    data.push_back(")");
+    data.push_back(line.back());
 }
