@@ -51,10 +51,17 @@ public:
     //key symbols, " ", (), [], =, +, ...
     bool searchInWords(const std::vector<std::string>& words, const std::string& keyWord);
     //return true if found
+    void addNewLineInTextIndex(const unsigned short indexLine, std::vector< std::vector<std::string>>& text, const std::vector<std::string>& newLine);
+    void deleteLineInTextIndex(const unsigned short indexLine, std::vector< std::vector<std::string>>& text);
+
     void correctSemicolon(ushint& start, std::vector< std::vector<std::string>>& text);
     void aloneSemicolonRaiseUp(ushint& start, std::vector< std::vector<std::string>>& words);
     void deleteUnnecessarySemicolon(ushint& indexLine, std::vector< std::vector<std::string>>& text);
     void beforeSemicolonShouldBeNoSpace(ushint& start, std::vector< std::vector<std::string>>& words);
+
+    void correctIfWhile(ushint& start, std::vector< std::vector<std::string>>& words);
+    void correctIf(ushint& indexLine, std::vector< std::vector<std::string>>& words);
+    void correctWhile(ushint& indexLine, std::vector< std::vector<std::string>>& words);
 
     void correctReturns(std::vector<std::string>& line);
 

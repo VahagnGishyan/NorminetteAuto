@@ -23,8 +23,22 @@ if (*set == '\0')
 	;
 ;;;
 
-return ;
-		
+
+if(x>4&&y<5)++x;
+while(x<10)++x;
+
+
+			int y = 5;
+
+			return 			;
+			return		 (	)			;
+		return		 x			;		
+return (	x	)		;
+return x+4;
+return (x+4);
+return x + 4 / y;
+return (x + 4 / y);
+		if(x > 5) return x;
 return (c == '\0');	
  static			const		unsigned     short int *  *  index [  10] ; 			
  static const unsigned short int** index[10]; 		

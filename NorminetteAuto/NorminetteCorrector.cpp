@@ -250,10 +250,15 @@ void NorminetteCorrector::correctInsideLine()
     for(ushint indexLine = 0; indexLine < text.size();++indexLine)
     {
         correctSemicolon(indexLine, text);
-        correctReturns(text[indexLine]);
+    }
 
-        //
+    for (ushint indexLine = 0; indexLine < text.size(); ++indexLine)
+    {
+        correctIfWhile(indexLine, text);
+    }
 
+    for (ushint indexLine = 0; indexLine < text.size(); ++indexLine)
+    {
         std::vector<std::string>& line = text[indexLine];
 
         std::string newline;
@@ -272,6 +277,7 @@ void NorminetteCorrector::correctInsideLine()
     for (ushint start = size() - 1; start >= text.size() + m_startLine; --start)
         FileEditor::deleteLineBack();
 }
+
 std::vector<std::string> NorminetteCorrector::separateByKeySymbols(ushint lineStart)
 {
     std::vector<std::string> words = FileEditor::separateBySpaces(lineStart);
@@ -337,6 +343,27 @@ bool NorminetteCorrector::searchInWords(const std::vector<std::string>& words, c
     }
     return false;
 }
+void NorminetteCorrector::addNewLineInTextIndex(const unsigned short indexLine, std::vector< std::vector<std::string>>& text, const std::vector<std::string>& newLine)
+{
+    std::vector<std::string> Line = newLine;
+    ushint size = static_cast<ushint>(text.size());
+
+    for (unsigned short int index = indexLine; index < size; ++index)
+    {
+        std::vector<std::string> registerLine = text[index];
+        text[index] = Line;
+        Line = registerLine;
+    }
+    text.push_back(Line);
+}
+void NorminetteCorrector::deleteLineInTextIndex(const unsigned short indexLine, std::vector< std::vector<std::string>>& text)
+{
+    for (unsigned short int index = indexLine; index < size() - 1; ++index)
+    {
+        text[index] = text[index + 1];
+    }
+    text.pop_back();
+}
 
 void NorminetteCorrector::correctSemicolon(ushint& indexLine, std::vector< std::vector<std::string>>& text)
 {
@@ -345,7 +372,7 @@ void NorminetteCorrector::correctSemicolon(ushint& indexLine, std::vector< std::
         aloneSemicolonRaiseUp(indexLine, text);
     }
     deleteUnnecessarySemicolon(indexLine, text);
-    beforeSemicolonShouldBeNoSpace(indexLine, text);
+    //beforeSemicolonShouldBeNoSpace(indexLine, text);
     
 }
 void NorminetteCorrector::aloneSemicolonRaiseUp(ushint& indexLine, std::vector< std::vector<std::string>>& text)
@@ -391,27 +418,149 @@ void NorminetteCorrector::beforeSemicolonShouldBeNoSpace(ushint& indexLine, std:
 
 }
 
+void NorminetteCorrector::correctIfWhile(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+{
+
+
+    correctIf(indexLine, text);
+    correctWhile(indexLine, text);
+
+
+
+}
+void NorminetteCorrector::correctIf(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+{
+    //after if should be no space
+
+    std::vector<std::string>& line = text[indexLine];
+    const std::string keyWord = "if";
+
+    if (!searchInWords(line, keyWord))
+    {
+        return;
+    }
+
+    ushint start = 0;
+    while (line[start] != keyWord && start < line.size())
+        ++start;
+    ++start;
+
+    shint count = 0;
+
+    for (; start < line.size(); ++start)
+    {
+        if (line[start] == "(")
+            ++count;
+        else if (line[start] == ")")
+            --count;
+        if (count == 0)
+            break;
+    }
+
+    if (start == line.size() - 1)
+        return;
+
+    std::vector<std::string> newData;
+
+    for (ushint index = start + 1; index < line.size(); ++index)
+    {
+        newData.push_back(line[index]);
+    }
+
+    for (ushint index = line.size() - 1; index > start; --index)
+    {
+        line.pop_back();
+    }
+
+    addNewLineInTextIndex(indexLine + 1, text, newData);
+
+    //std::vector<std::string> forNotError;
+    //forNotError[0] = "{";
+    ////addNewLineInTextIndex(indexLine + 1, text, "{");
+    //addNewLineInTextIndex(indexLine + 1, text, forNotError);
+    //addNewLineInTextIndex(indexLine + 2, text, newData);
+    ////addNewLineInTextIndex(indexLine + 3, text, "}");
+    //forNotError[0] = "}";
+    //addNewLineInTextIndex(indexLine + 3, text, forNotError);
+}
+void NorminetteCorrector::correctWhile(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+{
+    //after while should be no space
+
+    std::vector<std::string>& line = text[indexLine];
+    const std::string keyWord = "while";
+
+    if (!searchInWords(line, keyWord))
+    {
+        return;
+    }
+
+    ushint start = 0;
+    while (line[start] != keyWord && start < line.size())
+        ++start;
+    ++start;
+
+    shint count = 0;
+
+    for (; start < line.size(); ++start)
+    {
+        if (line[start] == "(")
+            ++count;
+        else if (line[start] == ")")
+            --count;
+        if (count == 0)
+            break;
+    }
+
+    if (start == line.size() - 1)
+        return;
+
+    std::vector<std::string> newData;
+
+    for (ushint index = start + 1; index < line.size(); ++index)
+    {
+        newData.push_back(line[index]);
+    }
+
+    for (ushint index = line.size() - 1; index > start; --index)
+    {
+        line.pop_back();
+    }
+
+    addNewLineInTextIndex(indexLine + 1, text, newData);
+}
+
 void NorminetteCorrector::correctReturns(std::vector<std::string>& line)
 {
-    const std::string keyWord = "return";
+    //const std::string keyWord = "return";
 
-    if (line.size() < 1 && !searchInWords(line, keyWord))
-        return;
+    //if (line.size() < 2 || !searchInWords(line, keyWord))
+    //    return;
 
-    if (line[0] != keyWord)
-    {
-        std::cerr << "Error in correctReturns, return is not first word" << std::endl;
-        std::cerr << "line[0] == " << line[0] << std::endl;
-    }
+    //if (line.front() != keyWord)
+    //{
 
-    if (line[1] == "(" || line[1] == ";")
-        return;
+    //}
 
-    std::vector<std::string> data;
-    data.push_back(line[0]);
-    data.push_back("(" + line[1]);
-    for (ushint index = 2; index < line.size(); ++index)
-    {
-        data.push_back(line[index]);
-    }
+    //
+
+    //if (line[0] != keyWord)
+    //{
+    //    std::cerr << "Error in correctReturns, return is not first word" << std::endl;
+    //    std::cerr << "line[0] == " << line[0] << std::endl;
+    //}
+
+
+
+    //std::vector<std::string> data;
+    //data.push_back(line.front());
+    //data.push_back("(");
+    //for (ushint index = 2; index < line.size() - 1; ++index)
+    //{
+    //    if(line[index] != ";" || index)
+    //    data.push_back(line[index]);
+    //}
+    //data.push_back(")");
+    //data.push_back(line.back());
+
 }
