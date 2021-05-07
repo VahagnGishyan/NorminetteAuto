@@ -16,10 +16,7 @@ bool is_char_in_string(		char c	, 	char 	*	set)              {	while (true)	{
 if (*set == '\0')	
 	
 
-		    int 
-	x 
-	= 
-	4
+		    int x = 4
 	;
 ;;;
 

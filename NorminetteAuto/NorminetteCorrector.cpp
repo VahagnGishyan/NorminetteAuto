@@ -20,7 +20,7 @@ int NorminetteCorrector::searchSymbolsInLineIndex(int argIndex, const std::strin
 {
     //function return negative, if symbol is not faund
 
-    std::string reservData = getLineIndex(argIndex);
+    std::string reservData = FileEditor::getLineIndex(argIndex);
     for (ushint start = 0; start < reservData.size(); ++start)
     {
         for (ushint index = 0; index < symbols.size(); ++index)
@@ -122,7 +122,7 @@ bool NorminetteCorrector::checkFormatHeading42()
             return true;
     }
     if (FileEditor::getLineIndex(heading42FormatLineSize).size() != 0)
-       addNewLineIndex(heading42FormatLineSize, "");
+        FileEditor::addNewLineIndex(heading42FormatLineSize, "");
     m_startLine = heading42FormatLineSize + 1;
     return false;
 }
@@ -132,13 +132,13 @@ bool NorminetteCorrector::checkPreprocessor()
     unsigned short start = m_startLine;
     for (; start < dataLineCount; ++start)
     {
-        if (getLineIndex(start)[0] != '#')
+        if (FileEditor::getLineIndex(start)[0] != '#')
         {
             break;
         }
     }
-    if (getLineIndex(start).size() != 0)
-        addNewLineIndex(start, "");
+    if (FileEditor::getLineIndex(start).size() != 0)
+        FileEditor::addNewLineIndex(start, "");
     m_startLine = start + 1;
     return false;
 }
@@ -156,7 +156,7 @@ void NorminetteCorrector::bracesMustBeOnNewLine()
     for (ushint start = m_startLine; start < size(); ++start)
     {
         int index = -1;
-        std::string line = getLineIndex(start);
+        std::string line = FileEditor::getLineIndex(start);
 
         if (line == "{" || line == "}")
             continue;
@@ -173,7 +173,7 @@ void NorminetteCorrector::afterSemicolonMustBeEmpty()
 {
     for (ushint start = m_startLine; start < size(); ++start)
     {
-        std::string line = getLineIndex(start);
+        std::string line = FileEditor::getLineIndex(start);
         int index = searchSymbolsInLine(line, ";");
         
         if (index < 0)
@@ -234,38 +234,35 @@ void NorminetteCorrector::deleteBlankLines()
 //Block 3, correct Inside Line
 void NorminetteCorrector::correctInsideLine()
 {
-    std::vector< std::vector<std::string>> text;
+    createMemberText();
 
-    for (ushint start = m_startLine; start < size(); ++start)
-    {
-        std::vector<std::string> line = separateByKeySymbols(start);
-        text.push_back(line);
-    }
+
     //skzbunq, 
     //Stroev grnac metodnery chpetq a poxen m_data-n u bun texty 
     //menak karan poxen line-ery, 
     //line-ery popoxelov berum enq verjnakan tesqi
     //vorn el verjum  poxum a m_data-yi parunakutyuny.
 
-    for(ushint indexLine = 0; indexLine < text.size();++indexLine)
-    {
-        correctSemicolon(indexLine, text);
-    }
+    correctSemicolon();
+    correctIfWhileElse();
+    correctReturns();
 
-    for (ushint indexLine = 0; indexLine < text.size(); ++indexLine)
-    {
-        correctIfWhileElse(indexLine, text);
-    }
+    updateBracesText();
 
-    for (ushint indexLine = 0; indexLine < text.size(); ++indexLine)
-    {
-        std::vector<std::string>& line = text[indexLine];
-        correctReturns(line);
-    }
+    correctInitialization();
 
-    updata(text);
+
+    updataText();
 }
 
+void NorminetteCorrector::createMemberText()
+{
+    for (ushint start = m_startLine; start < size(); ++start)
+    {
+        std::vector<std::string> line = separateByKeySymbols(start);
+        m_text.push_back(line);
+    }
+}
 std::vector<std::string> NorminetteCorrector::separateByKeySymbols(ushint lineStart)
 {
     std::vector<std::string> words = FileEditor::separateBySpaces(lineStart);
@@ -320,6 +317,7 @@ std::vector<std::string> NorminetteCorrector::separateByKeySymbols(ushint lineSt
     words = newWords;
     return words;
 }
+
 bool NorminetteCorrector::searchInWords(const std::vector<std::string>& words, const std::string& keyWord)
 {
     for (ushint start = 0; start < words.size(); ++start)
@@ -331,34 +329,42 @@ bool NorminetteCorrector::searchInWords(const std::vector<std::string>& words, c
     }
     return false;
 }
-void NorminetteCorrector::addNewLineInTextIndex(const unsigned short indexLine, std::vector< std::vector<std::string>>& text, const std::vector<std::string>& newLine)
+void NorminetteCorrector::addNewLineInTextIndex(const unsigned short indexLine,const std::vector<std::string>& newLine)
 {
     std::vector<std::string> Line = newLine;
-    ushint size = static_cast<ushint>(text.size());
+    ushint size = static_cast<ushint>(m_text.size());
 
     for (unsigned short int index = indexLine; index < size; ++index)
     {
-        std::vector<std::string> registerLine = text[index];
-        text[index] = Line;
+        std::vector<std::string> registerLine = m_text[index];
+        m_text[index] = Line;
         Line = registerLine;
     }
-    text.push_back(Line);
+    m_text.push_back(Line);
+
+    if (m_BracesIndex.empty())
+        return;
+    updateBracesAddNewLine(indexLine);
 }
-void NorminetteCorrector::deleteLineInTextIndex(const unsigned short indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::deleteLineInTextIndex(const unsigned short indexLine)
 {
-    for (unsigned short int index = indexLine; index < size() - 1; ++index)
+    for (unsigned short int index = indexLine; index < m_text.size() - 1; ++index)
     {
-        text[index] = text[index + 1];
+        m_text[index] = m_text[index + 1];
     }
-    text.pop_back();
+    m_text.pop_back();
+    
+    if (m_BracesIndex.empty())
+        return;
+    updateBracesDeleteLine(indexLine);
 }
-void NorminetteCorrector::updata(std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::updataText()
 {
-    ushint cycles = std::min((int)text.size(), size() - m_startLine);
+    ushint cycles = std::min((int)m_text.size(), size() - m_startLine);
 
     for (ushint indexLine = 0; indexLine < cycles; ++indexLine)
     {
-        std::vector<std::string>& line = text[indexLine];
+        std::vector<std::string>& line = m_text[indexLine];
 
         std::string newline;
 
@@ -372,11 +378,11 @@ void NorminetteCorrector::updata(std::vector< std::vector<std::string>>& text)
         }
         FileEditor::setLineIndex(indexLine + m_startLine, newline);
     }
-    if ((int)text.size() > size() - m_startLine)
+    if ((int)m_text.size() > size() - m_startLine)
     {
-        for (ushint start = cycles; start < text.size(); ++start)
+        for (ushint start = cycles; start < m_text.size(); ++start)
         {
-            std::vector<std::string>& line = text[start];
+            std::vector<std::string>& line = m_text[start];
 
             std::string newline;
 
@@ -391,7 +397,7 @@ void NorminetteCorrector::updata(std::vector< std::vector<std::string>>& text)
             FileEditor::addNewLineBack(newline);
         }
     }
-    else if ((int)text.size() < size() - m_startLine)
+    else if ((int)m_text.size() < size() - m_startLine)
     {
         for (ushint indexLine = cycles; indexLine < size(); ++indexLine)
         {
@@ -406,47 +412,51 @@ void NorminetteCorrector::updata(std::vector< std::vector<std::string>>& text)
 
 }
 
-void NorminetteCorrector::correctSemicolon(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::correctSemicolon()
 {
-    if (text[indexLine].size() == 1 && text[indexLine][0] == ";")
+    if (m_text.empty())
+        return;
+    for (ushint indexLine = 0; indexLine < m_text.size(); ++indexLine)
     {
-        aloneSemicolonRaiseUp(indexLine, text);
+        if (m_text[indexLine].size() == 1 && m_text[indexLine][0] == ";")
+        {
+            aloneSemicolonRaiseUp(indexLine);
+        }
+        deleteUnnecessarySemicolon(indexLine);
+        //beforeSemicolonShouldBeNoSpace(indexLine, text);
     }
-    deleteUnnecessarySemicolon(indexLine, text);
-    //beforeSemicolonShouldBeNoSpace(indexLine, text);
-    
 }
-void NorminetteCorrector::aloneSemicolonRaiseUp(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::aloneSemicolonRaiseUp(ushint& indexLine)
 {
     if (indexLine == 9)
         std::cout;
-    text[indexLine - 1].back() = text[indexLine - 1].back() + ";";
+    m_text[indexLine - 1].back() = m_text[indexLine - 1].back() + ";";
     
-    for (ushint start = indexLine; start < text.size() - 1; ++start)
+    for (ushint start = indexLine; start < m_text.size() - 1; ++start)
     {
-        text[start] = text[start + 1];
+        m_text[start] = m_text[start + 1];
     }
-    text.pop_back();
+    m_text.pop_back();
 
     --indexLine;
 }
-void NorminetteCorrector::deleteUnnecessarySemicolon(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::deleteUnnecessarySemicolon(ushint& indexLine)
 {
-    std::string line = text[indexLine].back();
+    std::string line = m_text[indexLine].back();
 
     if (line.empty() || line.size() == 1 || line.back() != ';')
         return;
-    for (shint index = line.size() - 2; index >= 0; --index)
+    for (shint index = static_cast<shint>(line.size()) - 2; index >= 0; --index)
     {
         if (line[index] == ';')
             line.pop_back();
     }
 
-    text[indexLine].back() = line;
+    m_text[indexLine].back() = line;
 }
-void NorminetteCorrector::beforeSemicolonShouldBeNoSpace(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::beforeSemicolonShouldBeNoSpace(ushint& indexLine)
 {
-    std::vector <std::string> line = text[indexLine];
+    std::vector <std::string> line = m_text[indexLine];
 
     int indexLineEnd = static_cast<int>(line.size()) - 1;
 
@@ -455,21 +465,24 @@ void NorminetteCorrector::beforeSemicolonShouldBeNoSpace(ushint& indexLine, std:
 
     line[indexLineEnd - 1] += line[indexLineEnd];
     line.pop_back();
-    text[indexLine] = line;
+    m_text[indexLine] = line;
 
 }
 
-void NorminetteCorrector::correctIfWhileElse(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::correctIfWhileElse()
 {
-    correctIf(indexLine, text);
-    correctWhile(indexLine, text);
-    correctElse(indexLine, text);
+    for (ushint indexLine = 0; indexLine < m_text.size(); ++indexLine)
+    {
+        correctIf(indexLine);
+        correctWhile(indexLine);
+        correctElse(indexLine);
+    }
 }
-void NorminetteCorrector::correctIf(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::correctIf(ushint& indexLine)
 {
     //after if should be no space
 
-    std::vector<std::string>& line = text[indexLine];
+    std::vector<std::string>& line = m_text[indexLine];
     const std::string keyWord = "if";
 
     if (!searchInWords(line, keyWord))
@@ -504,12 +517,12 @@ void NorminetteCorrector::correctIf(ushint& indexLine, std::vector< std::vector<
         newData.push_back(line[index]);
     }
 
-    for (ushint index = line.size() - 1; index > start; --index)
+    for (ushint index = static_cast<ushint>(line.size()) - 1; index > start; --index)
     {
         line.pop_back();
     }
 
-    addNewLineInTextIndex(indexLine + 1, text, newData);
+    addNewLineInTextIndex(indexLine + 1, newData);
 
     //std::vector<std::string> forNotError;
     //forNotError[0] = "{";
@@ -520,11 +533,11 @@ void NorminetteCorrector::correctIf(ushint& indexLine, std::vector< std::vector<
     //forNotError[0] = "}";
     //addNewLineInTextIndex(indexLine + 3, text, forNotError);
 }
-void NorminetteCorrector::correctWhile(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::correctWhile(ushint& indexLine)
 {
     //after while should be no space
 
-    std::vector<std::string>& line = text[indexLine];
+    std::vector<std::string>& line = m_text[indexLine];
     const std::string keyWord = "while";
 
     if (!searchInWords(line, keyWord))
@@ -559,18 +572,18 @@ void NorminetteCorrector::correctWhile(ushint& indexLine, std::vector< std::vect
         newData.push_back(line[index]);
     }
 
-    for (ushint index = line.size() - 1; index > start; --index)
+    for (ushint index = static_cast<ushint>(line.size()) - 1; index > start; --index)
     {
         line.pop_back();
     }
 
-    addNewLineInTextIndex(indexLine + 1, text, newData);
+    addNewLineInTextIndex(indexLine + 1, newData);
 }
-void NorminetteCorrector::correctElse(ushint& indexLine, std::vector< std::vector<std::string>>& text)
+void NorminetteCorrector::correctElse(ushint& indexLine)
 {
     //after else should be no space
 
-    std::vector<std::string>& line = text[indexLine];
+    std::vector<std::string>& line = m_text[indexLine];
     const std::string keyWord = "else";
 
     if (!searchInWords(line, keyWord))
@@ -599,40 +612,265 @@ void NorminetteCorrector::correctElse(ushint& indexLine, std::vector< std::vecto
         newData.push_back(line[index]);
     }
 
-    for (ushint index = line.size() - 1; index > start - 1; --index)
+    for (ushint index = static_cast<ushint>(line.size()) - 1; index > start - 1; --index)
     {
         line.pop_back();
     }
 
-    addNewLineInTextIndex(indexLine + 1, text, newData);
+    addNewLineInTextIndex(indexLine + 1, newData);
 }
 
-void NorminetteCorrector::correctReturns(std::vector<std::string>& line)
+void NorminetteCorrector::correctReturns()
 {
-
-    const std::string keyWord = "return";
-
-    if (line.size() < 3  || !searchInWords(line, keyWord))
-        return;
-
-    //for testing, not for relise
-    assert(line.front() == keyWord && "Whil be a return");
-
-    if (line[1] == "(")
-        return;
-
-    std::vector<std::string> data;
-
-    data.push_back(line.front());
-    data.push_back("(");
-
-    for (ushint index = 1; index < line.size() - 1; ++index)
+    for (ushint indexLine = 0; indexLine < m_text.size(); ++indexLine)
     {
-        data.push_back(line[index]);
+        std::vector<std::string>& line = m_text[indexLine];
+
+        const std::string keyWord = "return";
+
+        if (line.size() < 3 || !searchInWords(line, keyWord))
+            return;
+
+        //for testing, not for relise
+        assert(line.front() == keyWord && "Whil be a return");
+
+        if (line[1] == "(")
+            return;
+
+        std::vector<std::string> data;
+
+        data.push_back(line.front());
+        data.push_back("(");
+
+        for (ushint index = 1; index < line.size() - 1; ++index)
+        {
+            data.push_back(line[index]);
+        }
+
+        data.push_back(")");
+        data.push_back(line.back());
+
+        line = data;
     }
 
-    data.push_back(")");
-    data.push_back(line.back());
+}
 
-    line = data;
+//for work whit braces
+//void NorminetteCorrector::updateBraces()
+//{
+//    m_BracesIndex.clear();
+//
+//    unsigned short countBracesStart = 0;
+//    unsigned short countBracesEnd = 0;
+//    unsigned short indexForBracesArr = -1;
+//
+//    for (ushint start = m_startLine; start < size(); ++start)
+//    {
+//        const char symbol = FileEditor::getLineIndex(start)[0];
+//        ushint count = 0;
+//
+//        if (symbol == '{')
+//        {
+//            if (countBracesStart == countBracesEnd)
+//            {
+//                ++indexForBracesArr;
+//                m_BracesIndex.resize(indexForBracesArr + 1);
+//            }
+//            m_BracesIndex[indexForBracesArr].push_back(start);
+//            ++countBracesStart;
+//        }
+//        if (symbol == '}')
+//        {
+//            m_BracesIndex[indexForBracesArr].push_back(-start);
+//            ++countBracesEnd;
+//        }
+//    }
+//    m_BracesIndex.shrink_to_fit();
+//}
+//void NorminetteCorrector::updateBracesInAllData()
+//{
+//    m_BracesIndex.clear();
+//
+//    unsigned short countBracesStart = 0;
+//    unsigned short countBracesEnd = 0;
+//    unsigned short indexForBracesArr = -1;
+//
+//    for (unsigned short start = m_startLine; start < size(); ++start)
+//    {
+//        std::string line = FileEditor::getLineIndex(start);
+//        for (unsigned short index = 0; index < line.size(); ++index)
+//        {
+//            char c = line[index];
+//            if (c == '{')
+//            {
+//                if (countBracesStart == countBracesEnd)
+//                {
+//                    ++indexForBracesArr;
+//                    m_BracesIndex.resize(indexForBracesArr + 1);
+//                }
+//                m_BracesIndex[indexForBracesArr].push_back(start);
+//                ++countBracesStart;
+//            }
+//            if (c == '}')
+//            {
+//                m_BracesIndex[indexForBracesArr].push_back(-start);
+//                ++countBracesEnd;
+//
+//            }
+//        }
+//    }
+//    m_BracesIndex.shrink_to_fit();
+//}
+void NorminetteCorrector::updateBracesText( )
+{
+    if (m_text.empty())
+    {
+        std::cout << "Text is empty" << std::endl;
+        return;
+    }
+
+    m_BracesIndex.clear();
+
+    unsigned short countBracesStart = 0;
+    unsigned short countBracesEnd = 0;
+    unsigned short indexForBracesArr = -1;
+
+    for (ushint start = 0; start < m_text.size(); ++start)
+    {
+        const std::string symbol = m_text[start][0];
+        ushint count = 0;
+
+        if (symbol == "{")
+        {
+            if (countBracesStart == countBracesEnd)
+            {
+                ++indexForBracesArr;
+                m_BracesIndex.resize(indexForBracesArr + 1);
+            }
+            m_BracesIndex[indexForBracesArr].push_back(start + m_startLine);
+            ++countBracesStart;
+        }
+        if (symbol == "}")
+        {
+            m_BracesIndex[indexForBracesArr].push_back(-(start + m_startLine));
+            ++countBracesEnd;
+        }
+    }
+    m_BracesIndex.shrink_to_fit();
+
+}
+void NorminetteCorrector::printBraces()
+{
+    if (m_BracesIndex.empty())
+    {
+        std::cout << "Braces is empty" << std::endl;
+        return;
+    }
+
+
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        std::cout << "Function " << start << std::endl;
+
+        for (ushint index = 0; index < m_BracesIndex[start].size(); ++index)
+        {
+            std::cout << m_BracesIndex[start][index] << ' ';
+        }
+        std::cout << std::endl;
+    }
+}
+void NorminetteCorrector::updateBracesAddNewLine(ushint indexDeleteLine)
+{
+    for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
+    {
+        if (indexDeleteLine > m_BracesIndex[start].back())
+            continue;
+        for (ushint index = 0; index < static_cast<ushint>(m_BracesIndex[start].size()); ++index)
+        {
+            if (indexDeleteLine < m_BracesIndex[start][index])
+            {
+                if (m_BracesIndex[start][index] > 0)
+                    ++m_BracesIndex[start][index];
+                if (m_BracesIndex[start][index] < 0)
+                    --m_BracesIndex[start][index];
+            }
+        }
+    }
+}
+void NorminetteCorrector::updateBracesDeleteLine(ushint indexDeleteLine)
+{
+    for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
+    {
+        if (indexDeleteLine > m_BracesIndex[start].back())
+            continue;
+        for (ushint index = 0; index < static_cast<ushint>(m_BracesIndex[start].size()); ++index)
+        {
+            if (indexDeleteLine < m_BracesIndex[start][index])
+            {
+                if (m_BracesIndex[start][index] > 0)
+                    --m_BracesIndex[start][index];
+                if (m_BracesIndex[start][index] < 0)
+                    ++m_BracesIndex[start][index];
+            }
+        }
+    }
+}
+shint NorminetteCorrector::returnFunctionStartIndex(ushint indexInFunctionBody)
+{
+    if (m_BracesIndex.empty())
+        return -1;
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        if (indexInFunctionBody > m_BracesIndex[start].front())
+        {
+            if (indexInFunctionBody < (-m_BracesIndex[start].back()))
+            {
+                return (m_BracesIndex[start].front() + 1);
+            }
+        }
+    }
+    return -1;
+}
+shint NorminetteCorrector::returnFunctionEndIndex(ushint indexInFunctionBody)
+{
+    if (m_BracesIndex.empty())
+        return -1;
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        if (indexInFunctionBody > m_BracesIndex[start].front())
+        {
+            if (indexInFunctionBody < (-m_BracesIndex[start].back()))
+            {
+                return (-m_BracesIndex[start].back() - 1);
+            }
+        }
+    }
+    return -1;
+}
+//shint NorminetteCorrector::returnFunctionStartIndex(ushint indexInFunctionBody)
+//{
+//
+//}
+
+void NorminetteCorrector::correctInitialization()
+{
+    if (m_BracesIndex.empty())
+        return;
+
+    for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
+    {
+        correctInitializationInFunction(m_BracesIndex[start].back() + 1, -m_BracesIndex[start].back() - 1);
+    }
+}
+void NorminetteCorrector::correctInitializationInFunction(int indexStartFunction, int indexEndFunction)
+{
+
+}
+bool NorminetteCorrector::searchInitializationInLine(ushint indexLine)
+{
+    std::vector<std::string> line = m_text[indexLine];
+    for (ushint start = 0; start < line.size(); ++start)
+    {
+
+    }
 }

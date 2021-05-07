@@ -8,6 +8,7 @@ private:
     //std::vector<unsigned short>     m_PreprocessorIndex;
     std::vector<std::vector<short>> m_BracesIndex;
     //std::vector<bool>               m_ErrorStatusRegister;
+    std::vector< std::vector<std::string>> m_text;
 public:
     //initialization 
     NorminetteCorrector() : FileEditor(), m_startLine(0)
@@ -47,26 +48,48 @@ public:
 
     //Block 3, correct Inside Line
     void correctInsideLine();
-    std::vector<std::string> separateByKeySymbols(ushint lineStart);
-    //key symbols, " ", (), [], =, +, ...
-    bool searchInWords(const std::vector<std::string>& words, const std::string& keyWord);
-    //return true if found
-    void addNewLineInTextIndex(const unsigned short indexLine, std::vector< std::vector<std::string>>& text, const std::vector<std::string>& newLine);
-    void deleteLineInTextIndex(const unsigned short indexLine, std::vector< std::vector<std::string>>& text);
-    void updata(std::vector< std::vector<std::string>>& text);
+    void createMemberText();
+    std::vector<std::string> separateByKeySymbols(ushint lineStart);     //key symbols, " ", (), [], =, +, ...
+    bool searchInWords(const std::vector<std::string>& words, const std::string& keyWord);    //return true if found
+    void addNewLineInTextIndex(const unsigned short indexLine,  const std::vector<std::string>& newLine);
+    void deleteLineInTextIndex(const unsigned short indexLine);
+    void updataText();
 
-    void correctSemicolon(ushint& start, std::vector< std::vector<std::string>>& text);
-    void aloneSemicolonRaiseUp(ushint& start, std::vector< std::vector<std::string>>& text);
-    void deleteUnnecessarySemicolon(ushint& indexLine, std::vector< std::vector<std::string>>& text);
-    void beforeSemicolonShouldBeNoSpace(ushint& start, std::vector< std::vector<std::string>>& text);
+    void correctSemicolon();
+    void aloneSemicolonRaiseUp(ushint& start);
+    void deleteUnnecessarySemicolon(ushint& indexLine);
+    void beforeSemicolonShouldBeNoSpace(ushint& start);
 
-    void correctIfWhileElse(ushint& start, std::vector< std::vector<std::string>>& text);
-    void correctIf(ushint& indexLine, std::vector< std::vector<std::string>>& text);
-    void correctWhile(ushint& indexLine, std::vector< std::vector<std::string>>& text);
-    void correctElse(ushint& indexLine, std::vector< std::vector<std::string>>& text);
+    void correctIfWhileElse();
+    void correctIf(ushint& indexLine);
+    void correctWhile(ushint& indexLine);
+    void correctElse(ushint& indexLine);
 
-    void correctReturns(std::vector<std::string> &text);
+    void correctReturns();
 
+    //for work whit braces
+    //void updateBraces();						//Update in m_data
+    //void updateBracesInAllData();
+    void updateBracesText();	//In text
+
+    void printBraces();
+    void updateBracesAddNewLine(ushint indexDeleteLine);
+    void updateBracesDeleteLine(ushint indexDeleteLine);
+    shint returnFunctionStartIndex(ushint indexInFunctionBody);
+    shint returnFunctionEndIndex(ushint indexInFunctionBody);
+    //Work for line, update FileEditor functions
+    //void addNewLineIndex(const unsigned short indexLine, const std::string& newLine);
+    //void deleteLineIndex(const shint indexLine);
+
+    //void addLineBetween(const shint indexLine, const shint indexSymbol, const std::string& newData);
+
+    //void deleteInLineWithIndexLeft(const shint indexLine, const shint indexSymbol);
+    //void deleteInLineWithIndexRight(const shint indexLine, const shint indexSymbol);
+
+    void correctInitialization();
+    void correctInitializationInFunction(int indexStartFunction, int indexEndFunction);
+
+    bool searchInitializationInLine(ushint indexLine);
 
 
     void correctTabulations();
