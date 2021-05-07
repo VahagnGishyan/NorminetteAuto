@@ -4,11 +4,12 @@ class NorminetteCorrector : public FileEditor
 {
 private:
     //Assistants
-    ushint                          m_startLine;
-    //std::vector<unsigned short>     m_PreprocessorIndex;
-    std::vector<std::vector<short>> m_BracesIndex;
-    //std::vector<bool>               m_ErrorStatusRegister;
-    std::vector< std::vector<std::string>> m_text;
+    ushint				    m_startLine;
+    //std::vector<unsigned short>	    m_PreprocessorIndex;
+    std::vector<std::vector<short>>	    m_BracesIndex;
+    //std::vector<bool>			    m_ErrorStatusRegister;
+    std::vector< std::vector<std::string>>  m_text;
+    std::vector<std::string>		    m_varibleKeyWords;
 public:
     //initialization 
     NorminetteCorrector() : FileEditor(), m_startLine(0)
@@ -86,10 +87,17 @@ public:
     //void deleteInLineWithIndexLeft(const shint indexLine, const shint indexSymbol);
     //void deleteInLineWithIndexRight(const shint indexLine, const shint indexSymbol);
 
+    //For initilization member data
+    void initVaribleKeyWords();
+    void addNewVaribleKeyWords(std::string keyWord);
+    //void deleteVaribleKeyWords(std::string keyWord);
+
     void correctInitialization();
     void correctInitializationInFunction(int indexStartFunction, int indexEndFunction);
 
     bool searchInitializationInLine(ushint indexLine);
+
+
 
 
     void correctTabulations();

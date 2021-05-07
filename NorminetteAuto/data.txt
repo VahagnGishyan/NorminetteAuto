@@ -89,3 +89,18 @@ return 4;
 }
 void foo(int x=5){x++;while(x>0)--x;return(x);}
 
+int main()
+{
+int x =0;
+int y = 4;
+short ahgdeuhfejsn45 = x;
+
+double jhdbwjbe = jwebfj;
+
+long l;
+l= hfbew;
+l += hcbhjd;
+return kdjnek;
+}
+
+

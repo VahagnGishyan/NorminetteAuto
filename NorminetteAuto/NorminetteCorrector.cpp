@@ -852,10 +852,49 @@ shint NorminetteCorrector::returnFunctionEndIndex(ushint indexInFunctionBody)
 //
 //}
 
+//For initilization member data
+void NorminetteCorrector::initVaribleKeyWords()
+{
+    if (!m_varibleKeyWords.empty())
+    {
+        m_varibleKeyWords.clear();
+    }
+
+
+    m_varibleKeyWords.reserve(9);
+
+    m_varibleKeyWords.push_back("short");
+    m_varibleKeyWords.push_back("ushort");
+    m_varibleKeyWords.push_back("ushint");
+    m_varibleKeyWords.push_back("int");
+    m_varibleKeyWords.push_back("uint");
+    m_varibleKeyWords.push_back("long");
+    m_varibleKeyWords.push_back("ulong");
+    m_varibleKeyWords.push_back("float");
+    m_varibleKeyWords.push_back("double");
+
+    assert(m_varibleKeyWords.size() == 9 && "size whil be 9");
+}
+void NorminetteCorrector::addNewVaribleKeyWords(std::string keyWord)
+{
+    m_varibleKeyWords.push_back(keyWord);
+}
+//void NorminetteCorrector::deleteVaribleKeyWords(std::string keyWord)
+//{
+//    for()
+//    m_varibleKeyWords.push_back(keyWord);
+//}
+
 void NorminetteCorrector::correctInitialization()
 {
     if (m_BracesIndex.empty())
+        updateBracesText();
+
+    if (m_BracesIndex.empty())
         return;
+
+    if (m_varibleKeyWords.empty())
+        initVaribleKeyWords();
 
     for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
     {
@@ -864,13 +903,28 @@ void NorminetteCorrector::correctInitialization()
 }
 void NorminetteCorrector::correctInitializationInFunction(int indexStartFunction, int indexEndFunction)
 {
-
+    for (ushint start = indexStartFunction; start <= indexEndFunction; ++start)
+    {
+        if (!searchInitializationInLine(start))
+        {
+            continue;
+        }
+        std::cout << "Init line index :: " << start << std::endl;
+    }
 }
 bool NorminetteCorrector::searchInitializationInLine(ushint indexLine)
 {
     std::vector<std::string> line = m_text[indexLine];
+
     for (ushint start = 0; start < line.size(); ++start)
     {
-
+        for (ushint index = 0; index < m_varibleKeyWords.size(); ++index)
+        {
+            if (searchInWords(line, m_varibleKeyWords[index]))
+            {
+                return true;
+            }
+        }
     }
+    return false;
 }
