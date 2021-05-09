@@ -22,6 +22,7 @@ public:
     }
 
     //for work
+    void printText();
     int searchSymbolsInLine(const std::string& line, const std::string& symbols);
     int searchSymbolsInLineIndex(int index, const std::string& symbols);
     void divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight);
@@ -35,6 +36,7 @@ public:
     
     //Block 1, basic check
     bool chackBasic();
+    int  getPositive(int index);
     bool preliminaryInspection();
     bool checkFormatHeading42();
     bool checkPreprocessor();
@@ -54,7 +56,7 @@ public:
     bool searchInWords(const std::vector<std::string>& words, const std::string& keyWord);    //return true if found
     void addNewLineInTextIndex(const unsigned short indexLine,  const std::vector<std::string>& newLine);
     void deleteLineInTextIndex(const unsigned short indexLine);
-    void updataText();
+    void updata();
 
     void correctSemicolon();
     void aloneSemicolonRaiseUp(ushint& start);
@@ -74,10 +76,11 @@ public:
     void updateBracesText();	//In text
 
     void printBraces();
+    void printBracesForText();
     void updateBracesAddNewLine(ushint indexDeleteLine);
     void updateBracesDeleteLine(ushint indexDeleteLine);
-    shint returnFunctionStartIndex(ushint indexInFunctionBody);
-    shint returnFunctionEndIndex(ushint indexInFunctionBody);
+    shint getFunctionStartIndex(ushint indexInFunctionBody);
+    shint getFunctionEndIndex(ushint indexInFunctionBody);
     //Work for line, update FileEditor functions
     //void addNewLineIndex(const unsigned short indexLine, const std::string& newLine);
     //void deleteLineIndex(const shint indexLine);
@@ -93,14 +96,18 @@ public:
     //void deleteVaribleKeyWords(std::string keyWord);
 
     void correctInitialization();
+
     void correctInitializationInFunction(int indexStartFunction, int indexEndFunction);
-
-    bool searchInitializationInLine(ushint indexLine);
-
-
-
+    ushint searchDeclarationStartInFunctionIndex(int indexStartFunction, int indexEndFunction);
+    bool isThereDeclarationInTextLine(ushint indexLine);
+    bool isThereAssignmentInTextLine(ushint indexLine);
+    void separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine);
+    void raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
+    //bool isThereInitializationInTextLine(ushint indexLine);
 
     void correctTabulations();
 };
 
-
+//haytararum	    => declaration
+//arjecavorum	    => assignment
+//initialization    => initialization
