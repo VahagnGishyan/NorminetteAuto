@@ -738,7 +738,7 @@ void NorminetteCorrector::correctReturns()
 //    }
 //    m_BracesIndex.shrink_to_fit();
 //}
-void NorminetteCorrector::updateBracesText( )
+void  NorminetteCorrector::updateBracesText( )
 {
     if (m_text.empty())
     {
@@ -775,7 +775,7 @@ void NorminetteCorrector::updateBracesText( )
     }
     m_BracesIndex.shrink_to_fit();
 }
-void NorminetteCorrector::printBraces()
+void  NorminetteCorrector::printBraces()
 {
     if (m_BracesIndex.empty())
     {
@@ -805,7 +805,7 @@ void NorminetteCorrector::printBraces()
         std::cout << std::endl;
     }
 }
-void NorminetteCorrector::printBracesForText()
+void  NorminetteCorrector::printBracesForText()
 {
     if (m_BracesIndex.empty())
     {
@@ -825,7 +825,7 @@ void NorminetteCorrector::printBracesForText()
         std::cout << std::endl;
     }
 }
-void NorminetteCorrector::updateBracesAddNewLine(ushint indexDeleteLine)
+void  NorminetteCorrector::updateBracesAddNewLine(ushint indexDeleteLine)
 {
     for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
     {
@@ -843,14 +843,14 @@ void NorminetteCorrector::updateBracesAddNewLine(ushint indexDeleteLine)
         }
     }
 }
-int NorminetteCorrector::getPositive(int index)
+int   NorminetteCorrector::getPositive(int index)
 {
     if (index >= 0)
         return index;
     else
         return -index;
 }
-void NorminetteCorrector::updateBracesDeleteLine(ushint indexDeleteLine)
+void  NorminetteCorrector::updateBracesDeleteLine(ushint indexDeleteLine)
 {
     for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
     {
@@ -1099,3 +1099,4 @@ void NorminetteCorrector::raiseDeclarationUp(ushint& startDeclaration, ushint& i
 //{
 //
 //}
+
