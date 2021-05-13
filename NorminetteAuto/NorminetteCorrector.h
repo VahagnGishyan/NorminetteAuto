@@ -105,6 +105,24 @@ public:
     void raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
     //bool isThereInitializationInTextLine(ushint indexLine);
 
+    //Block 4, to finalize
+    void correctForFinalize();
+
+    bool isBracesIndex(int index);
+    //bool isMathOperators()
+
+
+
+    void correctFunctionName();
+    void deleteUnnecessarySpaceInFunctionName(std::vector<std::string>& line);
+
+
+    void correctFunctionBody();
+    void deleteUnnecessarySpaceSemicolon();
+    void deleteUnnecessarySpaceMathOperators();
+    void deleteUnnecessarySpaceInDeclaration(std::vector<std::string>& line);
+    void deleteUnnecessarySpaceInIfAndWhile(std::vector<std::string>& line);
+
     void correctTabulations();
 };
 

@@ -87,7 +87,13 @@ void NorminetteCorrector::correctAll()
     FileEditor::print();
 
     correctInsideLine();
+
+    correctForFinalize();
+
+    updata();
     FileEditor::print();
+
+
 }
 
 //Block 1, basic check
@@ -267,9 +273,6 @@ void NorminetteCorrector::correctInsideLine()
 
 
     correctInitialization();
-
-
-    updata();
 }
 
 void NorminetteCorrector::createMemberText()
@@ -738,7 +741,7 @@ void NorminetteCorrector::correctReturns()
 //    }
 //    m_BracesIndex.shrink_to_fit();
 //}
-void  NorminetteCorrector::updateBracesText( )
+void  NorminetteCorrector::  updateBracesText( )
 {
     if (m_text.empty())
     {
@@ -775,7 +778,7 @@ void  NorminetteCorrector::updateBracesText( )
     }
     m_BracesIndex.shrink_to_fit();
 }
-void  NorminetteCorrector::printBraces()
+void  NorminetteCorrector::  printBraces()
 {
     if (m_BracesIndex.empty())
     {
@@ -805,7 +808,7 @@ void  NorminetteCorrector::printBraces()
         std::cout << std::endl;
     }
 }
-void  NorminetteCorrector::printBracesForText()
+void  NorminetteCorrector::  printBracesForText()
 {
     if (m_BracesIndex.empty())
     {
@@ -825,7 +828,7 @@ void  NorminetteCorrector::printBracesForText()
         std::cout << std::endl;
     }
 }
-void  NorminetteCorrector::updateBracesAddNewLine(ushint indexDeleteLine)
+void  NorminetteCorrector::  updateBracesAddNewLine(ushint indexDeleteLine)
 {
     for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
     {
@@ -843,14 +846,14 @@ void  NorminetteCorrector::updateBracesAddNewLine(ushint indexDeleteLine)
         }
     }
 }
-int   NorminetteCorrector::getPositive(int index)
+int   NorminetteCorrector::  getPositive(int index)
 {
     if (index >= 0)
         return index;
     else
         return -index;
 }
-void  NorminetteCorrector::updateBracesDeleteLine(ushint indexDeleteLine)
+void  NorminetteCorrector::  updateBracesDeleteLine(ushint indexDeleteLine)
 {
     for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
     {
@@ -868,7 +871,7 @@ void  NorminetteCorrector::updateBracesDeleteLine(ushint indexDeleteLine)
         }
     }
 }
-shint NorminetteCorrector::getFunctionStartIndex(ushint indexInFunctionBody)
+shint NorminetteCorrector::  getFunctionStartIndex(ushint indexInFunctionBody)
 {
     if (m_BracesIndex.empty())
         return -1;
@@ -884,7 +887,7 @@ shint NorminetteCorrector::getFunctionStartIndex(ushint indexInFunctionBody)
     }
     return -1;
 }
-shint NorminetteCorrector::getFunctionEndIndex(ushint indexInFunctionBody)
+shint NorminetteCorrector::  getFunctionEndIndex(ushint indexInFunctionBody)
 {
     if (m_BracesIndex.empty())
         return -1;
@@ -906,7 +909,7 @@ shint NorminetteCorrector::getFunctionEndIndex(ushint indexInFunctionBody)
 //}
 
 //For initilization member data
-void NorminetteCorrector::initVaribleKeyWords()
+void NorminetteCorrector::   initVaribleKeyWords()
 {
     if (!m_varibleKeyWords.empty())
     {
@@ -928,7 +931,7 @@ void NorminetteCorrector::initVaribleKeyWords()
 
     assert(m_varibleKeyWords.size() == 9 && "size whil be 9");
 }
-void NorminetteCorrector::addNewVaribleKeyWords(std::string keyWord)
+void NorminetteCorrector::   addNewVaribleKeyWords(std::string keyWord)
 {
     m_varibleKeyWords.push_back(keyWord);
 }
@@ -938,7 +941,7 @@ void NorminetteCorrector::addNewVaribleKeyWords(std::string keyWord)
 //    m_varibleKeyWords.push_back(keyWord);
 //}
 
-void NorminetteCorrector::correctInitialization()
+void NorminetteCorrector::   correctInitialization()
 {
     if (m_BracesIndex.empty())
         updateBracesText();
@@ -964,8 +967,10 @@ void NorminetteCorrector::correctInitialization()
         }
         correctInitializationInFunction(m_BracesIndex[start].front() + 1, -m_BracesIndex[start].back() - 1);
     }
+
+    m_varibleKeyWords.clear();
 }
-void NorminetteCorrector::correctInitializationInFunction(int indexStartFunction, int indexEndFunction)
+void NorminetteCorrector::   correctInitializationInFunction(int indexStartFunction, int indexEndFunction)
 {
     if (indexStartFunction < 0 || indexEndFunction < 0)
     {
@@ -999,8 +1004,17 @@ void NorminetteCorrector::correctInitializationInFunction(int indexStartFunction
         std::cout << "Init line index :: " << start << std::endl;
     }
 }
-ushint NorminetteCorrector::searchDeclarationStartInFunctionIndex(int indexStartFunction, int indexEndFunction)
+ushint NorminetteCorrector:: searchDeclarationStartInFunctionIndex(int indexStartFunction, int indexEndFunction)
 {
+    if (m_text.size() == 1 && m_text[indexStartFunction].front() == "{")
+    {
+        ++indexStartFunction;
+    }
+    if (m_text.size() == 1 && m_text[indexStartFunction].front() == "}")
+    {
+        --indexEndFunction;
+    }
+
     if (indexStartFunction < 0 || indexEndFunction < 0)
     {
         std::cerr << "arguments is negative" << std::endl;
@@ -1026,9 +1040,14 @@ ushint NorminetteCorrector::searchDeclarationStartInFunctionIndex(int indexStart
 
     return (indexStartFunction + 1);
 }
-bool NorminetteCorrector::isThereDeclarationInTextLine(ushint indexLine)
+bool NorminetteCorrector::   isThereDeclarationInTextLine(ushint indexLine)
 {
     std::vector<std::string> line = m_text[indexLine];
+
+    if (m_varibleKeyWords.empty())
+    {
+        NorminetteCorrector::initVaribleKeyWords();
+    }
 
     for (ushint start = 0; start < line.size(); ++start)
     {
@@ -1042,11 +1061,11 @@ bool NorminetteCorrector::isThereDeclarationInTextLine(ushint indexLine)
     }
     return false;
 }
-bool NorminetteCorrector::isThereAssignmentInTextLine(ushint indexLine)
+bool NorminetteCorrector::   isThereAssignmentInTextLine(ushint indexLine)
 {
     std::vector<std::string> line = m_text[indexLine];
 
-    for (shint start = line.size() - 1; start >= 0; --start)
+    for (shint start = static_cast<shint>(line.size() - 1); start >= 0; --start)
     {
         if (line[start] == "=")
         {
@@ -1055,7 +1074,7 @@ bool NorminetteCorrector::isThereAssignmentInTextLine(ushint indexLine)
     }
     return false;
 }
-void NorminetteCorrector::separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine)
+void NorminetteCorrector::   separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine)
 {
     std::vector<std::string> line = m_text[indexLine];
 
@@ -1085,7 +1104,7 @@ void NorminetteCorrector::separateDeclarationFromAssignment(ushint& startDeclara
 
     m_text[indexLine + 1] = newLine;
 }
-void NorminetteCorrector::raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine)
+void NorminetteCorrector::   raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine)
 {
     std::vector<std::string> line = m_text[indexLine];
 
@@ -1100,3 +1119,229 @@ void NorminetteCorrector::raiseDeclarationUp(ushint& startDeclaration, ushint& i
 //
 //}
 
+//Block 4, to finalize
+void NorminetteCorrector::correctForFinalize()
+{
+    correctFunctionName();
+    correctFunctionBody();;
+}
+
+bool NorminetteCorrector::isBracesIndex(int indexLine)
+{
+    //test
+    assert(indexLine > 0 && "Index shell be positive");
+
+    if (indexLine <= 0)
+    {
+        return false;
+    }
+
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        for (ushint index = 0; index < m_BracesIndex[start].size(); ++index)
+        {
+            int bracesIndex = NorminetteCorrector::getPositive(m_BracesIndex[start][index]);
+
+            if (indexLine == bracesIndex)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void NorminetteCorrector::correctFunctionName()
+{
+    for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
+    {
+        std::vector<std::string>& line = m_text[m_BracesIndex[start][0] - 1];
+
+        deleteUnnecessarySpaceInFunctionName(line);
+    }
+}
+void NorminetteCorrector::deleteUnnecessarySpaceSemicolon()
+{
+
+}
+void NorminetteCorrector::deleteUnnecessarySpaceMathOperators()
+{
+
+}
+void NorminetteCorrector::deleteUnnecessarySpaceInFunctionName(std::vector<std::string>& line)
+{
+    shint size = static_cast<shint>(line.size());
+
+    //for test
+    assert(size && "line chpetq a lini 0");
+
+
+    if (size == 0 || size == 1)
+    {
+        return;
+    }
+
+    std::string result = line[0];
+
+    for (ushint index = 1; index < line.size(); ++index)
+    {
+        char symbol = line[index][0];
+        
+
+        if (std::isalpha(symbol))
+        {
+            result += " " + line[index];
+        }
+        else if (symbol == '(')
+        {
+            result += line[index];
+            ++index;
+            result += line[index];
+        }
+        else
+        {
+            result += line[index];
+        }
+    }
+
+    line.clear();
+    line.push_back(result);
+}
+void NorminetteCorrector::correctFunctionBody()
+{
+    for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
+    {
+        int indexStartFunction = m_BracesIndex[start][0] + 1;
+        int indexEndFunction = -m_BracesIndex[start].back() - 1;
+
+
+        const ushint startLine = searchDeclarationStartInFunctionIndex(indexStartFunction, indexEndFunction);
+
+        for (ushint index = indexStartFunction; index < startLine; ++index)
+        {
+            //delete unnecessary space in declaration
+
+            std::vector<std::string>& line = m_text[index];
+
+            deleteUnnecessarySpaceInDeclaration(line);
+        }
+
+        for (ushint index = startLine; index < indexEndFunction; ++index)
+        {
+            if (isBracesIndex(index))
+            {
+                continue;
+            }
+
+            std::vector<std::string>& line = m_text[index];
+
+            const std::string keyWordIf = "if";
+            const std::string keyWordWhile = "while";
+
+
+            if (searchInWords(line, keyWordIf) || searchInWords(line, keyWordWhile))
+            {
+                //delete unnecessary space in if and While
+                //deleteUnnecessarySpaceInIfAndWhile(line);
+
+                continue;
+            }
+
+            //correct line
+        }
+    }
+
+    
+}
+void NorminetteCorrector::deleteUnnecessarySpaceInDeclaration(std::vector<std::string>& line)
+{
+    shint size = static_cast<shint>(line.size());
+
+    //for test
+    assert(size && "line chpetq a lini 0");
+
+
+    if (size == 0 || size == 1)
+    {
+        return;
+    }
+
+    std::string result = line[0];
+
+    for (ushint index = 1; index < line.size(); ++index)
+    {
+        char symbol = line[index][0];
+
+
+        if (std::isalpha(symbol))
+        {
+            result += " " + line[index];
+        }
+        else if (symbol == '[')
+        {
+            result += line[index];
+            ++index;
+            result += line[index];
+        }
+        else
+        {
+            result += line[index];
+        }
+    }
+
+    line.clear();
+    line.push_back(result);
+}
+void NorminetteCorrector::deleteUnnecessarySpaceInIfAndWhile(std::vector<std::string>& line)
+{
+    shint size = static_cast<shint>(line.size());
+
+    //for test
+    assert(size && "line chpetq a lini 0");
+
+
+    if (size == 0 || size == 1)
+    {
+        return;
+    }
+
+    std::string result = line[0];
+
+    for (ushint index = 1; index < line.size(); ++index)
+    {
+        char symbol = line[index][0];
+
+        if (symbol == '(')
+        {
+            result += " " + line[index];
+            ++index;
+            result += line[index];
+        }
+        else if(symbol == '&' || symbol == '|')
+        {
+
+        }
+        else if (true)
+        {
+
+        }
+        if (std::isalpha(symbol))
+        {
+            result += " " + line[index];
+        }
+        //else if (symbol == '(')
+        //{
+        //    result += line[index];
+        //    ++index;
+        //    result += line[index];
+        //}
+        else
+        {
+            result += line[index];
+        }
+    }
+
+    line.clear();
+    line.push_back(result);
+}
