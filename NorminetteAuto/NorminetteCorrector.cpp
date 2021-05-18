@@ -1123,7 +1123,8 @@ void NorminetteCorrector::   raiseDeclarationUp(ushint& startDeclaration, ushint
 void NorminetteCorrector::correctForFinalize()
 {
     correctFunctionName();
-    correctFunctionBody();;
+    deleteUnnecessarySpaceSemicolon();
+    correctFunctionBody();
 }
 
 bool NorminetteCorrector::isBracesIndex(int indexLine)
@@ -1163,7 +1164,16 @@ void NorminetteCorrector::correctFunctionName()
 }
 void NorminetteCorrector::deleteUnnecessarySpaceSemicolon()
 {
+    for (ushint start = 0; start < m_text.size(); ++start)
+    {
+        std::vector<std::string>& line = m_text[start];
 
+        if (line.back() == ";")
+        {
+            line[line.size() - 2] += ";";
+            line.pop_back();
+        }
+    }
 }
 void NorminetteCorrector::deleteUnnecessarySpaceMathOperators()
 {
