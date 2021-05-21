@@ -453,8 +453,8 @@ void NorminetteCorrector::correctInsideLine()
     separateByKeySymbols();
     correctSemicolon();
     correctIfWhileElse();
-    //correctReturns();
-    //updateBracesText();
+    correctReturns();
+    //updateBraces();
     //correctInitialization();
 }
 
@@ -729,42 +729,42 @@ void NorminetteCorrector::correctElse(ushint& indexLine)
     setLine(indexLine, line);
     addNewLine(indexLine + 1, newLine);
 }
-//
-//void NorminetteCorrector::correctReturns()
-//{
-//    for (ushint indexLine = 0; indexLine < m_text.size(); ++indexLine)
-//    {
-//        std::vector<std::string>& line = m_text[indexLine];
-//
-//        const std::string keyWord = "return";
-//
-//        if (line.size() < 3 || !searchInWords(line, keyWord))
-//            continue;
-//
-//        //for testing, not for relise
-//        assert(line.front() == keyWord && "Whil be a return");
-//
-//        if (line[1] == "(")
-//            continue;
-//
-//        std::vector<std::string> data;
-//
-//        data.push_back(line.front());
-//        data.push_back("(");
-//
-//        for (ushint index = 1; index < line.size() - 1; ++index)
-//        {
-//            data.push_back(line[index]);
-//        }
-//
-//        data.push_back(")");
-//        data.push_back(line.back());
-//
-//        line = data;
-//    }
-//
-//}
-//
+
+void NorminetteCorrector::correctReturns()
+{
+    for (ushint indexLine = 0; indexLine < FileTextEditor::size(); ++indexLine)
+    {
+        std::vector<std::string> line = FileTextEditor::getLine(indexLine);
+
+        const std::string keyWord = "return";
+
+        if (line.size() < 3 || !searchInWords(line, keyWord))
+            continue;
+
+        //for testing, not for relise
+        assert(line.front() == keyWord && "Whil be a return");
+
+        if (line[1] == "(")
+            continue;
+
+        std::vector<std::string> data;
+
+        data.push_back(line.front());
+        data.push_back("(");
+
+        for (ushint index = 1; index < line.size() - 1; ++index)
+        {
+            data.push_back(line[index]);
+        }
+
+        data.push_back(")");
+        data.push_back(line.back());
+
+        line = data;
+        FileTextEditor::setLine(indexLine, line);
+    }
+}
+
 
 //
 ////For initilization member data
