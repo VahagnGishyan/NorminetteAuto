@@ -32,11 +32,14 @@ public:
     //set, get, add and delete lines
     std::vector<std::string> getLine(int indexLine) const; 
     void                     setLine(int indexLine, const std::vector<std::string>& newLine);
+    void                     setLine(int indexLine, std::string& newLine);
 
     void                     addNewLine(int indexLine, const std::vector<std::string>& newLine);
+    void                     addNewLine(int indexLine, std::string& newLine);
     void                     deleteLine(int indexLine);
 
     void                     addNewLineBack(const std::vector<std::string>&  newLine);
+    void                     addNewLineBack(std::string& newLine);
     void                     deleteLineBack();
 
     //work in lines

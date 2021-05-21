@@ -26,34 +26,25 @@ public:
 	FileEditor::openFile(filename);
     }
 
-    //Work with member braces index
-    int  getPositive(int index);
+    // heto dardznel mi masy private
+public:
 
     //for work
-    int  searchSymbolsInLine(const std::string& line, const std::string& symbols);
-    int  searchSymbolsInLine(int argIndex, const std::string& symbols);
+    int  getPositive(int index);
+    int searchSymbolsInLine(const std::string& line, const std::string& symbols);
+    int searchSymbolsInLine(int index, const std::string& symbols);
     void divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight);
 
     //For corrector
     void correctAll();
 
-    //CodeBlock old
+    //CodeBlock 1, basic check
     bool chackBasic();
     bool preliminaryInspection();
     bool checkFormatHeading42();
     bool checkPreprocessor();
-    void initText(int startLine);
 
-    //CodeBlock 1, correct header
-    bool chackFile();
-
-    bool preliminaryInspectionNEW();
-    bool checkFormatHeading42NEW();
-    void correctFormatHeading42NEW();
-    bool checkPreprocessorNEW();
-    void correctPreprocessorNEW();
-
-    //Block 2, Preliminary Correcting File Format
+    //CodeBlock 2, Preliminary Correcting File Format
     void preliminaryCorrectingFileFormat();
     void bracesMustBeOnNewLine();
     //void correctSemicolon();

@@ -87,8 +87,45 @@ void FileTextEditor::                    setLine(int indexLine, const std::vecto
     else
         m_text.push_back(newLine);
 }
+void FileTextEditor::                    setLine(int indexLine, std::string& newWord)
+{
+    ushint length = FileTextEditor::size();
+
+    assert(indexLine <= length && "The index cannot be longer than the length");
+
+    std::vector<std::string> newLine;
+    newLine.push_back(newWord);
+
+    if (indexLine < length)
+        m_text[indexLine] = newLine;
+    else
+        m_text.push_back(newLine);
+}
+
 void FileTextEditor::                    addNewLine(int indexLine, const std::vector<std::string>& newLine)
 {
+    std::vector<std::string> reservData = newLine;
+    ushint length = size();
+
+    if (indexLine == length)
+    {
+        FileTextEditor::addNewLineBack(newLine);
+        return;
+    }
+
+    for (ushint index = indexLine; index < length; ++index)
+    {
+        std::vector<std::string> registerLine = FileTextEditor::getLine(index);
+        FileTextEditor::setLine(index, reservData);
+        reservData = registerLine;
+    }
+
+    addNewLineBack(reservData);
+}
+void FileTextEditor::                    addNewLine(int indexLine, std::string& newWord)
+{
+    std::vector<std::string> newLine;
+    newLine.push_back(newWord);
 
     std::vector<std::string> reservData = newLine;
     ushint length = size();
@@ -116,8 +153,16 @@ void FileTextEditor::                    deleteLine(int indexLine)
     }
     deleteLineBack();
 }
+
 void FileTextEditor::                    addNewLineBack(const std::vector<std::string>& newLine)
 {
+    m_text.push_back(newLine);
+}
+void FileTextEditor::                    addNewLineBack(std::string& newWord)
+{
+    std::vector<std::string> newLine;
+    newLine.push_back(newWord);
+
     m_text.push_back(newLine);
 }
 void FileTextEditor::                    deleteLineBack()
@@ -126,7 +171,7 @@ void FileTextEditor::                    deleteLineBack()
 }
 
 //work in lines
-int FileTextEditor::                     searchWordInLine(int indexLine, const std::string& word) const
+int  FileTextEditor::                    searchWordInLine(int indexLine, const std::string& word) const
 {
     const std::vector<std::string>& words = FileTextEditor::getLine(indexLine);
 
