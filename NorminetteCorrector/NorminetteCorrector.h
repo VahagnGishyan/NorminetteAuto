@@ -44,14 +44,7 @@ public:
     void                     addNewLineBack(std::string& newLine);
     void                     deleteLineBack();
 
-    //for work whit braces
-    void  updateBraces();
-    void  printBraces();
-    void  printBracesForText();
-    void  updateBracesAddNewLine(ushint indexDeleteLine);
-    void  updateBracesDeleteLine(ushint indexDeleteLine);
-    shint getFunctionStart(ushint indexInFunctionBody);
-    shint getFunctionEnd(ushint indexInFunctionBody);
+
 
     //For corrector
     void correctAll();
@@ -92,16 +85,15 @@ public:
 
     void correctReturns();
 
-
-
-    //Work for line, update FileEditor functions
-    //void addNewLineIndex(const unsigned short indexLine, const std::string& newLine);
-    //void deleteLineIndex(const shint indexLine);
-
-    //void addLineBetween(const shint indexLine, const shint indexSymbol, const std::string& newData);
-
-    //void deleteInLineWithIndexLeft(const shint indexLine, const shint indexSymbol);
-    //void deleteInLineWithIndexRight(const shint indexLine, const shint indexSymbol);
+    //for work whit braces
+    void  updateBraces();
+    void  printBraces();
+    void  printBracesWhithHeader();
+    void  printBracesForText();
+    void  updateBracesAddNewLine(ushint indexDeleteLine);
+    void  updateBracesDeleteLine(ushint indexDeleteLine);
+    shint getFunctionStart(ushint indexInFunctionBody);
+    shint getFunctionEnd(ushint indexInFunctionBody);
 
     //For initilization member data
     void initVaribleKeyWords();
