@@ -96,15 +96,14 @@ public:
     shint getFunctionEnd(ushint indexInFunctionBody);
 
     //For initilization member data
-    void initVaribleKeyWords();
-    void addNewVaribleKeyWords(std::string keyWord);
-    //void deleteVaribleKeyWords(std::string keyWord);
+    void initVaribleKeyWords(std::vector<std::string>& varibleKeyWords);
+    void addNewVaribleKeyWords(std::vector<std::string>& varibleKeyWords, std::string keyWord);
 
     void correctInitialization();
 
-    void correctInitializationInFunction(int indexStartFunction, int indexEndFunction);
-    ushint searchDeclarationStartInFunctionIndex(int indexStartFunction, int indexEndFunction);
-    bool isThereDeclarationInTextLine(ushint indexLine);
+    void correctInitializationInFunction(std::vector<std::string> varibleKeyWords, int indexStartFunction, int indexEndFunction);
+    ushint searchDeclarationStartInFunctionIndex(std::vector<std::string> varibleKeyWords, int indexStartFunction, int indexEndFunction);
+    bool isThereDeclarationInTextLine(std::vector<std::string>& varibleKeyWords, ushint indexLine);
     bool isThereAssignmentInTextLine(ushint indexLine);
     void separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine);
     void raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
