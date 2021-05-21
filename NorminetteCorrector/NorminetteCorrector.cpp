@@ -68,7 +68,217 @@ void NorminetteCorrector::divideLineIntoThreeNewLines(int indexLine, int indexLe
     FileEditor::addNewLine(indexLine + 2, rightData);
 }
 
+std::vector<std::string> NorminetteCorrector::getLine(int indexLine)
+{
+    FileTextEditor::getLine(indexLine);
+    NorminetteCorrector::updateBracesAddNewLine(indexLine);
+}
+void                     NorminetteCorrector::setLine(int indexLine, const std::vector<std::string>& newLine)
+{
+    FileTextEditor::setLine(indexLine, newLine);
+    NorminetteCorrector::updateBracesAddNewLine(indexLine);
+}
+void                     NorminetteCorrector::setLine(int indexLine, std::string& newLine)
+{
+    FileTextEditor::setLine(indexLine, newLine);
+    NorminetteCorrector::updateBracesAddNewLine(indexLine);
+}
 
+void                     NorminetteCorrector::addNewLine(int indexLine, const std::vector<std::string>& newLine)
+{
+    FileTextEditor::addNewLine(indexLine, newLine);
+    NorminetteCorrector::updateBracesAddNewLine(indexLine);
+}
+void                     NorminetteCorrector::addNewLine(int indexLine, std::string& newLine)
+{
+    FileTextEditor::addNewLine(indexLine, newLine);
+    NorminetteCorrector::updateBracesAddNewLine(indexLine);
+}
+void                     NorminetteCorrector::deleteLine(int indexLine)
+{
+    FileTextEditor::deleteLine(indexLine);
+    NorminetteCorrector::updateBracesDeleteLine(FileTextEditor::size() - 2);
+}
+
+void                     NorminetteCorrector::addNewLineBack(const std::vector<std::string>& newLine)
+{
+    FileTextEditor::addNewLineBack(newLine);
+    NorminetteCorrector::updateBracesAddNewLine(FileTextEditor::size() - 2);
+}
+void                     NorminetteCorrector::addNewLineBack(std::string& newLine)
+{
+    FileTextEditor::addNewLineBack(newLine);
+    NorminetteCorrector::updateBracesAddNewLine(FileTextEditor::size() - 2);
+}
+void                     NorminetteCorrector::deleteLineBack()
+{
+    FileTextEditor::deleteLineBack();
+    NorminetteCorrector::updateBracesDeleteLine(FileTextEditor::size());
+}
+
+//for work whit braces
+void  NorminetteCorrector::updateBraces()
+{
+    if (m_text.empty())
+    {
+        std::cout << "Text is empty" << std::endl;
+        return;
+    }
+
+    m_BracesIndex.clear();
+
+    unsigned short countBracesStart = 0;
+    unsigned short countBracesEnd = 0;
+    unsigned short indexForBracesArr = -1;
+
+    for (ushint start = 0; start < m_text.size(); ++start)
+    {
+        const std::string symbol = m_text[start][0];
+        ushint count = 0;
+
+        if (symbol == "{")
+        {
+            if (countBracesStart == countBracesEnd)
+            {
+                ++indexForBracesArr;
+                m_BracesIndex.resize(indexForBracesArr + 1);
+            }
+            m_BracesIndex[indexForBracesArr].push_back(start);
+            ++countBracesStart;
+        }
+        if (symbol == "}")
+        {
+            m_BracesIndex[indexForBracesArr].push_back(-(start));
+            ++countBracesEnd;
+        }
+    }
+    m_BracesIndex.shrink_to_fit();
+}
+void  NorminetteCorrector::printBraces()
+{
+    if (m_BracesIndex.empty())
+    {
+        std::cout << "Braces is empty" << std::endl;
+        return;
+    }
+
+
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        std::cout << "Function " << start << std::endl;
+
+        for (ushint index = 0; index < m_BracesIndex[start].size(); ++index)
+        {
+            int indexLine = m_BracesIndex[start][index];
+
+            if (indexLine > 0)
+            {
+                indexLine += m_startLine;
+            }
+            else
+            {
+                indexLine -= m_startLine;
+            }
+            std::cout << indexLine << ' ';
+        }
+        std::cout << std::endl;
+    }
+}
+void  NorminetteCorrector::printBracesForText()
+{
+    if (m_BracesIndex.empty())
+    {
+        std::cout << "Braces is empty" << std::endl;
+        return;
+    }
+
+
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        std::cout << "Function " << start << std::endl;
+
+        for (ushint index = 0; index < m_BracesIndex[start].size(); ++index)
+        {
+            std::cout << m_BracesIndex[start][index] << ' ';
+        }
+        std::cout << std::endl;
+    }
+}
+void  NorminetteCorrector::updateBracesAddNewLine(ushint indexDeleteLine)
+{
+    for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
+    {
+        if (indexDeleteLine > -m_BracesIndex[start].back())
+            continue;
+        for (ushint index = 0; index < static_cast<ushint>(m_BracesIndex[start].size()); ++index)
+        {
+            if (indexDeleteLine < getPositive(m_BracesIndex[start][index]))
+            {
+                if (m_BracesIndex[start][index] > 0)
+                    ++m_BracesIndex[start][index];
+                if (m_BracesIndex[start][index] < 0)
+                    --m_BracesIndex[start][index];
+            }
+        }
+    }
+}
+int   NorminetteCorrector::getPositive(int index)
+{
+    if (index >= 0)
+        return index;
+    else
+        return -index;
+}
+void  NorminetteCorrector::updateBracesDeleteLine(ushint indexDeleteLine)
+{
+    for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
+    {
+        if (indexDeleteLine > -m_BracesIndex[start].back())
+            continue;
+        for (ushint index = 0; index < static_cast<ushint>(m_BracesIndex[start].size()); ++index)
+        {
+            if (indexDeleteLine < getPositive(m_BracesIndex[start][index]))
+            {
+                if (m_BracesIndex[start][index] > 0)
+                    --m_BracesIndex[start][index];
+                if (m_BracesIndex[start][index] < 0)
+                    ++m_BracesIndex[start][index];
+            }
+        }
+    }
+}
+shint NorminetteCorrector::getFunctionStart(ushint indexInFunctionBody)
+{
+    if (m_BracesIndex.empty())
+        return -1;
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        if (indexInFunctionBody > m_BracesIndex[start].front())
+        {
+            if (indexInFunctionBody < (-m_BracesIndex[start].back()))
+            {
+                return (m_BracesIndex[start].front() + 1);
+            }
+        }
+    }
+    return -1;
+}
+shint NorminetteCorrector::getFunctionEnd(ushint indexInFunctionBody)
+{
+    if (m_BracesIndex.empty())
+        return -1;
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        if (indexInFunctionBody > m_BracesIndex[start].front())
+        {
+            if (indexInFunctionBody < (-m_BracesIndex[start].back()))
+            {
+                return (-m_BracesIndex[start].back() - 1);
+            }
+        }
+    }
+    return -1;
+}
 
 //For corrector
 void NorminetteCorrector::correctAll()
