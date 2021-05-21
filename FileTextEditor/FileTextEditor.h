@@ -18,7 +18,7 @@ public:
 	init();
     }
     
-    void                     init(int indexStart = -1, int indexEnd = -1);
+    void                     init();
     void                     clear();
 
     //for FileEditor

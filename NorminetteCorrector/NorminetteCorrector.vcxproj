@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -142,11 +142,13 @@
     <ClInclude Include="..\FileEditor\FileEditor.h" />
     <ClInclude Include="..\FileTextEditor\FileTextEditor.h" />
     <ClInclude Include="..\Header.h" />
+    <ClInclude Include="NorminetteCorrector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\FileEditor\FileEditor.cpp" />
     <ClCompile Include="..\FileTextEditor\FileTextEditor.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NorminetteCorrector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,21 +1,13 @@
 #include "FileTextEditor.h"
 
 //initialization
-void FileTextEditor::                    init(int indexStart, int indexEnd)
+void FileTextEditor::                    init()
 {
-    if (indexStart < 0)
-    {
-        indexStart = 0;
-    }
-    if (indexEnd < 0)
-    {
-        indexEnd = FileEditor::size();
-    }
-
-    for (ushint start = 0; start < indexEnd; ++start)
+    for (ushint start = 0; start < FileEditor::size(); ++start)
     {
         FileTextEditor::setLine(start, FileEditor::splitWordsBySpace(start));
     }
+    FileEditor::clear();
 }
 void FileTextEditor::                    clear()
 {
