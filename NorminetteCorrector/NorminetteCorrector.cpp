@@ -452,7 +452,7 @@ void NorminetteCorrector::correctInsideLine()
 {
     separateByKeySymbols();
     correctSemicolon();
-    //correctIfWhileElse();
+    correctIfWhileElse();
     //correctReturns();
     //updateBracesText();
     //correctInitialization();
@@ -585,7 +585,150 @@ void NorminetteCorrector::beforeSemicolonShouldBeNoSpace(ushint& indexLine)
     FileTextEditor::setLine(indexLine, line);
 }
 
+void NorminetteCorrector::correctIfWhileElse()
+{
+    for (ushint indexLine = 0; indexLine < FileTextEditor::size(); ++indexLine)
+    {
+        correctIf(indexLine);
+        correctWhile(indexLine);
+        correctElse(indexLine);
+    }
+}
+void NorminetteCorrector::correctIf(ushint& indexLine)
+{
+    //after "if" should be no space
 
+    std::vector<std::string> line = FileTextEditor::getLine(indexLine);
+    const std::string keyWord = "if";
+
+    if (!searchInWords(line, keyWord))
+    {
+        return;
+    }
+
+    ushint start = 0;
+    while (line[start] != keyWord && start < line.size())
+        ++start;
+    ++start;
+
+    shint count = 0;
+
+    for (; start < line.size(); ++start)
+    {
+        if (line[start] == "(")
+            ++count;
+        else if (line[start] == ")")
+            --count;
+        if (count == 0)
+            break;
+    }
+
+    if (start == line.size() - 1)
+        return;
+
+    std::vector<std::string> newLine;
+
+    for (ushint index = start + 1; index < line.size(); ++index)
+    {
+        newLine.push_back(line[index]);
+    }
+
+    for (ushint index = static_cast<ushint>(line.size()) - 1; index > start; --index)
+    {
+        line.pop_back();
+    }
+
+    setLine(indexLine, line);
+    addNewLine(indexLine + 1, newLine);
+}
+void NorminetteCorrector::correctWhile(ushint& indexLine)
+{
+    //after while should be no space
+
+    std::vector<std::string> line = FileTextEditor::getLine(indexLine);
+    const std::string keyWord = "while";
+
+    if (!searchInWords(line, keyWord))
+    {
+        return;
+    }
+
+    ushint start = 0;
+    while (line[start] != keyWord && start < line.size())
+        ++start;
+    ++start;
+
+    shint count = 0;
+
+    for (; start < line.size(); ++start)
+    {
+        if (line[start] == "(")
+            ++count;
+        else if (line[start] == ")")
+            --count;
+        if (count == 0)
+            break;
+    }
+
+    if (start == line.size() - 1)
+        return;
+
+    std::vector<std::string> newLine;
+
+    for (ushint index = start + 1; index < line.size(); ++index)
+    {
+        newLine.push_back(line[index]);
+    }
+
+    for (ushint index = static_cast<ushint>(line.size()) - 1; index > start; --index)
+    {
+        line.pop_back();
+    }
+
+    setLine(indexLine, line);
+    addNewLine(indexLine + 1, newLine);
+}
+void NorminetteCorrector::correctElse(ushint& indexLine)
+{
+    //after else should be no space
+
+    std::vector<std::string> line = FileTextEditor::getLine(indexLine);
+    const std::string keyWord = "else";
+
+    if (line.size() < 2)
+        return;
+
+    if (!searchInWords(line, keyWord))
+    {
+        return;
+    }
+
+    ushint start = 0;
+    while (line[start] != keyWord && start < line.size())
+        ++start;
+    ++start;
+
+    if (start == line.size() - 1)
+        return;
+
+    if (line[start] == "if")
+        return;
+
+    std::vector<std::string> newLine;
+
+    for (ushint index = start; index < line.size(); ++index)
+    {
+        newLine.push_back(line[index]);
+    }
+
+    for (ushint index = static_cast<ushint>(line.size()) - 1; index > start - 1; --index)
+    {
+        line.pop_back();
+    }
+
+    setLine(indexLine, line);
+    addNewLine(indexLine + 1, newLine);
+}
 //
 //void NorminetteCorrector::correctReturns()
 //{
