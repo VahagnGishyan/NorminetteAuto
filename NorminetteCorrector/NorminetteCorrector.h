@@ -36,10 +36,6 @@ public:
     bool searchInWords(const std::vector<std::string>& words, const std::string& keyWord);    //return true if found
     void divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight);
 
-    std::vector<std::string> getLine(int indexLine);
-    void                     setLine(int indexLine, const std::vector<std::string>& newLine);
-    void                     setLine(int indexLine, std::string& newLine);
-
     void                     addNewLine(int indexLine, const std::vector<std::string>& newLine);
     void                     addNewLine(int indexLine, std::string& newLine);
     void                     deleteLine(int indexLine);

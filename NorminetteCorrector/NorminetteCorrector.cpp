@@ -68,22 +68,6 @@ void NorminetteCorrector::divideLineIntoThreeNewLines(int indexLine, int indexLe
     FileEditor::addNewLine(indexLine + 2, rightData);
 }
 
-std::vector<std::string> NorminetteCorrector::getLine(int indexLine)
-{
-    FileTextEditor::getLine(indexLine);
-    NorminetteCorrector::updateBracesAddNewLine(indexLine);
-}
-void                     NorminetteCorrector::setLine(int indexLine, const std::vector<std::string>& newLine)
-{
-    FileTextEditor::setLine(indexLine, newLine);
-    NorminetteCorrector::updateBracesAddNewLine(indexLine);
-}
-void                     NorminetteCorrector::setLine(int indexLine, std::string& newLine)
-{
-    FileTextEditor::setLine(indexLine, newLine);
-    NorminetteCorrector::updateBracesAddNewLine(indexLine);
-}
-
 void                     NorminetteCorrector::addNewLine(int indexLine, const std::vector<std::string>& newLine)
 {
     FileTextEditor::addNewLine(indexLine, newLine);
@@ -119,7 +103,7 @@ void                     NorminetteCorrector::deleteLineBack()
 //for work whit braces
 void  NorminetteCorrector::updateBraces()
 {
-    if (m_text.empty())
+    if (FileTextEditor::empty())
     {
         std::cout << "Text is empty" << std::endl;
         return;
@@ -131,9 +115,9 @@ void  NorminetteCorrector::updateBraces()
     unsigned short countBracesEnd = 0;
     unsigned short indexForBracesArr = -1;
 
-    for (ushint start = 0; start < m_text.size(); ++start)
+    for (ushint start = 0; start < FileTextEditor::size(); ++start)
     {
-        const std::string symbol = m_text[start][0];
+        const std::string symbol = FileTextEditor::getLine(start)[0];
         ushint count = 0;
 
         if (symbol == "{")
@@ -206,6 +190,9 @@ void  NorminetteCorrector::printBracesForText()
 }
 void  NorminetteCorrector::updateBracesAddNewLine(ushint indexDeleteLine)
 {
+    if (m_BracesIndex.empty())
+        return;
+
     for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
     {
         if (indexDeleteLine > -m_BracesIndex[start].back())
@@ -231,6 +218,9 @@ int   NorminetteCorrector::getPositive(int index)
 }
 void  NorminetteCorrector::updateBracesDeleteLine(ushint indexDeleteLine)
 {
+    if (m_BracesIndex.empty())
+        return;
+
     for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
     {
         if (indexDeleteLine > -m_BracesIndex[start].back())
@@ -251,6 +241,7 @@ shint NorminetteCorrector::getFunctionStart(ushint indexInFunctionBody)
 {
     if (m_BracesIndex.empty())
         return -1;
+
     for (ushint start = 0; start < m_BracesIndex.size(); ++start)
     {
         if (indexInFunctionBody > m_BracesIndex[start].front())
@@ -267,6 +258,7 @@ shint NorminetteCorrector::getFunctionEnd(ushint indexInFunctionBody)
 {
     if (m_BracesIndex.empty())
         return -1;
+
     for (ushint start = 0; start < m_BracesIndex.size(); ++start)
     {
         if (indexInFunctionBody > m_BracesIndex[start].front())
