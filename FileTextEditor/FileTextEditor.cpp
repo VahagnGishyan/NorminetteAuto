@@ -192,6 +192,7 @@ void FileTextEditor::                    combineWords(ushint indexLine, ushint i
     while (index >= indexLeftWord)
     {
         line.pop_back();
+        --index;
     }
     line.push_back(middleData);
 

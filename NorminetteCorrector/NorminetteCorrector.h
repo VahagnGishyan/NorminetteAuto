@@ -106,11 +106,11 @@ public:
     void raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
 
     //CodeBlock 4, final corrections
-    void correctFinal();
+    void correctForFinalize();
     void correctMathOperators();
     void correctMathOperatorsInFunction(ushint startFunction, ushint endFunction);
-    bool areThereAnyMathOperators(ushint indexLine) const;
-    bool isSymbolMathOperator(const std::string& symbol) const;
     void correctMathOperatorsInLine(ushint indexLine);
+    bool isSymbolMathOperator(const std::string& symbol) const;
+
 };
 
