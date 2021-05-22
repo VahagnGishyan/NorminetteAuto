@@ -42,6 +42,8 @@ public:
     void                     addNewLineBack(std::string& newLine);
     void                     deleteLineBack();
 
+    void                     combineWords(ushint indexLine, ushint indexLeftWord, ushint indexRightWord);
+
     //work in lines
     int                      searchWordInLine(int indexLine, const std::string&) const;
     int                      getLineSize(int indexLine) const;
