@@ -35,6 +35,7 @@ public:
     int  searchSymbolsInLine(int index, const std::string& symbols);
     bool searchInWords(const std::vector<std::string>& words, const std::string& keyWord);    //return true if found
     void divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight);
+    //void                     combineWords(ushint indexLine, ushint& indexLeftWord, ushint indexRightWord);
 
     void                     addNewLine(int indexLine, const std::vector<std::string>& newLine);
     void                     addNewLine(int indexLine, std::string& newLine);
@@ -111,11 +112,13 @@ public:
     void correctMathOperators();
     void correctMathOperatorsInFunction(ushint startFunction, ushint endFunction);
     void searchMathOperatorsInLine(ushint indexLine);
+    void correctMathOperatorsInLine(ushint indexLine, ushint& indexWord);
     bool isMathOperator(const std::string& symbol) const;
     bool isPointerOrReferenceMathOperator(const std::string& word) const;
     bool isIncrementOrDecrement(const std::string& word) const;
     void correctIncrementOrDecrement(ushint indexLine, ushint indexWord);
     int  latestMathOperatorIndex(ushint indexLine, ushint indexWord);
+    int  latestMathOperatorIndex(std::vector<std::string>& line, ushint indexWord);
     //void deleteSpacesBetweenMathOperators();
 };
 
