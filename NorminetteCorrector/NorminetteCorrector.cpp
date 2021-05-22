@@ -81,7 +81,7 @@ void                     NorminetteCorrector::addNewLine(int indexLine, std::str
 void                     NorminetteCorrector::deleteLine(int indexLine)
 {
     FileTextEditor::deleteLine(indexLine);
-    NorminetteCorrector::updateBracesDeleteLine(FileTextEditor::size() - 2);
+    NorminetteCorrector::updateBracesDeleteLine(indexLine);
 }
 
 void                     NorminetteCorrector::addNewLineBack(const std::vector<std::string>& newLine)
@@ -826,20 +826,20 @@ void NorminetteCorrector::correctInitialization()
     if (m_BracesIndex.empty())
         return;
 
-    //std::vector<std::string> varibleKeyWords;
+    std::vector<std::string> varibleKeyWords;
 
-    //if (varibleKeyWords.empty())
-    //    initVaribleKeyWords(varibleKeyWords);
+    if (varibleKeyWords.empty())
+        initVaribleKeyWords(varibleKeyWords);
 
-    ////for test
-    //ushint size = static_cast<ushint>(m_BracesIndex.size());
+    //for test
+    ushint size = static_cast<ushint>(m_BracesIndex.size());
 
-    //for (ushint start = 0; start < size; ++start)
-    //{
-    //    correctInitializationInFunction(varibleKeyWords, m_BracesIndex[start].front() + 1, -m_BracesIndex[start].back() - 1);
-    //}
+    for (ushint start = 0; start < size; ++start)
+    {
+        correctInitializationInFunction(varibleKeyWords, m_BracesIndex[start].front() + 1, -m_BracesIndex[start].back() - 1);
+    }
 
-    //varibleKeyWords.clear();
+    varibleKeyWords.clear();
 }
 void NorminetteCorrector::correctInitializationInFunction(std::vector<std::string> varibleKeyWords, int indexStartFunction, int indexEndFunction)
 {
@@ -851,7 +851,7 @@ void NorminetteCorrector::correctInitializationInFunction(std::vector<std::strin
         return;
     }
 
-    ushint startDeclaration = searchDeclarationStartInFunctionIndex(varibleKeyWords, indexStartFunction, indexEndFunction);
+    ushint startDeclaration = searchDeclarationStartInFunction(varibleKeyWords, indexStartFunction, indexEndFunction);
 
     //for test
     std::cout << "Function start = " << indexStartFunction << "  " << "Function End = " << indexEndFunction << std::endl;
@@ -860,11 +860,11 @@ void NorminetteCorrector::correctInitializationInFunction(std::vector<std::strin
 
     for (ushint start = startDeclaration; start <= NorminetteCorrector::getFunctionEnd(start); ++start)
     {
-        if (!isThereDeclarationInTextLine(varibleKeyWords, start))
+        if (!isThereDeclarationInLine(varibleKeyWords, start))
         {
             continue;
         }
-        if (isThereAssignmentInTextLine(start))
+        if (isThereAssignmentInLine(start))
         {
             separateDeclarationFromAssignment(startDeclaration, start);
         }
@@ -875,7 +875,7 @@ void NorminetteCorrector::correctInitializationInFunction(std::vector<std::strin
         std::cout << "Init line index :: " << start << std::endl;
     }
 }
-ushint NorminetteCorrector::searchDeclarationStartInFunctionIndex(std::vector<std::string> varibleKeyWords, int indexStartFunction, int indexEndFunction)
+ushint NorminetteCorrector::searchDeclarationStartInFunction(std::vector<std::string> varibleKeyWords, int indexStartFunction, int indexEndFunction)
 {
     std::string word = FileTextEditor::getLine(indexStartFunction).front();
     if (FileTextEditor::size() == 1)
@@ -900,13 +900,13 @@ ushint NorminetteCorrector::searchDeclarationStartInFunctionIndex(std::vector<st
 
     for (ushint indexLine = indexStartFunction; indexLine < getFunctionEnd(indexLine); ++indexLine)
     {
-        if (!isThereDeclarationInTextLine(varibleKeyWords, indexLine))
+        if (!isThereDeclarationInLine(varibleKeyWords, indexLine))
         {
             return (indexLine);
         }
         else
         {
-            if (isThereAssignmentInTextLine(indexLine))
+            if (isThereAssignmentInLine(indexLine))
             {
                 return (indexLine);
             }
@@ -915,7 +915,7 @@ ushint NorminetteCorrector::searchDeclarationStartInFunctionIndex(std::vector<st
 
     return (indexStartFunction + 1);
 }
-bool NorminetteCorrector::isThereDeclarationInTextLine(std::vector<std::string>& varibleKeyWords, ushint indexLine)
+bool NorminetteCorrector::isThereDeclarationInLine(std::vector<std::string>& varibleKeyWords, ushint indexLine)
 {
     std::vector<std::string> line = getLine(indexLine);
 
@@ -936,7 +936,7 @@ bool NorminetteCorrector::isThereDeclarationInTextLine(std::vector<std::string>&
     }
     return false;
 }
-bool NorminetteCorrector::isThereAssignmentInTextLine(ushint indexLine)
+bool NorminetteCorrector::isThereAssignmentInLine(ushint indexLine)
 {
     std::vector<std::string> line = getLine(indexLine);
 
@@ -989,3 +989,68 @@ void NorminetteCorrector::raiseDeclarationUp(ushint& startDeclaration, ushint& i
     ++startDeclaration;
     --indexLine;
 }
+
+//CodeBlock 4, final corrections
+void NorminetteCorrector::correctFinal()
+{
+    correctMathOperators();
+}
+void NorminetteCorrector::correctMathOperators()
+{
+    //+,-,*,/,%,&,|,
+    //++,--, postfix and prefix 
+    //+=,-=,*=,/=,%=,
+    //&&, ||
+
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        ushint startFunction = m_BracesIndex[start].front();
+        ushint endFunction   = m_BracesIndex[start].back();
+        correctMathOperatorsInFunction(startFunction, endFunction);
+    }
+
+}
+void NorminetteCorrector::correctMathOperatorsInFunction(ushint startFunction, ushint endFunction)
+{
+    for (ushint start = startFunction; start < endFunction; ++start)
+    {
+        if (areThereAnyMathOperators(start))
+        {
+
+        }
+    }
+
+}
+bool NorminetteCorrector::areThereAnyMathOperators(ushint indexLine) const
+{
+    std::vector<std::string> line = FileTextEditor::getLine(indexLine);
+    ushint size = FileTextEditor::getLineSize(indexLine);
+    for (ushint index = 0; index < size; ++index)
+    {
+        if (isSymbolMathOperator(line[index]))
+        {
+
+        }
+    }
+}
+bool NorminetteCorrector::isSymbolMathOperator(const std::string& symbol) const
+{
+    if (symbol.size() != 1)
+    {
+        return false;
+    }
+    const char symbol = symbol.front();
+
+    std::string value{ '+','-','*','/','%','&','|','='};
+
+    for (ushint index = 0; index < value.size(); ++index)
+    {
+
+    }
+}
+void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine)
+{
+
+}
+
+

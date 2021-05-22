@@ -71,8 +71,6 @@ public:
     void addNewWords(std::vector<std::string>& words, const std::vector<std::string>& newWords);
     std::vector<std::string> separateWordByKeySymbols(const std::string& Words);
 
-
-
     void correctSemicolon();
     void aloneSemicolonRaiseUp(ushint& start);
     void deleteUnnecessarySemicolon(ushint& indexLine);
@@ -100,15 +98,19 @@ public:
     void addNewVaribleKeyWords(std::vector<std::string>& varibleKeyWords, std::string keyWord);
 
     void correctInitialization();
-
     void correctInitializationInFunction(std::vector<std::string> varibleKeyWords, int indexStartFunction, int indexEndFunction);
-    ushint searchDeclarationStartInFunctionIndex(std::vector<std::string> varibleKeyWords, int indexStartFunction, int indexEndFunction);
-    bool isThereDeclarationInTextLine(std::vector<std::string>& varibleKeyWords, ushint indexLine);
-    bool isThereAssignmentInTextLine(ushint indexLine);
+    ushint searchDeclarationStartInFunction(std::vector<std::string> varibleKeyWords, int indexStartFunction, int indexEndFunction);
+    bool isThereDeclarationInLine(std::vector<std::string>& varibleKeyWords, ushint indexLine);
+    bool isThereAssignmentInLine(ushint indexLine);
     void separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine);
     void raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
-    //bool isThereInitializationInTextLine(ushint indexLine);
 
-
+    //CodeBlock 4, final corrections
+    void correctFinal();
+    void correctMathOperators();
+    void correctMathOperatorsInFunction(ushint startFunction, ushint endFunction);
+    bool areThereAnyMathOperators(ushint indexLine) const;
+    bool isSymbolMathOperator(const std::string& symbol) const;
+    void correctMathOperatorsInLine(ushint indexLine);
 };
 
