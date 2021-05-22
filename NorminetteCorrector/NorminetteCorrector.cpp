@@ -809,8 +809,10 @@ void NorminetteCorrector::initVaribleKeyWords(std::vector<std::string>& varibleK
     varibleKeyWords.push_back("ulong");
     varibleKeyWords.push_back("float");
     varibleKeyWords.push_back("double");
+    varibleKeyWords.push_back("void");
+    varibleKeyWords.push_back("char");
 
-    assert(varibleKeyWords.size() == 9 && "size whil be 9");
+    assert(varibleKeyWords.size() == 11 && "size whil be 11");
 }
 void NorminetteCorrector::addNewVaribleKeyWords(std::vector<std::string>& varibleKeyWords, std::string keyWord)
 {
@@ -1014,15 +1016,25 @@ void NorminetteCorrector::correctMathOperatorsInFunction(ushint startFunction, u
 void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine)
 {
     std::vector<std::string> line = FileTextEditor::getLine(indexLine);
-    ushint size = FileTextEditor::getLineSize(indexLine);
 
-    for (ushint index = 0; index < size; ++index)
+    for (ushint index = 0; index < line.size(); ++index)
     {
         if (isSymbolMathOperator(line[index]))
         {
             if (isSymbolMathOperator(line[index + 1]))
             {
                 FileTextEditor::combineWords(indexLine, index, index + 1);
+                line = FileTextEditor::getLine(indexLine);
+                if (isIncrementOrDecrement(line[index]))
+                {
+                    correctIncrementOrDecrement(indexLine, index);
+                }
+                //else if ()
+                //{
+                    //TO DO :: ayl operatorneri hamar
+                //}
+
+                --indexLine;
             }
         }
     }
@@ -1046,5 +1058,42 @@ bool NorminetteCorrector::isSymbolMathOperator(const std::string& Symbol) const
     }
     return false;
 }
+bool NorminetteCorrector::isIncrementOrDecrement(const std::string& Symbol) const
+{
+    if (Symbol.empty() || Symbol.size() > 2)
+    {
+        return false;
+    }
+    
+    if (Symbol.size() == 1)
+    {
+        const char symbol = Symbol.front();
 
+        if (symbol == '+' || symbol == '-')
+        {
+            return (true);
+        }
+        return false;
+    }
+    else
+    {
+        if (Symbol == "++" || Symbol == "--")
+        {
+            return (true);
+        }
+        return false;
+    }
+}
+void NorminetteCorrector::correctIncrementOrDecrement(ushint indexLine, ushint indexWord)
+{
+    std::vector<std::string> line = FileTextEditor::getLine(indexLine);
 
+    if (std::isalpha(line[indexWord + 1].front()) || std::isdigit(line[indexWord + 1].front()))
+    {
+        FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
+    }
+    else
+    {
+        FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
+    }
+}

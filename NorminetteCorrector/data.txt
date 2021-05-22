@@ -42,6 +42,14 @@ return (x + 4 / y);
 return (c == '\0');	
  static			const		unsigned     short int *  *  index [  10] ; 			
  static const unsigned short int** index[10]; 		
+
+
+const char *array1 = "Vahagn";
+const int *array2 = "Vahagn";
+int *array2 = "Vahagn";
+int array3 = "Vahagn";
+char array3 = "Vahagn";
+*array;
 if (*set == c)			
 		
 		

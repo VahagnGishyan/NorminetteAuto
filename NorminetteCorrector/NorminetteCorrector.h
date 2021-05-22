@@ -107,10 +107,12 @@ public:
 
     //CodeBlock 4, final corrections
     void correctForFinalize();
+
     void correctMathOperators();
     void correctMathOperatorsInFunction(ushint startFunction, ushint endFunction);
     void correctMathOperatorsInLine(ushint indexLine);
     bool isSymbolMathOperator(const std::string& symbol) const;
-
+    bool isIncrementOrDecrement(const std::string& symbol) const;
+    void correctIncrementOrDecrement(ushint indexLine, ushint indexWord);
 };
 
