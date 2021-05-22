@@ -71,6 +71,7 @@ public:
     std::vector<std::string> separateLineByKeySymbols(int indexLine);
     void addNewWords(std::vector<std::string>& words, const std::vector<std::string>& newWords);
     std::vector<std::string> separateWordByKeySymbols(const std::string& Words);
+    void separateStringInLine(const std::string& line, std::vector<std::string>& words, ushint& index);
 
     void correctSemicolon();
     void aloneSemicolonRaiseUp(ushint& start);
@@ -117,6 +118,7 @@ public:
     bool isPointerOrReferenceMathOperator(const std::string& word) const;
     bool isIncrementOrDecrement(const std::string& word) const;
     void correctIncrementOrDecrement(ushint indexLine, ushint indexWord);
+    //void correctPointerOrReferenceMathOperator(ushint indexLine, ushint indexWord);
     int  latestMathOperatorIndex(ushint indexLine, ushint indexWord);
     int  latestMathOperatorIndex(std::vector<std::string>& line, ushint indexWord);
     //void deleteSpacesBetweenMathOperators();

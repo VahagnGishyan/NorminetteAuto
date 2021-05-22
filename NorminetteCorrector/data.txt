@@ -107,10 +107,18 @@ short ahgdeuhfejsn45 = x;
 
 double jhdbwjbe = jwebfj;
 
+x+=y;
+x-=y;
+x*=y;
+x/=y;
+x%=y;
+
 long l;
 l= hfbew;
 l += hcbhjd;
 return kdjnek;
+
+array = "Vahagn\n\n\n\n";
 }
 
 

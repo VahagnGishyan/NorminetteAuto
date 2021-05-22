@@ -329,6 +329,12 @@ std::vector<std::string> NorminetteCorrector::separateWordByKeySymbols(const std
 
         const char symbol = word[index];
 
+        if (symbol == '\"' || symbol == '\'')
+        {
+            separateStringInLine(word, newWords, index);
+            continue;
+        }
+
         if (std::isalpha(symbol) || std::isdigit(symbol) || symbol == '_')
         {
             newWord += symbol;
@@ -361,6 +367,23 @@ std::vector<std::string> NorminetteCorrector::separateWordByKeySymbols(const std
     }
 
     return (newWords);
+}
+void NorminetteCorrector::separateStringInLine(const std::string& word, std::vector<std::string>& words, ushint& index)
+{
+    const char symbol = word[index];
+    std::string newWord = "";
+
+    newWord += word[index];
+    ++index;
+    for (; index < word.size(); ++index)
+    {
+        newWord += word[index];
+        if (symbol == word[index])
+        {
+            break;
+        }
+    }
+    words.push_back(newWord);
 }
 
 void NorminetteCorrector::correctSemicolon()
@@ -1037,6 +1060,10 @@ void NorminetteCorrector::searchMathOperatorsInLine(ushint indexLine)
                 correctMathOperatorsInLine(indexLine, index);
                 line = FileTextEditor::getLine(indexLine);
             }
+            else if (NorminetteCorrector::isPointerOrReferenceMathOperator(line[index]))
+            {
+                FileTextEditor::combineWords(indexLine, index, index + 1);
+            }
         }
     }
 }
@@ -1051,6 +1078,10 @@ void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine, ushint& i
     if (isIncrementOrDecrement(line[indexWord]))
     {
         correctIncrementOrDecrement(indexLine, indexWord);
+    }
+    if (isPointerOrReferenceMathOperator(line[indexWord]))
+    {
+        FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
     }
 }
 bool NorminetteCorrector::isMathOperator(const std::string& word) const
