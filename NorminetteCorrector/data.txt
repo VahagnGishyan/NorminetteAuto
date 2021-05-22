@@ -28,7 +28,8 @@ else --y;
 while(x<10)++x;
 
 
-
+int g = 4;
+std::cout<<*&*&*&*&*&*&*&g<<std::endl;
 
 			return 			;
 			return		 (	)			;
@@ -100,7 +101,7 @@ void foo(int x=5){x++;while(x>0)--x;return(x);}
 
 int main()
 {
-int x =0;
+int*** *** *** *** *** *** x=0;
 int y = 4;
 short ahgdeuhfejsn45 = x;
 

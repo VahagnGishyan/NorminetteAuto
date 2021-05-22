@@ -1010,20 +1010,24 @@ void NorminetteCorrector::correctMathOperatorsInFunction(ushint startFunction, u
 {
     for (ushint start = startFunction; start < endFunction; ++start)
     {
-        correctMathOperatorsInLine(start);
+        searchMathOperatorsInLine(start);
     }
 }
-void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine)
+void NorminetteCorrector::searchMathOperatorsInLine(ushint indexLine)
 {
     std::vector<std::string> line = FileTextEditor::getLine(indexLine);
 
     for (ushint index = 0; index < line.size(); ++index)
     {
-        if (isSymbolMathOperator(line[index]))
+        if (isMathOperator(line[index]))
         {
-            if (isSymbolMathOperator(line[index + 1]))
+            if (isMathOperator(line[index + 1]))
             {
-                FileTextEditor::combineWords(indexLine, index, index + 1);
+                //correct
+
+                int indexEnd = latestMathOperatorIndex(indexLine, index + 1);
+
+                FileTextEditor::combineWords(indexLine, index, indexEnd);
                 line = FileTextEditor::getLine(indexLine);
                 if (isIncrementOrDecrement(line[index]))
                 {
@@ -1031,7 +1035,7 @@ void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine)
                 }
                 //else if ()
                 //{
-                    //TO DO :: ayl operatorneri hamar
+                //    TO DO :: ayl operatorneri hamar
                 //}
 
                 --indexLine;
@@ -1039,24 +1043,35 @@ void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine)
         }
     }
 }
-bool NorminetteCorrector::isSymbolMathOperator(const std::string& Symbol) const
+bool NorminetteCorrector::isMathOperator(const std::string& word) const
 {
-    if (Symbol.size() != 1)
-    {
-        return false;
-    }
-    const char symbol = Symbol.front();
+    const std::vector<std::string> keyWords{ "+","-","*","/","%","&","|","=","+=","-=","*=","/=","%=", "==" };
 
-    std::string value{ '+','-','*','/','%','&','|','='};
-
-    for (ushint index = 0; index < value.size(); ++index)
+    for (ushint index = 0; index < keyWords.size(); ++index)
     {
-        if (value[index] == symbol)
+        if (keyWords[index] == word)
         {
             return true;
         }
     }
+
+    if (isPointerOrReferenceMathOperator(word))
+    {
+        return true;
+    }
+
     return false;
+}
+bool NorminetteCorrector::isPointerOrReferenceMathOperator(const std::string& word) const
+{
+    for (ushint index = 0; index < word.size(); ++index)
+    {
+        if (word[index] != '*' || word[index] != '&')
+        {
+            return false;
+        }
+    }
+    return true;
 }
 bool NorminetteCorrector::isIncrementOrDecrement(const std::string& Symbol) const
 {
@@ -1097,3 +1112,18 @@ void NorminetteCorrector::correctIncrementOrDecrement(ushint indexLine, ushint i
         FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
     }
 }
+int  NorminetteCorrector::latestMathOperatorIndex(ushint indexLine, ushint indexWord)
+{
+    std::vector<std::string> line = FileTextEditor::getLine(indexLine);
+    int indexEnd = indexWord;
+
+    for (ushint start = indexWord + 1; start < line.size(); ++start)
+    {
+        if (isMathOperator(line[start]))
+        {
+            ++indexEnd;
+        }
+    }
+    return indexEnd;
+}
+

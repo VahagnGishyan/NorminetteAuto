@@ -110,9 +110,12 @@ public:
 
     void correctMathOperators();
     void correctMathOperatorsInFunction(ushint startFunction, ushint endFunction);
-    void correctMathOperatorsInLine(ushint indexLine);
-    bool isSymbolMathOperator(const std::string& symbol) const;
-    bool isIncrementOrDecrement(const std::string& symbol) const;
+    void searchMathOperatorsInLine(ushint indexLine);
+    bool isMathOperator(const std::string& symbol) const;
+    bool isPointerOrReferenceMathOperator(const std::string& word) const;
+    bool isIncrementOrDecrement(const std::string& word) const;
     void correctIncrementOrDecrement(ushint indexLine, ushint indexWord);
+    int  latestMathOperatorIndex(ushint indexLine, ushint indexWord);
+    //void deleteSpacesBetweenMathOperators();
 };
 
