@@ -413,7 +413,6 @@ void NorminetteCorrector::correctSemicolon()
             aloneSemicolonRaiseUp(indexLine);
         }
         deleteUnnecessarySemicolon(indexLine);
-        //beforeSemicolonShouldBeNoSpace(indexLine, text);
     }
 }
 void NorminetteCorrector::aloneSemicolonRaiseUp(ushint& indexLine)
@@ -443,20 +442,6 @@ void NorminetteCorrector::deleteUnnecessarySemicolon(ushint& indexLine)
     std::vector<std::string> newLine = FileTextEditor::getLine(indexLine);
     newLine.back() = line;
     FileTextEditor::setLine(indexLine, newLine);
-}
-void NorminetteCorrector::beforeSemicolonShouldBeNoSpace(ushint& indexLine)
-{
-    std::vector <std::string> line = FileTextEditor::getLine(indexLine);
-
-    int indexLineEnd = static_cast<int>(line.size()) - 1;
-
-    if (indexLineEnd == 0 || line[indexLineEnd] != ";")
-        return;
-
-    line[indexLineEnd - 1] += line[indexLineEnd];
-    line.pop_back();
-
-    FileTextEditor::setLine(indexLine, line);
 }
 
 void NorminetteCorrector::correctIfWhileElse()
@@ -1031,10 +1016,13 @@ void NorminetteCorrector::raiseDeclarationUp(ushint& startDeclaration, ushint& i
 void NorminetteCorrector::correctForFinalize()
 {
     correctMathOperators();
+    correctBrackets();
+    beforeSemicolonShouldBeNoSpace();
+    correctComma();
 
     FileTextEditor::print();
     NorminetteCorrector::printBraces();
-    correctBrackets();
+
     FileTextEditor::print();
     NorminetteCorrector::printBraces();
 }
@@ -1178,7 +1166,6 @@ bool NorminetteCorrector::isWordUnaryMathOperator(const std::string& symbol)
     }
     return false;
 }
-
 bool NorminetteCorrector::isMathOperator(const std::string& word) const
 {
     const std::vector<std::string> keyWords{ "+","-","*","/","%","&","|","=", "!", "+=","-=","*=","/=","%=", "==", "!="};
@@ -1265,8 +1252,6 @@ bool NorminetteCorrector::isIncrementOrDecrement(const std::string& Symbol) cons
         return false;
     }
 }
-
-
 void NorminetteCorrector::correctIncrementOrDecrement(ushint indexLine, ushint indexWord)
 {
     std::vector<std::string> line = FileTextEditor::getLine(indexLine);
@@ -1313,7 +1298,6 @@ void NorminetteCorrector::correctBrackets()
 {
     correctRoundBrackets();
 }
-
 void NorminetteCorrector::correctRoundBrackets()
 {
     for (ushint indexLine = 0; indexLine < FileTextEditor::size(); ++indexLine)
@@ -1399,4 +1383,38 @@ void NorminetteCorrector::correctCloseSquareBrackets(ushint indexLine, std::vect
     words = FileTextEditor::getLine(indexLine);
 }
 
+void NorminetteCorrector::beforeSemicolonShouldBeNoSpace()
+{
+    for (ushint start = 0; start < FileTextEditor::size(); ++start)
+    {
+        std::vector<std::string> line = FileTextEditor::getLine(start);
+        if (line.back() == ";")
+        {
+            FileTextEditor::combineWords(start, line.size() - 2, line.size() - 1);
+        }
+    }
+}
+void NorminetteCorrector::correctComma()
+{
+    for (ushint indexLine = 0; indexLine < FileTextEditor::size(); ++indexLine)
+    {
+        correctCommaInLine(indexLine);
+    }
+}
+void NorminetteCorrector::correctCommaInLine(ushint indexLine)
+{
+    std::vector<std::string> line = FileTextEditor::getLine(indexLine);
+
+    if (line.size() <= 4)
+        return;
+
+    for (ushint indexWord = 0; indexWord < line.size(); ++indexWord)
+    {
+        if (line[indexWord] == ",")
+        {
+            FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
+            line = FileTextEditor::getLine(indexLine);
+        }
+    }
+}
 

@@ -29,7 +29,8 @@ while(x<10)++x;
 
 
 int g = 4;
-std::cout<<*&*&*&*&*&*&*&g<<std::endl;
+*&*&*&*&*&*&*&g;
+
 
 			return 			;
 			return		 (	)			;
@@ -51,6 +52,7 @@ int *array2 = "Vahagn";
 int array3 = "Vahagn";
 char array3 = "Vahagn";
 *array;
+wirte(0, array, 6);
 if (*set == c)			
 		
 		

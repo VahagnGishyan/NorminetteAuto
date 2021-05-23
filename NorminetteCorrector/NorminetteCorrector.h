@@ -77,7 +77,7 @@ public:
     void correctSemicolon();
     void aloneSemicolonRaiseUp(ushint& start);
     void deleteUnnecessarySemicolon(ushint& indexLine);
-    void beforeSemicolonShouldBeNoSpace(ushint& start);
+
 
     void correctIfWhileElse();
     void correctIf(ushint& indexLine);
@@ -144,6 +144,8 @@ public:
     void correctOpenSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
     void correctCloseSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
 
-
+    void beforeSemicolonShouldBeNoSpace();
+    void correctComma();
+    void correctCommaInLine(ushint indexLine);
 };
 
