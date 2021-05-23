@@ -1240,26 +1240,35 @@ void NorminetteCorrector::correctBrackets()
 {
     correctRoundBrackets();
 }
+
 void NorminetteCorrector::correctRoundBrackets()
 {
     for (ushint indexLine = 0; indexLine < FileTextEditor::size(); ++indexLine)
     {
-        searchRoundBracketsInLine(indexLine);
+        searchBracketsInLine(indexLine);
     }
 }
-void NorminetteCorrector::searchRoundBracketsInLine(int indexLine)
+void NorminetteCorrector::searchBracketsInLine(int indexLine)
 {
     std::vector<std::string> words = FileTextEditor::getLine(indexLine);
 
     for (ushint indexWord = 0; indexWord < words.size(); ++indexWord)
     {
-        if (words[indexWord] == "(")
+        if      (words[indexWord] == "(")
         {
             correctOpenRoundBrackets(indexLine, words, indexWord);
         }
         else if (words[indexWord] == ")")
         {
             correctCloseRoundBrackets(indexLine, words, indexWord);
+        }
+        else if (words[indexWord] == "[")
+        {
+            correctOpenSquareBrackets(indexLine, words, indexWord);
+        }
+        else if (words[indexWord] == "]")
+        {
+            correctCloseSquareBrackets(indexLine, words, indexWord);
         }
     }
 }
@@ -1291,4 +1300,14 @@ void NorminetteCorrector::correctCloseRoundBrackets(ushint indexLine, std::vecto
     FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
     words = FileTextEditor::getLine(indexLine);
 }
-
+void NorminetteCorrector::correctOpenSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
+{
+    FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord + 1);
+    words = FileTextEditor::getLine(indexLine);
+    --indexWord;
+}
+void NorminetteCorrector::correctCloseSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
+{
+    FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
+    words = FileTextEditor::getLine(indexLine);
+}

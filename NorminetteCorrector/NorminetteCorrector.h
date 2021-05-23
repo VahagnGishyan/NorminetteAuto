@@ -130,9 +130,10 @@ public:
 
     void correctBrackets();
     void correctRoundBrackets();
-    void searchRoundBracketsInLine(int indexLine);
+    void searchBracketsInLine(int indexLine);
     void correctOpenRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
     void correctCloseRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
-    void squareBrackets();
+    void correctOpenSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
+    void correctCloseSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
 };
 
