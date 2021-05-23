@@ -1034,6 +1034,7 @@ void NorminetteCorrector::correctForFinalize()
 
     FileTextEditor::print();
     NorminetteCorrector::printBraces();
+    correctBrackets();
     FileTextEditor::print();
     NorminetteCorrector::printBraces();
 }
@@ -1235,4 +1236,59 @@ int  NorminetteCorrector::latestMathOperatorIndex(std::vector<std::string>& line
     return indexEnd;
 }
 
+void NorminetteCorrector::correctBrackets()
+{
+    correctRoundBrackets();
+}
+void NorminetteCorrector::correctRoundBrackets()
+{
+    for (ushint indexLine = 0; indexLine < FileTextEditor::size(); ++indexLine)
+    {
+        searchRoundBracketsInLine(indexLine);
+    }
+}
+void NorminetteCorrector::searchRoundBracketsInLine(int indexLine)
+{
+    std::vector<std::string> words = FileTextEditor::getLine(indexLine);
+
+    for (ushint indexWord = 0; indexWord < words.size(); ++indexWord)
+    {
+        if (words[indexWord] == "(")
+        {
+            correctOpenRoundBrackets(indexLine, words, indexWord);
+        }
+        else if (words[indexWord] == ")")
+        {
+            correctCloseRoundBrackets(indexLine, words, indexWord);
+        }
+    }
+}
+void NorminetteCorrector::correctOpenRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
+{
+    const std::vector<std::string> keyWords{ "if", "while", "return" };
+    bool key = true;
+    for (ushint indexKeyWord = 0; indexKeyWord < keyWords.size(); ++indexKeyWord)
+    {
+        if (keyWords[indexKeyWord] == words[indexWord - 1])
+        {
+            key = false;
+        }
+    }
+    if (key)
+    {
+        FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord + 1);
+        --indexWord;
+        words = FileTextEditor::getLine(indexLine);
+    }
+    else
+    {
+        FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
+        words = FileTextEditor::getLine(indexLine);
+    }
+}
+void NorminetteCorrector::correctCloseRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
+{
+    FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
+    words = FileTextEditor::getLine(indexLine);
+}
 
