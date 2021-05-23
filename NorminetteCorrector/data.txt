@@ -121,4 +121,18 @@ return kdjnek;
 array = "Vahagn\n\n\n\n";
 }
 
+int foo(int x)
+{
+return (x * 2);
+}
+
+void foo2(int* y)
+{
+*y=4;
+int x = foo(*y);
+if(x == *y * 2)
+{
+	x = 16;
+}
+}
 

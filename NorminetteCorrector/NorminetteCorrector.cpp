@@ -67,6 +67,22 @@ void NorminetteCorrector::divideLineIntoThreeNewLines(int indexLine, int indexLe
     FileEditor::addNewLine(indexLine + 1, middleData);
     FileEditor::addNewLine(indexLine + 2, rightData);
 }
+bool NorminetteCorrector::isdigit(const std::string& word) const
+{
+    if (word.empty())
+        return (false);
+
+    for (ushint index = 0; index < word.size(); ++index)
+    {
+        const char symbol = word[index];
+        if (!std::isdigit(symbol))
+        {
+            return (false);
+        }
+    }
+
+    return (true);
+}
 
 //void NorminetteCorrector::                    combineWords(ushint indexLine, ushint& indexLeftWord, ushint indexRightWord)
 //{
@@ -815,9 +831,6 @@ shint NorminetteCorrector::getFunctionEnd(ushint indexInFunctionBody)
     return -1;
 }
 
-
-
-
 //For initilization member data
 void NorminetteCorrector::initVaribleKeyWords(std::vector<std::string>& varibleKeyWords)
 {
@@ -1018,6 +1031,9 @@ void NorminetteCorrector::raiseDeclarationUp(ushint& startDeclaration, ushint& i
 void NorminetteCorrector::correctForFinalize()
 {
     correctMathOperators();
+
+    FileTextEditor::print();
+    NorminetteCorrector::printBraces();
     FileTextEditor::print();
     NorminetteCorrector::printBraces();
 }
@@ -1031,19 +1047,16 @@ void NorminetteCorrector::correctMathOperators()
 
     for (ushint start = 0; start < m_BracesIndex.size(); ++start)
     {
+
         ushint startFunction = m_BracesIndex[start].front();
         ushint endFunction   = -m_BracesIndex[start].back();
-        correctMathOperatorsInFunction(startFunction, endFunction);
+        correctMathOperatorsInFunction(startFunction - 1, endFunction);
     }
 }
 void NorminetteCorrector::correctMathOperatorsInFunction(ushint startFunction, ushint endFunction)
 {
     for (ushint start = startFunction; start < endFunction; ++start)
     {
-        if (start == 26)
-        {
-            std::cout << "";
-        }
         searchMathOperatorsInLine(start);
     }
 }
@@ -1060,9 +1073,14 @@ void NorminetteCorrector::searchMathOperatorsInLine(ushint indexLine)
                 correctMathOperatorsInLine(indexLine, index);
                 line = FileTextEditor::getLine(indexLine);
             }
-            else if (NorminetteCorrector::isPointerOrReferenceMathOperator(line[index]))
+            else if (isPointerMathOperator(line[index]) or isReferenceMathOperator(line[index]))
             {
-                FileTextEditor::combineWords(indexLine, index, index + 1);
+                if (!isdigit(line[index + 1]))
+                {
+                    FileTextEditor::combineWords(indexLine, index, index + 1);
+                    line = FileTextEditor::getLine(indexLine);
+
+                }
             }
         }
     }
@@ -1070,7 +1088,12 @@ void NorminetteCorrector::searchMathOperatorsInLine(ushint indexLine)
 void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine, ushint& indexWord)
 {
     std::vector<std::string> line = FileTextEditor::getLine(indexLine);
-    int indexEnd = latestMathOperatorIndex(indexLine, indexWord + 1);
+    
+    int indexEnd = indexWord + 1;
+    if (line[indexWord + 1] == "*" || line[indexWord + 1] == "&")
+    {
+        indexEnd = latestMathOperatorIndex(indexLine, indexWord + 1);
+    }
 
     FileTextEditor::combineWords(indexLine, indexWord, indexEnd);
 
@@ -1096,7 +1119,7 @@ bool NorminetteCorrector::isMathOperator(const std::string& word) const
         }
     }
 
-    if (isPointerOrReferenceMathOperator(word))
+    if (isPointerMathOperator(word) or isReferenceMathOperator(word))
     {
         return true;
     }
@@ -1107,12 +1130,42 @@ bool NorminetteCorrector::isPointerOrReferenceMathOperator(const std::string& wo
 {
     for (ushint index = 0; index < word.size(); ++index)
     {
-        if (word[index] != '*' && word[index] != '&')
+        if (!isPointerMathOperator(word[index]) && !isReferenceMathOperator(word[index]))
         {
             return false;
         }
     }
     return true;
+}
+bool NorminetteCorrector::isPointerMathOperator(const std::string& word) const
+{
+    for (ushint index = 0; index < word.size(); ++index)
+    {
+        if (word[index] != '*')
+        {
+            return false;
+        }
+    }
+    return true;
+}
+bool NorminetteCorrector::isReferenceMathOperator(const std::string& word) const
+{
+    for (ushint index = 0; index < word.size(); ++index)
+    {
+        if (word[index] != '&')
+        {
+            return false;
+        }
+    }
+    return true;
+}
+bool NorminetteCorrector::isPointerMathOperator(const char symbol) const
+{
+    return(symbol == '*');
+}
+bool NorminetteCorrector::isReferenceMathOperator(const char symbol) const
+{
+    return(symbol == '&');
 }
 bool NorminetteCorrector::isIncrementOrDecrement(const std::string& Symbol) const
 {
@@ -1160,10 +1213,11 @@ int  NorminetteCorrector::latestMathOperatorIndex(ushint indexLine, ushint index
 
     for (ushint start = indexWord + 1; start < line.size(); ++start)
     {
-        if (isMathOperator(line[start]))
+        if (!isMathOperator(line[start]))
         {
-            ++indexEnd;
+            break;
         }
+        ++indexEnd;
     }
     return indexEnd;
 }
@@ -1180,3 +1234,5 @@ int  NorminetteCorrector::latestMathOperatorIndex(std::vector<std::string>& line
     }
     return indexEnd;
 }
+
+

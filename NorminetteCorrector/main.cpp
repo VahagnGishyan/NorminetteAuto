@@ -8,6 +8,5 @@ int main()
     NorminetteCorrector data("data.txt");
     data.correctAll();
 
-
     return (0);
 }

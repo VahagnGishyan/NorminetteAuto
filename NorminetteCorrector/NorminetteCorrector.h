@@ -36,6 +36,7 @@ public:
     bool searchInWords(const std::vector<std::string>& words, const std::string& keyWord);    //return true if found
     void divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight);
     //void                     combineWords(ushint indexLine, ushint& indexLeftWord, ushint indexRightWord);
+    bool isdigit(const std::string& word) const;
 
     void                     addNewLine(int indexLine, const std::vector<std::string>& newLine);
     void                     addNewLine(int indexLine, std::string& newLine);
@@ -116,11 +117,22 @@ public:
     void correctMathOperatorsInLine(ushint indexLine, ushint& indexWord);
     bool isMathOperator(const std::string& symbol) const;
     bool isPointerOrReferenceMathOperator(const std::string& word) const;
+    bool isPointerMathOperator(const std::string& word) const;
+    bool isReferenceMathOperator(const std::string& word) const;
+    bool isPointerMathOperator(const char symbol) const;
+    bool isReferenceMathOperator(const char symbol) const;
     bool isIncrementOrDecrement(const std::string& word) const;
     void correctIncrementOrDecrement(ushint indexLine, ushint indexWord);
     //void correctPointerOrReferenceMathOperator(ushint indexLine, ushint indexWord);
     int  latestMathOperatorIndex(ushint indexLine, ushint indexWord);
     int  latestMathOperatorIndex(std::vector<std::string>& line, ushint indexWord);
     //void deleteSpacesBetweenMathOperators();
+
+    void correctBrackets();
+    void correctRoundBrackets();
+    void searchRoundBracketsInLine(int indexLine);
+    void correctOpenRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
+    void correctCloseRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
+    void squareBrackets();
 };
 
