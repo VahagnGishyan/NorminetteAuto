@@ -30,7 +30,7 @@ public:
 public:
 
     //for work
-    int  getPositive(int index);
+    int  getPositive(int index) const;
     int  searchSymbolsInLine(const std::string& line, const std::string& symbols);
     int  searchSymbolsInLine(int index, const std::string& symbols);
     bool searchInWords(const std::vector<std::string>& words, const std::string& keyWord);    //return true if found
@@ -152,6 +152,7 @@ public:
     void   correctTabulationInFunction(ushint indexStart, ushint indexEnd);
     void   correctTabulationInLine(ushint indexLine);
     ushint getTabulationCount(ushint indexLine);
-    
+    ushint getTabulationCountInFunction(ushint indexFunction, ushint indexLine);
+    bool   isBracesIndex(const ushint indexLine) const;
 };
 

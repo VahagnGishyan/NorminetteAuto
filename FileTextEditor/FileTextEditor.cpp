@@ -47,34 +47,32 @@ void FileTextEditor::                    updata()
 }
 
 //for base work 
-void FileTextEditor::                    print() const
+void FileTextEditor::                    print() 
 {
     for (ushint start = 0; start < size(); ++start)
     {
-        const std::vector<std::string>& line = FileTextEditor::getLine(start);
-
         std::cout << start << "\t";
-        for (ushint index = 0; index < line.size(); ++index)
+        for (ushint index = 0; index < FileTextEditor::getLine(start).size(); ++index)
         {
-            std::cout << line[index] << " ";
+            std::cout << FileTextEditor::getLine(start)[index] << " ";
         }
         std::cout << std::endl;
     }
 }
-int  FileTextEditor::                    size() const
+int  FileTextEditor::                    size() 
 {
     return (m_text.size());
 }
-bool FileTextEditor::                    empty() const
+bool FileTextEditor::                    empty() 
 {
     return (m_text.empty());
 }
 
 
 //set, get, add and delete lines
-std::vector<std::string> FileTextEditor::getLine(int indexLine) const 
+std::vector<std::string>& FileTextEditor::getLine(int indexLine)
 {
-    return(m_text.at(indexLine));
+    return m_text[(indexLine)];
 }
 void FileTextEditor::                    setLine(int indexLine, const std::vector<std::string>&  newLine)
 {
@@ -254,7 +252,7 @@ void FileTextEditor::                    deleteWordInLine(ushint indexLine, ushi
 }
 
 //work in lines
-int  FileTextEditor::                    searchWordInLine(int indexLine, const std::string& word) const
+int  FileTextEditor::                    searchWordInLine(int indexLine, const std::string& word)
 {
     const std::vector<std::string>& words = FileTextEditor::getLine(indexLine);
 
@@ -267,7 +265,7 @@ int  FileTextEditor::                    searchWordInLine(int indexLine, const s
     }
     return -1;
 }
-int  FileTextEditor::                    getLineSize(int indexLine) const
+int  FileTextEditor::                    getLineSize(int indexLine)
 {
     return (m_text.at(indexLine).size());
 }

@@ -753,7 +753,7 @@ void  NorminetteCorrector::updateBracesAddNewLine(ushint indexDeleteLine)
         }
     }
 }
-int   NorminetteCorrector::getPositive(int index)
+int   NorminetteCorrector::getPositive(int index) const
 {
     if (index >= 0)
         return index;
@@ -1422,13 +1422,13 @@ void   NorminetteCorrector::correctTabulation()
     for (ushint start = 0; start < m_BracesIndex.size(); ++start)
     {
         ushint startFunction = m_BracesIndex[start].front();
-        ushint endFunction = -m_BracesIndex[start].back();
-        correctTabulationInFunction(startFunction - 1, endFunction);
+        ushint endFunction   = -m_BracesIndex[start].back();
+        correctTabulationInFunction(startFunction + 1, endFunction - 1);
     }
 }
 void   NorminetteCorrector::correctTabulationInFunction(ushint indexStart, ushint indexEnd)
 {
-    for (ushint indexLine = indexStart; indexLine < indexEnd; ++indexLine)
+    for (ushint indexLine = indexStart; indexLine <= indexEnd; ++indexLine)
     {
         correctTabulationInLine(indexLine);
     }
@@ -1443,9 +1443,70 @@ void   NorminetteCorrector::correctTabulationInLine(ushint indexLine)
         tabs += '\t';
     }
 
+    if (indexLine > 0)
+    {
+        const char symbol = FileTextEditor::getLine(indexLine - 1).back().back();
+        if (symbol == ')' && !isBracesIndex(indexLine))
+        {
+            tabs += '\t';
+        }
+    }
+
     FileTextEditor::addWordInLine(indexLine, 0, tabs);
 }
 ushint NorminetteCorrector::getTabulationCount(ushint indexLine)
 {
-    return 2;
+    for (ushint indexFunction = 0; indexFunction < m_BracesIndex.size(); ++indexFunction)
+    {
+        if (indexLine > NorminetteCorrector::getPositive(m_BracesIndex[indexFunction].back()))
+            continue;
+        return (getTabulationCountInFunction(indexFunction, indexLine));
+    }
+}
+ushint NorminetteCorrector::getTabulationCountInFunction(ushint indexFunction, ushint indexLine)
+{
+    ushint count = 0;
+    
+    int countOpenBraces = 0;
+    int countCloseBraces = 0;
+
+    for (ushint index = 0; index < m_BracesIndex[indexFunction].size(); ++index)
+    {
+        if (indexLine < NorminetteCorrector::getPositive(m_BracesIndex[indexFunction][index]))
+        {
+            return (countOpenBraces + countCloseBraces);
+        }
+        if (indexLine == NorminetteCorrector::getPositive(m_BracesIndex[indexFunction][index]))
+        {
+            if(m_BracesIndex[indexFunction][index] > 0)
+                return (countOpenBraces + countCloseBraces);
+            else
+                return (countOpenBraces + countCloseBraces - 1);
+        }
+        if (m_BracesIndex[indexFunction][index] > 0)
+            ++countOpenBraces;
+        if (m_BracesIndex[indexFunction][index] < 0)
+            --countCloseBraces;
+    }
+    //for testing, for test
+    assert(true && "usumnasirleu hamar");
+    return (countOpenBraces + countCloseBraces + 1);
+}
+bool NorminetteCorrector::isBracesIndex(const ushint indexLine) const 
+{
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        if (indexLine > NorminetteCorrector::getPositive(m_BracesIndex[start].back()))
+        {
+            continue;
+        }
+        for (ushint index = 0; index < m_BracesIndex[start].size(); ++index)
+        {
+            if (indexLine == NorminetteCorrector::getPositive(m_BracesIndex[start][index]))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
