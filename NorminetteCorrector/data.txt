@@ -72,6 +72,8 @@ index = 0;
 
 while (index < n && src[index] != '\0')	{		
 		dest[index] = src[index];index++;	}	
+while (index < n || src[index] != '\0')	{		
+		dest[index] = src[index];index++;	}
 while (index < n)	{		
 dest[index] = '\0';		index++;	}	
 						return (dest);}
@@ -134,5 +136,15 @@ if(x == *y * 2)
 {
 	x = 16;
 }
+int x = 4;
+-4;
+(-4);
+-x;
+(-x);
+x = -4;
+int y; 
+y += ++x; 
+[-x];
+
 }
 

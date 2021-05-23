@@ -1058,6 +1058,10 @@ void NorminetteCorrector::correctMathOperatorsInFunction(ushint startFunction, u
 {
     for (ushint start = startFunction; start < endFunction; ++start)
     {
+        if (start == 59)
+        {
+            std::cout << "";
+        }
         searchMathOperatorsInLine(start);
     }
 }
@@ -1105,12 +1109,13 @@ void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine, ushint& i
     }
     if (isPointerOrReferenceMathOperator(line[indexWord]))
     {
-        FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
+        if (line[indexWord] != "&&")
+            FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
     }
 }
 bool NorminetteCorrector::isMathOperator(const std::string& word) const
 {
-    const std::vector<std::string> keyWords{ "+","-","*","/","%","&","|","=","+=","-=","*=","/=","%=", "==" };
+    const std::vector<std::string> keyWords{ "+","-","*","/","%","&","|","=", "!", "+=","-=","*=","/=","%=", "==", "!="};
 
     for (ushint index = 0; index < keyWords.size(); ++index)
     {
@@ -1274,6 +1279,13 @@ void NorminetteCorrector::searchBracketsInLine(int indexLine)
 }
 void NorminetteCorrector::correctOpenRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
 {
+    if (indexWord == 0)
+    {
+        FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
+        words = FileTextEditor::getLine(indexLine);
+        return;
+    }
+        
     const std::vector<std::string> keyWords{ "if", "while", "return" };
     bool key = true;
     for (ushint indexKeyWord = 0; indexKeyWord < keyWords.size(); ++indexKeyWord)
@@ -1302,6 +1314,13 @@ void NorminetteCorrector::correctCloseRoundBrackets(ushint indexLine, std::vecto
 }
 void NorminetteCorrector::correctOpenSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
 {
+    if (indexWord == 0)
+    {
+        FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
+        words = FileTextEditor::getLine(indexLine);
+        return;
+    }
+
     FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord + 1);
     words = FileTextEditor::getLine(indexLine);
     --indexWord;
