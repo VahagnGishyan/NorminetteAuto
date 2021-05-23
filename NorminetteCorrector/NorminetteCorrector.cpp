@@ -1022,7 +1022,7 @@ void NorminetteCorrector::correctForFinalize()
 
     FileTextEditor::print();
     NorminetteCorrector::printBraces();
-
+    correctTabulation();
     FileTextEditor::print();
     NorminetteCorrector::printBraces();
 }
@@ -1389,7 +1389,7 @@ void NorminetteCorrector::beforeSemicolonShouldBeNoSpace()
         std::vector<std::string> line = FileTextEditor::getLine(start);
         if (line.back() == ";")
         {
-            FileTextEditor::combineWords(start, line.size() - 2, line.size() - 1);
+            FileTextEditor::combineWords(start, static_cast<ushint>(line.size() - 2), static_cast<ushint>(line.size() - 1));
         }
     }
 }
@@ -1443,9 +1443,9 @@ void   NorminetteCorrector::correctTabulationInLine(ushint indexLine)
         tabs += '\t';
     }
 
-    FileTextEditor::setLine(indexLine, tabs + FileTextEditor::getLine(indexLine));
+    FileTextEditor::addWordInLine(indexLine, 0, tabs);
 }
 ushint NorminetteCorrector::getTabulationCount(ushint indexLine)
 {
-
+    return 2;
 }

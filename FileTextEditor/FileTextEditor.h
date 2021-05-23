@@ -44,7 +44,8 @@ public:
 
     void                     combineWords(ushint indexLine, ushint indexLeftWord, ushint indexRightWord);
     
-
+    void                     addWordInLine(ushint indexLine, ushint indexWord, std::string& newLine);
+    void                     deleteWordInLine(ushint indexLine, ushint indexWord);
 
     //work in lines
     int                      searchWordInLine(int indexLine, const std::string&) const;

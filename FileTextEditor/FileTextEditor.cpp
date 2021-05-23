@@ -202,6 +202,56 @@ void FileTextEditor::                    combineWords(ushint indexLine, ushint i
     }
 }
 
+void FileTextEditor::                    addWordInLine(ushint indexLine, ushint indexWord, std::string& newWord)
+{
+    std::vector<std::string>& line = m_text[indexLine];
+    ushint size = static_cast<ushint>(line.size());
+
+    //std::string leftData = "";
+    std::vector<std::string> rightData;
+
+    for (ushint index = indexWord; index < size; ++index)
+    {
+        rightData.push_back(line[index]);
+    }
+
+    shint index = size - 1;
+    while (index >= indexWord)
+    {
+        line.pop_back();
+        --index;
+    }
+    line.push_back(newWord);
+
+    for (ushint index = 0; index < rightData.size(); ++index)
+    {
+        line.push_back(rightData[index]);
+    }
+}
+void FileTextEditor::                    deleteWordInLine(ushint indexLine, ushint indexWord)
+{
+    std::vector<std::string>& line = m_text[indexLine];
+    ushint size = static_cast<ushint>(line.size());
+
+    std::vector<std::string> rightData;
+
+    for (ushint index = indexWord + 1; index < size; ++index)
+    {
+        rightData.push_back(line[index]);
+    }
+
+    shint index = size - 1;
+    while (index >= indexWord)
+    {
+        line.pop_back();
+        --index;
+    }
+
+    for (ushint index = 0; index < rightData.size(); ++index)
+    {
+        line.push_back(rightData[index]);
+    }
+}
 
 //work in lines
 int  FileTextEditor::                    searchWordInLine(int indexLine, const std::string& word) const
