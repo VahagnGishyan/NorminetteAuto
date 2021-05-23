@@ -1036,7 +1036,6 @@ void NorminetteCorrector::correctMathOperators()
 
     for (ushint start = 0; start < m_BracesIndex.size(); ++start)
     {
-
         ushint startFunction = m_BracesIndex[start].front();
         ushint endFunction   = -m_BracesIndex[start].back();
         correctMathOperatorsInFunction(startFunction - 1, endFunction);
@@ -1418,3 +1417,35 @@ void NorminetteCorrector::correctCommaInLine(ushint indexLine)
     }
 }
 
+void   NorminetteCorrector::correctTabulation()
+{
+    for (ushint start = 0; start < m_BracesIndex.size(); ++start)
+    {
+        ushint startFunction = m_BracesIndex[start].front();
+        ushint endFunction = -m_BracesIndex[start].back();
+        correctTabulationInFunction(startFunction - 1, endFunction);
+    }
+}
+void   NorminetteCorrector::correctTabulationInFunction(ushint indexStart, ushint indexEnd)
+{
+    for (ushint indexLine = indexStart; indexLine < indexEnd; ++indexLine)
+    {
+        correctTabulationInLine(indexLine);
+    }
+}
+void   NorminetteCorrector::correctTabulationInLine(ushint indexLine)
+{
+    std::string tabs = "";
+    ushint count = NorminetteCorrector::getTabulationCount(indexLine);
+    
+    for (ushint indexCount = 0; indexCount < count; ++indexCount)
+    {
+        tabs += '\t';
+    }
+
+    FileTextEditor::setLine(indexLine, tabs + FileTextEditor::getLine(indexLine));
+}
+ushint NorminetteCorrector::getTabulationCount(ushint indexLine)
+{
+
+}

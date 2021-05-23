@@ -75,7 +75,7 @@ bool FileTextEditor::                    empty() const
 std::vector<std::string> FileTextEditor::getLine(int indexLine) const 
 {
     return(m_text.at(indexLine));
-} 
+}
 void FileTextEditor::                    setLine(int indexLine, const std::vector<std::string>&  newLine)
 {
     ushint length = size();
@@ -201,6 +201,7 @@ void FileTextEditor::                    combineWords(ushint indexLine, ushint i
         line.push_back(rightData[index]);
     }
 }
+
 
 //work in lines
 int  FileTextEditor::                    searchWordInLine(int indexLine, const std::string& word) const

@@ -147,5 +147,11 @@ public:
     void beforeSemicolonShouldBeNoSpace();
     void correctComma();
     void correctCommaInLine(ushint indexLine);
+
+    void   correctTabulation();
+    void   correctTabulationInFunction(ushint indexStart, ushint indexEnd);
+    void   correctTabulationInLine(ushint indexLine);
+    ushint getTabulationCount(ushint indexLine);
+    
 };
 
