@@ -115,6 +115,13 @@ public:
     void correctMathOperatorsInFunction(ushint startFunction, ushint endFunction);
     void searchMathOperatorsInLine(ushint indexLine);
     void correctMathOperatorsInLine(ushint indexLine, ushint& indexWord);
+    void searchUnaryMathOperatorInLine(ushint indexLine, std::vector<std::string>& line);
+    void searchBinaryMathOperatorInLine(ushint indexLine, std::vector<std::string>& line);
+
+    bool isFirstWordUnaryMathOperator(std::vector<std::string>& line);
+    bool isUnaryMathOperator(ushint indexLine, std::vector<std::string>& line, ushint& indexWord);
+    bool isWordUnaryMathOperator(const std::string& word);
+
     bool isMathOperator(const std::string& symbol) const;
     bool isPointerOrReferenceMathOperator(const std::string& word) const;
     bool isPointerMathOperator(const std::string& word) const;
@@ -122,6 +129,7 @@ public:
     bool isPointerMathOperator(const char symbol) const;
     bool isReferenceMathOperator(const char symbol) const;
     bool isIncrementOrDecrement(const std::string& word) const;
+
     void correctIncrementOrDecrement(ushint indexLine, ushint indexWord);
     //void correctPointerOrReferenceMathOperator(ushint indexLine, ushint indexWord);
     int  latestMathOperatorIndex(ushint indexLine, ushint indexWord);
@@ -135,5 +143,7 @@ public:
     void correctCloseRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
     void correctOpenSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
     void correctCloseSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
+
+
 };
 

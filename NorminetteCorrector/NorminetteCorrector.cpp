@@ -1058,37 +1058,17 @@ void NorminetteCorrector::correctMathOperatorsInFunction(ushint startFunction, u
 {
     for (ushint start = startFunction; start < endFunction; ++start)
     {
-        if (start == 59)
-        {
+        if (start == 132)
             std::cout << "";
-        }
         searchMathOperatorsInLine(start);
     }
 }
 void NorminetteCorrector::searchMathOperatorsInLine(ushint indexLine)
 {
-    std::vector<std::string> line = FileTextEditor::getLine(indexLine);
+    std::vector<std::string> words = FileTextEditor::getLine(indexLine);
 
-    for (ushint index = 0; index < line.size(); ++index)
-    {
-        if (isMathOperator(line[index]))
-        {
-            if (isMathOperator(line[index + 1]))
-            {
-                correctMathOperatorsInLine(indexLine, index);
-                line = FileTextEditor::getLine(indexLine);
-            }
-            else if (isPointerMathOperator(line[index]) or isReferenceMathOperator(line[index]))
-            {
-                if (!isdigit(line[index + 1]))
-                {
-                    FileTextEditor::combineWords(indexLine, index, index + 1);
-                    line = FileTextEditor::getLine(indexLine);
-
-                }
-            }
-        }
-    }
+    searchUnaryMathOperatorInLine(indexLine, words);
+    searchBinaryMathOperatorInLine(indexLine, words);
 }
 void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine, ushint& indexWord)
 {
@@ -1113,6 +1093,92 @@ void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine, ushint& i
             FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
     }
 }
+void NorminetteCorrector::searchUnaryMathOperatorInLine(ushint indexLine, std::vector<std::string>& words)
+{
+    for (ushint indexWord = 0; indexWord < words.size(); ++indexWord)
+    {
+        if (isUnaryMathOperator(indexLine, words, indexWord))
+        {
+            FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
+            words = FileTextEditor::getLine(indexLine);
+        }
+    }
+}
+void NorminetteCorrector::searchBinaryMathOperatorInLine(ushint indexLine, std::vector<std::string>& words)
+{
+    for (ushint indexWord = 0; indexWord < words.size(); ++indexWord)
+    {
+        if (isMathOperator(words[indexWord]))
+        {
+            if (isMathOperator(words[indexWord + 1]))
+            {
+                correctMathOperatorsInLine(indexLine, indexWord);
+                words = FileTextEditor::getLine(indexLine);
+            }
+            else if (isPointerMathOperator(words[indexWord]) or isReferenceMathOperator(words[indexWord]))
+            {
+                if (!isdigit(words[indexWord + 1]))
+                {
+                    FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
+                    words = FileTextEditor::getLine(indexLine);
+                }
+            }
+        }
+    }
+}
+bool NorminetteCorrector::isFirstWordUnaryMathOperator(std::vector<std::string>& line)
+{
+    if (line.front().size() != 1)
+        return false;
+
+    return (isWordUnaryMathOperator(line.front()));
+}
+bool NorminetteCorrector::isUnaryMathOperator(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
+{
+    if (words[indexWord].size() != 1)
+        return false;
+
+    if (!isWordUnaryMathOperator(words[indexWord]))
+    {
+        return false;
+    }
+
+    if (isMathOperator(words[indexWord + 1]))
+    {
+        return false;
+    }
+
+    if (indexWord == 0)
+    {
+        return (isFirstWordUnaryMathOperator(words));
+    }
+
+    const std::vector < std::string> keyWordsBeforeUnaryMathOperator{ "(", "[", "=" };
+
+    for (ushint index = 0; index < keyWordsBeforeUnaryMathOperator.size(); ++index)
+    {
+        if (words[indexWord - 1] == keyWordsBeforeUnaryMathOperator[index])
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+bool NorminetteCorrector::isWordUnaryMathOperator(const std::string& symbol)
+{
+    const std::vector<std::string>   keyWordsUnaryMathOperator{ "+", "-", "!" };
+
+    for (ushint index = 0; index < keyWordsUnaryMathOperator.size(); ++index)
+    {
+        if (symbol == keyWordsUnaryMathOperator[index])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool NorminetteCorrector::isMathOperator(const std::string& word) const
 {
     const std::vector<std::string> keyWords{ "+","-","*","/","%","&","|","=", "!", "+=","-=","*=","/=","%=", "==", "!="};
@@ -1199,6 +1265,8 @@ bool NorminetteCorrector::isIncrementOrDecrement(const std::string& Symbol) cons
         return false;
     }
 }
+
+
 void NorminetteCorrector::correctIncrementOrDecrement(ushint indexLine, ushint indexWord)
 {
     std::vector<std::string> line = FileTextEditor::getLine(indexLine);
@@ -1330,3 +1398,5 @@ void NorminetteCorrector::correctCloseSquareBrackets(ushint indexLine, std::vect
     FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
     words = FileTextEditor::getLine(indexLine);
 }
+
+
