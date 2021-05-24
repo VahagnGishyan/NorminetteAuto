@@ -160,9 +160,17 @@ public:
     void   searchFunctionNames(std::vector<ushint>& indexDeclarationLine);
     void   searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords);
     void   searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction, std::vector<std::string>& varibleKeyWords);
-    std::vector<ushint> getSizeOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords);
-    ushint getDeclarationSizeInFunction(ushint indexDeclaration, const std::vector<std::string>& varibleKeyWords);
-    ushint getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line, const std::vector<std::string>& varibleKeyWords);
+    std::vector<ushint> getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords);
+    shint getDeclarationSizeInFunction(ushint indexDeclaration, const std::vector<std::string>& varibleKeyWords);
+    shint getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line, const std::vector<std::string>& varibleKeyWords);
+    shint getDeclarationSizeInLine(const std::vector<std::string>& line, ushint indexWord);
     void   correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& count, std::vector<std::string>& varibleKeyWords);
+    shint getMaxDeclarationSize(const std::vector<ushint>& indexDeclarationLine);
+
+
+
+
+
+
 };
 
