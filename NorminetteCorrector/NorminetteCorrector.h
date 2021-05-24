@@ -158,6 +158,8 @@ public:
     void   correctTabulationBeforeVariableNames();
     void   searchFunctionNames(std::vector<ushint>& indexDeclarationLine);
     void   searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine);
+    void   searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction);
+    void   searchDeclarationVaribaleNamesInLine(std::vector<ushint>& indexDeclarationLine, ushint indexFunction, ushint indexLine);
     ushint getCountOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine);
     void   correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const ushint count);
 };

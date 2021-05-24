@@ -825,7 +825,7 @@ void NorminetteCorrector::initVaribleKeyWords(std::vector<std::string>& varibleK
     }
 
 
-    varibleKeyWords.reserve(9);
+    varibleKeyWords.reserve(11);
 
     varibleKeyWords.push_back("short");
     varibleKeyWords.push_back("ushort");
@@ -1533,7 +1533,24 @@ void   NorminetteCorrector::searchFunctionNames(std::vector<ushint>& indexDeclar
 }
 void NorminetteCorrector::searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine)
 {
+    for (ushint indexFunction = 0; indexFunction < m_BracesIndex.size(); ++indexFunction)
+    {
+        searchDeclarationVaribaleNamesInFuntion(indexDeclarationLine, indexFunction);
+    }
+}
+void NorminetteCorrector::searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction)
+{
+    std::vector<std::string> varibleKeyWords;
+    NorminetteCorrector::initVaribleKeyWords(varibleKeyWords);
 
+    for (ushint indexLine = m_BracesIndex[indexFunction].front() + 1; indexLine < -m_BracesIndex[indexFunction].back(); ++indexLine)
+    {
+        if (!isThereDeclarationInLine(varibleKeyWords, indexLine))
+        {
+            return ;
+        }
+        indexDeclarationLine.push_back(indexLine);
+    }
 }
 ushint NorminetteCorrector::getCountOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine)
 {
