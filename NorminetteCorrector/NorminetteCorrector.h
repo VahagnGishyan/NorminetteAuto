@@ -107,6 +107,7 @@ public:
     bool isThereAssignmentInLine(ushint indexLine);
     void separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine);
     void raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
+    bool isWordDeclarationKeyWord(const std::vector<std::string>& varibleKeyWords, const std::string& word) const;
 
     //CodeBlock 4, final corrections
     void correctForFinalize();
@@ -157,10 +158,11 @@ public:
 
     void   correctTabulationBeforeVariableNames();
     void   searchFunctionNames(std::vector<ushint>& indexDeclarationLine);
-    void   searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine);
-    void   searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction);
-    void   searchDeclarationVaribaleNamesInLine(std::vector<ushint>& indexDeclarationLine, ushint indexFunction, ushint indexLine);
-    ushint getCountOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine);
-    void   correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const ushint count);
+    void   searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords);
+    void   searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction, std::vector<std::string>& varibleKeyWords);
+    std::vector<ushint> getSizeOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords);
+    ushint getDeclarationSizeInFunction(ushint indexDeclaration, const std::vector<std::string>& varibleKeyWords);
+    ushint getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line, const std::vector<std::string>& varibleKeyWords);
+    void   correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& count, std::vector<std::string>& varibleKeyWords);
 };
 
