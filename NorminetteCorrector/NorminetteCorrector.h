@@ -154,5 +154,11 @@ public:
     ushint getTabulationCount(ushint indexLine);
     ushint getTabulationCountInFunction(ushint indexFunction, ushint indexLine);
     bool   isBracesIndex(const ushint indexLine) const;
+
+    void   correctTabulationBeforeVariableNames();
+    void   searchFunctionNames(std::vector<ushint>& indexDeclarationLine);
+    void   searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine);
+    ushint getCountOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine);
+    void   correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const ushint count);
 };
 

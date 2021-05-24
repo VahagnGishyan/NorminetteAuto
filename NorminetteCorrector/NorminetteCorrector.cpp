@@ -1425,6 +1425,7 @@ void   NorminetteCorrector::correctTabulation()
         ushint endFunction   = -m_BracesIndex[start].back();
         correctTabulationInFunction(startFunction + 1, endFunction - 1);
     }
+    correctTabulationBeforeVariableNames();
 }
 void   NorminetteCorrector::correctTabulationInFunction(ushint indexStart, ushint indexEnd)
 {
@@ -1462,6 +1463,7 @@ ushint NorminetteCorrector::getTabulationCount(ushint indexLine)
             continue;
         return (getTabulationCountInFunction(indexFunction, indexLine));
     }
+    return 0;
 }
 ushint NorminetteCorrector::getTabulationCountInFunction(ushint indexFunction, ushint indexLine)
 {
@@ -1509,4 +1511,35 @@ bool NorminetteCorrector::isBracesIndex(const ushint indexLine) const
         }
     }
     return false;
+}
+
+void   NorminetteCorrector::correctTabulationBeforeVariableNames()
+{
+    std::vector<ushint> indexDeclarationLine;
+    searchFunctionNames(indexDeclarationLine);
+    searchDeclarationVaribaleNames(indexDeclarationLine);
+
+    ushint count = getCountOfTabulationForVaribaleAndFunctionNames(indexDeclarationLine);
+    correctTabulationForVaribaleAndFunctionNames(indexDeclarationLine, count);
+}
+void   NorminetteCorrector::searchFunctionNames(std::vector<ushint>& indexDeclarationLine)
+{
+    indexDeclarationLine.resize(m_BracesIndex.size());
+
+    for (ushint index = 0; index < m_BracesIndex.size(); ++index)
+    {
+        indexDeclarationLine[index] = m_BracesIndex[index].front() - 1;
+    }
+}
+void NorminetteCorrector::searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine)
+{
+
+}
+ushint NorminetteCorrector::getCountOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine)
+{
+    return 4;
+}
+void NorminetteCorrector::correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const ushint count)
+{
+
 }
