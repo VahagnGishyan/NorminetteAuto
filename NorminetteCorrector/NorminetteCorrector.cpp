@@ -122,6 +122,55 @@ void NorminetteCorrector::                    deleteLineBack()
     NorminetteCorrector::updateBracesDeleteLine(FileTextEditor::size());
 }
 
+void NorminetteCorrector::updata()
+{
+    for (ushint start = 0; start < size(); ++start)
+    {
+        std::vector<std::string>& line = FileTextEditor::getLine(start);
+
+        if (line.empty())
+        {
+            FileEditor::setLine(start, "");
+            continue;
+        }
+
+        std::string newLine = line.front();
+
+        for (ushint index = 1; index < line.size() - 1; ++index)
+        {
+            if (isTabulation(line[index]))
+            {
+                newLine += line[index];
+            }
+            else if (isTabulation(line[index + 1]))
+            {
+                newLine += line[index];
+            }
+            else
+            {
+                newLine += line[index] + " "; 
+            }
+        }
+        if (line.size() > 1)
+            newLine += line.back();
+
+        FileEditor::addNewLineBack(newLine);
+    }
+
+    FileTextEditor::clear();
+}
+bool NorminetteCorrector::isTabulation(const std::string& word)
+{
+    if (word.empty())
+        return false;
+    for (ushint index = 0; index < word.size(); ++index)
+    {
+        if (word[index] != '\t')
+            return false;
+    }
+    return true;
+}
+
 //For corrector
 void NorminetteCorrector::correctAll()
 {
@@ -143,8 +192,8 @@ void NorminetteCorrector::correctAll()
     //FileTextEditor::print();
     //NorminetteCorrector::printBraces();
 
-    //updata();
-    //FileEditor::print();
+    NorminetteCorrector::updata();
+    FileEditor::print();
 
 
 }
@@ -840,8 +889,6 @@ void NorminetteCorrector::initVaribleKeyWords(std::vector<std::string>& varibleK
     varibleKeyWords.push_back("char");
     varibleKeyWords.push_back("bool");
     //varibleKeyWords.push_back("unsigned int");
-
-    assert(varibleKeyWords.size() == 12 && "size whil be 12");
 }
 void NorminetteCorrector::addNewVaribleKeyWords(std::vector<std::string>& varibleKeyWords, std::string keyWord)
 {
@@ -1035,12 +1082,7 @@ void NorminetteCorrector::correctForFinalize()
     correctBrackets();
     beforeSemicolonShouldBeNoSpace();
     correctComma();
-
-    FileTextEditor::print();
-    NorminetteCorrector::printBraces();
     correctTabulation();
-    FileTextEditor::print();
-    NorminetteCorrector::printBraces();
 }
 
 void NorminetteCorrector::correctMathOperators()
@@ -1539,8 +1581,10 @@ void NorminetteCorrector::correctTabulationBeforeVariableNames()
     searchDeclarationVaribaleNames(indexDeclarationLine, varibleKeyWords);
 
     std::vector<ushint> indexKeyWord = getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(indexDeclarationLine, varibleKeyWords);
-    correctTabulationForVaribaleAndFunctionNames(indexDeclarationLine, indexKeyWord, varibleKeyWords);
+    std::vector<ushint> sizeKeyWords = getSizeKeyWordsOfTabulationForVaribaleAndFunctionNames(indexDeclarationLine, indexKeyWord);
+    correctTabulationForVaribaleAndFunctionNames(indexDeclarationLine, indexKeyWord, sizeKeyWords);
 }
+
 void NorminetteCorrector::searchFunctionNames(std::vector<ushint>& indexDeclarationLine)
 {
     indexDeclarationLine.resize(m_BracesIndex.size());
@@ -1570,33 +1614,45 @@ void NorminetteCorrector::searchDeclarationVaribaleNamesInFuntion(std::vector<us
 }
 std::vector<ushint> NorminetteCorrector::getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords)
 {
+    std::vector<ushint> indexDeclarationOfLines(indexDeclarationLine.size());
+
+    for (ushint index = 0; index < indexDeclarationLine.size(); ++index)
+    {
+        std::vector<std::string>& line = FileTextEditor::getLine(indexDeclarationLine[index]);
+        indexDeclarationOfLines[index] = getDeclarationKeyWordIndexInLine(line, varibleKeyWords);
+    }
+
+    return indexDeclarationOfLines;
+}
+std::vector<ushint> NorminetteCorrector::getSizeKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord)
+{
     std::vector<ushint> sizeDeclarationOfLines(indexDeclarationLine.size());
 
     for (ushint index = 0; index < indexDeclarationLine.size(); ++index)
     {
         std::vector<std::string>& line = FileTextEditor::getLine(indexDeclarationLine[index]);
-        sizeDeclarationOfLines[index] = getDeclarationKeyWordIndexInLine(line, varibleKeyWords);
+        sizeDeclarationOfLines[index] = getDeclarationSizeInLine(line, indexKeyWord[index]);
     }
 
-    //std::cout << "FOR TEST" << std::endl;
-    //for (ushint start = 0; start < sizeDeclarationOfLines.size(); ++start)
-    //{
-    //    std::vector<std::string> line = FileTextEditor::getLine(indexDeclarationLine[start]);
-    //    std::cout << "\t ";
-    //    for (ushint index = 0; index < line.size(); ++index)
-    //    {
-    //        std::cout << line[index] << " ";
-    //    }
-    //    std::cout << std::endl;
-    //    std::cout << "\t ";
-    //    for (ushint index = 0; index < sizeDeclarationOfLines[start]; ++index)
-    //    {
-    //        std::cout << "p";
-    //    }
-    //    std::cout << std::endl;
-    //    std::cout << sizeDeclarationOfLines[start] << std::endl;
-    //}
-    //std::cout << std::endl;
+    std::cout << "FOR TEST" << std::endl;
+    for (ushint start = 0; start < sizeDeclarationOfLines.size(); ++start)
+    {
+        std::vector<std::string> line = FileTextEditor::getLine(indexDeclarationLine[start]);
+        std::cout << "\t ";
+        for (ushint index = 0; index < line.size(); ++index)
+        {
+            std::cout << line[index] << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "\t ";
+        for (ushint index = 0; index < sizeDeclarationOfLines[start]; ++index)
+        {
+            std::cout << "p";
+        }
+        std::cout << std::endl;
+        std::cout << sizeDeclarationOfLines[start] << std::endl;
+    }
+    std::cout << std::endl;
 
     return sizeDeclarationOfLines;
 }
@@ -1605,7 +1661,6 @@ shint NorminetteCorrector::getDeclarationSizeInFunction(ushint indexLine, const 
     std::vector<std::string>& line = FileTextEditor::getLine(indexLine);
 
     shint indexWord = getDeclarationKeyWordIndexInLine(line, varibleKeyWords);
-    std::vector<ushint> indexDeclarationLine = e
 
     return getDeclarationSizeInLine(line, indexWord);
 }
@@ -1636,37 +1691,72 @@ shint NorminetteCorrector::getDeclarationSizeInLine(const std::vector<std::strin
 
     for (ushint index = 0; index < indexWord; ++index)
     {
-        indexWord += line[index].size();
+        size += static_cast<ushint>(line[index].size());
     }
     if (indexWord != 0)
         size += indexWord - 1;
 
     return size;
 }
-void NorminetteCorrector::correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& linesSizes, std::vector<std::string>& varibleKeyWords)
+void NorminetteCorrector::correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord, std::vector<ushint> sizeKeyWord)
 {
     constexpr ushint tabSize = 8;
-    shint maxValue = getMaxDeclarationSize(indexDeclarationLine);
-    
+    //shint maxValue = getMaxDeclarationSize(sizeKeyWord);
+    //maxValue = (maxValue / tabSize + 1) * tabSize;
+    shint maxValue = (getMaxDeclarationSize(sizeKeyWord) / tabSize + 1) * tabSize;
+
     for (ushint index = 0; index < indexDeclarationLine.size(); ++index)
     {
         std::vector<std::string>& line = FileTextEditor::getLine(indexDeclarationLine[index]);
+
+        ushint lineKeyWordSize = sizeKeyWord[index];
+        lineKeyWordSize = maxValue - lineKeyWordSize;
+
+        shint count = lineKeyWordSize / tabSize + 1;
+        std::string newWord = initTabCountWord(count);
+        if (isDeclarationLineFunctionName(indexDeclarationLine[index]))
+            newWord += '\t';
+
+        FileTextEditor::addWordInLine(indexDeclarationLine[index], indexKeyWord[index], newWord);
     }
 }
-shint NorminetteCorrector::getMaxDeclarationSize(const std::vector<ushint>& indexDeclarationLine)
+shint NorminetteCorrector::getMaxDeclarationSize(const std::vector<ushint>& sizeKeyWord)
 {
-    if (indexDeclarationLine.empty())
+    if (sizeKeyWord.empty())
         return -1;
-    shint maxValue = indexDeclarationLine[0];
-    for (ushint index = 1; index < indexDeclarationLine.size(); ++index)
+    shint maxValue = sizeKeyWord[0];
+    for (ushint index = 1; index < sizeKeyWord.size(); ++index)
     {
-        if (indexDeclarationLine[index] > maxValue)
+        if (sizeKeyWord[index] > maxValue)
         {
-            maxValue = indexDeclarationLine[index];
+            maxValue = sizeKeyWord[index];
         }
     }
     return maxValue;
 }
+std::string NorminetteCorrector::initTabCountWord(int count)
+{
+    std::string newWord = "";
+    
+    for (ushint index = 0; index <= count; ++index)
+    {
+        newWord += '\t';
+    }
+    return newWord;
+}
+bool NorminetteCorrector::isDeclarationLineFunctionName(ushint indexLine)
+{
+    std::vector<std::string>& line = FileTextEditor::getLine(indexLine);
 
+    if (line.size() > 1)
+    {
+        return (line.back().back() == ')');;
+    }
+    else if (line.back().size() == 1)
+    {
 
+        return (line.back() == ")");
+    }
+    return false;
+}
 

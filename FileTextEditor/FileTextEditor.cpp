@@ -17,7 +17,8 @@ void FileTextEditor::                    init(int indexStart, int indexEnd)
     {
         FileTextEditor::addNewLineBack(FileEditor::splitWordsBySpace(start));
     }
-    FileEditor::clear();
+    for (ushint index = indexEnd - 1; index >= indexStart; --index)
+        FileEditor::deleteLineBack();
 }
 void FileTextEditor::                    clear()
 {
