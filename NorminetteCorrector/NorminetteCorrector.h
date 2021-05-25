@@ -39,7 +39,7 @@ public:
     bool isdigit(const std::string& word) const;
 
     void                     addNewLine(int indexLine, const std::vector<std::string>& newLine);
-    void                     addNewLine(int indexLine, std::string& newLine);
+    void                     addNewLine(int indexLine, const std::string& newLine);
     void                     deleteLine(int indexLine);
 
     void                     addNewLineBack(const std::vector<std::string>& newLine);
@@ -170,5 +170,10 @@ public:
     shint getMaxDeclarationSize(const std::vector<ushint>& indexDeclarationLine);
     std::string initTabCountWord(int count);
     bool isDeclarationLineFunctionName(ushint indexLine);
+
+    void addFewerLines();
+    void addFewerLinesAToFunctions();
+    void addFewerLinesAToDeclaration();
+
 };
 

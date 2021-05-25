@@ -95,7 +95,7 @@ void NorminetteCorrector::                    addNewLine(int indexLine, const st
     FileTextEditor::addNewLine(indexLine, newLine);
     NorminetteCorrector::updateBracesAddNewLine(indexLine);
 }
-void NorminetteCorrector::                    addNewLine(int indexLine, std::string& newLine)
+void NorminetteCorrector::                    addNewLine(int indexLine, const std::string& newLine)
 {
     FileTextEditor::addNewLine(indexLine, newLine);
     NorminetteCorrector::updateBracesAddNewLine(indexLine);
@@ -1083,6 +1083,7 @@ void NorminetteCorrector::correctForFinalize()
     beforeSemicolonShouldBeNoSpace();
     correctComma();
     correctTabulation();
+    addFewerLines();
 }
 
 void NorminetteCorrector::correctMathOperators()
@@ -1584,7 +1585,6 @@ void NorminetteCorrector::correctTabulationBeforeVariableNames()
     std::vector<ushint> sizeKeyWords = getSizeKeyWordsOfTabulationForVaribaleAndFunctionNames(indexDeclarationLine, indexKeyWord);
     correctTabulationForVaribaleAndFunctionNames(indexDeclarationLine, indexKeyWord, sizeKeyWords);
 }
-
 void NorminetteCorrector::searchFunctionNames(std::vector<ushint>& indexDeclarationLine)
 {
     indexDeclarationLine.resize(m_BracesIndex.size());
@@ -1760,3 +1760,21 @@ bool NorminetteCorrector::isDeclarationLineFunctionName(ushint indexLine)
     return false;
 }
 
+void NorminetteCorrector::addFewerLines()
+{
+    addFewerLinesAToFunctions();
+    addFewerLinesAToDeclaration();
+}
+void NorminetteCorrector::addFewerLinesAToFunctions()
+{
+    const std::string newEmptyLine = "";
+
+    for (ushint index = 0; index < m_BracesIndex.size() - 1; ++index)
+    {
+        NorminetteCorrector::addNewLine(-m_BracesIndex[index].back() + 1, newEmptyLine);
+    }
+}
+void NorminetteCorrector::addFewerLinesAToDeclaration()
+{
+
+}

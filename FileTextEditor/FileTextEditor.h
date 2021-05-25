@@ -35,7 +35,7 @@ public:
     void                      setLine(int indexLine, std::string& newLine);
 
     void                      addNewLine(int indexLine, const std::vector<std::string>& newLine);
-    void                      addNewLine(int indexLine, std::string& newLine);
+    void                      addNewLine(int indexLine, const std::string& newLine);
     void                      deleteLine(int indexLine);
 
     void                      addNewLineBack(const std::vector<std::string>&  newLine);

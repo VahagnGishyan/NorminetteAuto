@@ -121,7 +121,7 @@ void FileTextEditor::                    addNewLine(int indexLine, const std::ve
 
     addNewLineBack(reservData);
 }
-void FileTextEditor::                    addNewLine(int indexLine, std::string& newWord)
+void FileTextEditor::                    addNewLine(int indexLine, const std::string& newWord)
 {
     std::vector<std::string> newLine;
     newLine.push_back(newWord);
