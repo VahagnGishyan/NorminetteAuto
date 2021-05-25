@@ -172,8 +172,8 @@ public:
     bool isDeclarationLineFunctionName(ushint indexLine);
 
     void addFewerLines();
-    void addFewerLinesAToFunctions();
-    void addFewerLinesAToDeclaration();
+    void addFewerLinesToFunctions();
+    void addFewerLinesToDeclaration();
 
 };
 
