@@ -83,6 +83,31 @@ bool NorminetteCorrector::isdigit(const std::string& word) const
 
     return (true);
 }
+std::string NorminetteCorrector::getOldFileName()
+{
+    std::string fileRoad = getFileName();
+    std::string reservFileName = "";
+    std::string newName = "";
+
+    shint index = static_cast<shint>(fileRoad.size()) - 1;
+    for (; index >= 0; --index)
+    {
+        if (fileRoad[index] == '\\')
+        {
+            break;
+        }
+        reservFileName.push_back(fileRoad[index]);
+        fileRoad.pop_back();
+    }
+    newName = fileRoad + "old_";
+
+    for (shint index = static_cast<shint>(reservFileName.size()) - 1; index >= 0; --index)
+    {
+        newName += reservFileName[index];
+    }
+
+    return (newName);
+}
 std::string NorminetteCorrector::getNewFileName()
 {
     std::string fileRoad = getFileName();
@@ -198,6 +223,8 @@ bool NorminetteCorrector::isTabulation(const std::string& word)
 //For corrector
 void NorminetteCorrector::correctAll()
 {
+    FileEditor::updateFile(NorminetteCorrector::getOldFileName());
+
     if (FileEditor::empty())
         return;
 
@@ -221,7 +248,7 @@ void NorminetteCorrector::correctAll()
 
     NorminetteCorrector::updata();
     //FileEditor::print();
-    FileEditor::updateFile(NorminetteCorrector::getNewFileName());
+    FileEditor::updateFile(FileEditor::getFileName());
 }
 
 //CodeBlock 1, basic check

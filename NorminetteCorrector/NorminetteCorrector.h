@@ -36,6 +36,7 @@ public:
     bool                     searchInWords(const std::vector<std::string>& words, const std::string& keyWord);    //return true if found
     void                     divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight);
     bool                     isdigit(const std::string& word) const;
+    std::string              getOldFileName();
     std::string              getNewFileName();
 
     void                     addNewLine(int indexLine, const std::vector<std::string>& newLine);
