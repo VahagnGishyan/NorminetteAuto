@@ -174,6 +174,5 @@ public:
     void addFewerLines();
     void addFewerLinesToFunctions();
     void addFewerLinesToDeclaration();
-
 };
 
