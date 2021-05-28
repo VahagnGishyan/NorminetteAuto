@@ -7,6 +7,7 @@ int main()
 {
     NorminetteCorrector data("..\\Data\\data.txt");
     data.correctAll();
+    data.print();
 
     return (0);
 }

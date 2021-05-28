@@ -208,10 +208,10 @@ void NorminetteCorrector::correctAll()
     }
 
     preliminaryCorrectingFileFormat();
-    FileEditor::print();
+    //FileEditor::print();
 
     FileTextEditor::init(m_startLine, FileEditor::size());
-    FileTextEditor::print();
+    //FileTextEditor::print();
 
     correctInsideLine();
 
@@ -220,7 +220,7 @@ void NorminetteCorrector::correctAll()
     //NorminetteCorrector::printBraces();
 
     NorminetteCorrector::updata();
-    FileEditor::print();
+    //FileEditor::print();
     FileEditor::updateFile(NorminetteCorrector::getNewFileName());
 }
 

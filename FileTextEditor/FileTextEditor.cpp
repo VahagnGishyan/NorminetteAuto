@@ -52,6 +52,11 @@ void FileTextEditor::                    updata()
 //for base work 
 void FileTextEditor::                    print() 
 {
+    if (empty())
+    {
+        FileEditor::print();
+        return;
+    }
     for (ushint start = 0; start < size(); ++start)
     {
         std::cout << start << "\t";
