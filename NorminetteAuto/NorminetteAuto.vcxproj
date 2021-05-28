@@ -143,12 +143,14 @@
     <ClCompile Include="..\FileTextEditor\FileTextEditor.cpp" />
     <ClCompile Include="..\NorminetteCorrector\NorminetteCorrector.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NorminetteAuto.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FileEditor\FileEditor.h" />
     <ClInclude Include="..\FileTextEditor\FileTextEditor.h" />
     <ClInclude Include="..\Header.h" />
     <ClInclude Include="..\NorminetteCorrector\NorminetteCorrector.h" />
+    <ClInclude Include="NorminetteAuto.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

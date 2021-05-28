@@ -3,7 +3,7 @@
 //initialization 
 FileEditor::                         FileEditor()
 {
-    std::cout << "Works Constructor FileEditor()" << std::endl;
+    //std::cout << "Works Constructor FileEditor()" << std::endl;
     m_fileName = "";
 }
 FileEditor::                         FileEditor(const std::string& fileName)
@@ -157,7 +157,7 @@ void FileEditor::                    updateFile(std::string filename) const
 }
 void FileEditor::                    openFile(const std::string& fileName)
 {
-    std::cout << "Works FileEditor::readFromFile(std::string& fileName)" << std::endl;
+    //std::cout << "Works FileEditor::readFromFile(std::string& fileName)" << std::endl;
     m_fileName = fileName;
 
     if (!m_data.empty())

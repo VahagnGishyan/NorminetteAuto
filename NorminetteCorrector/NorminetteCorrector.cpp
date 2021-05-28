@@ -248,7 +248,8 @@ void NorminetteCorrector::correctAll()
 
     NorminetteCorrector::updata();
     //FileEditor::print();
-    FileEditor::updateFile(FileEditor::getFileName());
+    //FileEditor::updateFile(FileEditor::getFileName());
+    FileEditor::updateFile(NorminetteCorrector::getNewFileName());
 }
 
 //CodeBlock 1, basic check
