@@ -10,14 +10,16 @@ void FileTextEditor::                    init(int indexStart, int indexEnd)
     }
     if (indexEnd < 0)
     {
-        indexStart = FileEditor::size();
+        indexEnd = FileEditor::size();
     }
 
     for (ushint start = indexStart; start < indexEnd; ++start)
     {
         FileTextEditor::addNewLineBack(FileEditor::splitWordsBySpace(start));
     }
-    for (ushint index = indexEnd - 1; index >= indexStart; --index)
+
+    //TO DO :: improve & accelerate the two places below, separate them in a separate new function
+    for (int index = indexEnd - 1; index >= indexStart; --index)
         FileEditor::deleteLineBack();
 }
 void FileTextEditor::                    clear()

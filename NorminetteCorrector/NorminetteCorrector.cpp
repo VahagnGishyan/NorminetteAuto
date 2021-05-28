@@ -477,19 +477,16 @@ void NorminetteCorrector::aloneSemicolonRaiseUp(ushint& indexLine)
 }
 void NorminetteCorrector::deleteUnnecessarySemicolon(ushint& indexLine)
 {
-    std::string line = FileTextEditor::getLine(indexLine).back();
+    std::vector<std::string>& line = FileTextEditor::getLine(indexLine);
 
-    if (line.empty() || line.size() == 1 || line.back() != ';')
+    if (line.empty() || line.size() == 1 || line.back() != ";")
         return;
+
     for (shint index = static_cast<shint>(line.size()) - 2; index >= 0; --index)
     {
-        if (line[index] == ';')
+        if (line[index] == ";")
             line.pop_back();
     }
-
-    std::vector<std::string> newLine = FileTextEditor::getLine(indexLine);
-    newLine.back() = line;
-    FileTextEditor::setLine(indexLine, newLine);
 }
 
 void NorminetteCorrector::correctIfWhileElse()
@@ -983,7 +980,7 @@ ushint NorminetteCorrector::searchDeclarationStartInFunction(std::vector<std::st
         }
     }
 
-    return (indexStartFunction + 1);
+    return (indexStartFunction);
 }
 bool NorminetteCorrector::isThereDeclarationInLine(std::vector<std::string>& varibleKeyWords, ushint indexLine)
 {
@@ -1763,6 +1760,9 @@ void NorminetteCorrector::addFewerLinesToDeclaration()
         NorminetteCorrector::initVaribleKeyWords(keyWord);
 
         ushint indexDeclaration = NorminetteCorrector::searchDeclarationStartInFunction(keyWord, m_BracesIndex[index].front(), -m_BracesIndex[index].back());
+        
+
+
         if(FileTextEditor::getLine(indexDeclaration - 1).front() != "{")
             NorminetteCorrector::addNewLine(indexDeclaration, newEmptyLine);
     }
