@@ -37,6 +37,7 @@ public:
     void divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight);
     //void                     combineWords(ushint indexLine, ushint& indexLeftWord, ushint indexRightWord);
     bool isdigit(const std::string& word) const;
+    std::string getNewFileName();
 
     void                     addNewLine(int indexLine, const std::vector<std::string>& newLine);
     void                     addNewLine(int indexLine, const std::string& newLine);

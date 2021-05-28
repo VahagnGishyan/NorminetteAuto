@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8d78ef8f-7b15-41bd-ba0a-c60c8ba2ef89}</ProjectGuid>
+    <ProjectGuid>{9c930b51-c7eb-4233-a128-22c3ef4e9c4b}</ProjectGuid>
     <RootNamespace>NorminetteAuto</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -139,14 +139,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FileEditor.cpp" />
+    <ClCompile Include="..\FileEditor\FileEditor.cpp" />
+    <ClCompile Include="..\FileTextEditor\FileTextEditor.cpp" />
+    <ClCompile Include="..\NorminetteCorrector\NorminetteCorrector.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="NorminetteCorrector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FileEditor.h" />
-    <ClInclude Include="Header.h" />
-    <ClInclude Include="NorminetteCorrector.h" />
+    <ClInclude Include="..\FileEditor\FileEditor.h" />
+    <ClInclude Include="..\FileTextEditor\FileTextEditor.h" />
+    <ClInclude Include="..\Header.h" />
+    <ClInclude Include="..\NorminetteCorrector\NorminetteCorrector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

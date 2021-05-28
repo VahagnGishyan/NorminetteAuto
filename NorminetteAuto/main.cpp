@@ -1,19 +1,12 @@
-#include "NorminetteCorrector.h"
+#include "..\Header.h"
+#include "..\FileEditor\FileEditor.h"
+#include "..\FileTextEditor\FileTextEditor.h"
+#include "..\NorminetteCorrector\NorminetteCorrector.h"
 
 int main()
 {
-    std::cout << "Start work main.cpp" << std::endl << std::endl;
+    NorminetteCorrector data("..\\Data\\data.txt");
+    data.correctAll();
 
-    NorminetteCorrector object("data.txt");
-    //object.print();
-
-
-
-    object.correctAll();
-
-    object.updateFile("newData.txt");
-
-    std::cout << std::endl << "End work main.cpp" << std::endl;
-
-    return 0;
+    return (0);
 }
