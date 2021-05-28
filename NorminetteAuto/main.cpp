@@ -2,7 +2,7 @@
 
 int main()
 {
-    CalculateWorkTime::CorrectFile("..\\Data\\data.txt");
+    NorminetteAuto::CorrectFile("..\\Data\\data.txt");
 
     return (0);
 }

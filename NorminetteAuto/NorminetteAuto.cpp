@@ -8,7 +8,6 @@ void NorminetteAuto::CorrectFile(std::string filename)
     data.correctAll();
 }
 
-
 void CalculateWorkTime::CorrectFile(std::string filename)
 {
     std::vector<ulong> time;
