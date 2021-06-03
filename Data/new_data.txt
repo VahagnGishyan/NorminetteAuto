@@ -13,18 +13,18 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-bool						is_char_in_string(char c, char *set)
+bool									is_char_in_string(char c, char *set)
 {
-	int					x;
-	int					y;
-	int					g;
+	int									x;
+	int									y;
+	int									g;
 	static const unsigned short int		**index[10];
 	static const unsigned short int		**index[10];
-	const char				*array1;
-	const int				*array2;
-	int					*array2;
-	int					array3;
-	char					array3;
+	const char							*array1;
+	const int							*array2;
+	int									*array2;
+	int									array3;
+	char								array3;
 
 	while (true)
 	{
@@ -36,7 +36,7 @@ bool						is_char_in_string(char c, char *set)
 		else if (x < 3)
 			--x;
 		else
-		--y;
+			--y;
 		while (x < 10)
 			++x;
 		g = 4;
@@ -66,10 +66,10 @@ bool						is_char_in_string(char c, char *set)
 	return (false);
 }
 
-char						*ft_strncpy(char *dest, char *src, unsigned int n)
+char									*ft_strncpy(char *dest, char *src, unsigned int n)
 {
-	unsigned int				index;
-	unsigned int				start;
+	unsigned int						index;
+	unsigned int						start;
 
 	index = 0;
 	start = 45;
@@ -94,7 +94,7 @@ char						*ft_strncpy(char *dest, char *src, unsigned int n)
 	return (dest);
 }
 
-int						this_function_should_have_21_lines(void)
+int										this_function_should_have_21_lines(void)
 {
 	test();
 	test();
@@ -107,7 +107,7 @@ int						this_function_should_have_21_lines(void)
 	return (4);
 }
 
-void						foo(int x = 5)
+void									foo(int x = 5)
 {
 	x++;
 	while (x > 0)
@@ -115,13 +115,13 @@ void						foo(int x = 5)
 	return (x);
 }
 
-int						main()
+int										main()
 {
-	int					******************x;
-	int					y;
-	short					ahgdeuhfejsn45;
-	double					jhdbwjbe;
-	long					l;
+	int									******************x;
+	int									y;
+	short								ahgdeuhfejsn45;
+	double								jhdbwjbe;
+	long								l;
 
 	x = 0;
 	y = 4;
@@ -138,16 +138,16 @@ int						main()
 	array = "Vahagn\n\n\n\n";
 }
 
-int						foo(int x)
+int										foo(int x)
 {
 	return (x * 2);
 }
 
-void						foo2(int *y)
+void									foo2(int *y)
 {
-	int					x;
-	int					x;
-	int					y;
+	int									x;
+	int									x;
+	int									y;
 
 	*y = 4;
 	x = foo(*y);

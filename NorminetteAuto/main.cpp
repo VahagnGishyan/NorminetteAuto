@@ -1,8 +1,11 @@
-#include "..\NorminetteAuto\NorminetteAuto.h"
+#include "NorminetteAuto.h"
 
-int main()
+int main(int argc, char** argv)
 {
-    NorminetteAuto::CorrectFile("..\\Data\\data.txt");
+    for(ushint index = 1; index < argc; ++index)
+    {
+        NorminetteAuto::CorrectFile(argv[index]);
+    }
 
     return (0);
 }

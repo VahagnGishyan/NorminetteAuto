@@ -1,6 +1,6 @@
 #pragma once
-#include "..\Header.h"
-#include "..\FileTextEditor\FileTextEditor.h"
+#include "Header.h"
+#include "../FileTextEditor/FileTextEditor.h"
 
 //CodeBlock 0       : FileEditor, FileTextEditor
 //CodeBlock 1,2,3,4 : NorminetteCorrector
@@ -12,7 +12,7 @@ private:
     //Variables
     ushint				    m_startLine;
     //std::vector<unsigned short>	    m_PreprocessorIndex;
-    std::vector<std::vector<short>>	    m_BracesIndex;
+    std::vector<std::vector<short> >	    m_BracesIndex;
     //std::vector<bool>			    m_ErrorStatusRegister;
     //std::vector<std::string>		    m_varibleKeyWords;
 
@@ -23,7 +23,7 @@ public:
     }
     NorminetteCorrector(std::string filename) : FileTextEditor(), m_startLine(0)
     {
-	FileEditor::openFile(filename);
+	    FileEditor::openFile(filename);
     }
 
     // heto dardznel mi masy private

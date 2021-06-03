@@ -92,7 +92,7 @@ std::string NorminetteCorrector::getOldFileName()
     shint index = static_cast<shint>(fileRoad.size()) - 1;
     for (; index >= 0; --index)
     {
-        if (fileRoad[index] == '\\')
+        if (fileRoad[index] == '/')
         {
             break;
         }
@@ -117,7 +117,7 @@ std::string NorminetteCorrector::getNewFileName()
     shint index = static_cast<shint>(fileRoad.size()) - 1;
     for (; index >= 0; --index)
     {
-        if (fileRoad[index] == '\\')
+        if (fileRoad[index] == '/')
         {
             break;
         }
@@ -520,9 +520,6 @@ void NorminetteCorrector::correctSemicolon()
 }
 void NorminetteCorrector::aloneSemicolonRaiseUp(ushint& indexLine)
 {
-    if (indexLine == 9)
-        std::cout;
-
     std::vector<std::string>& newLine = FileTextEditor::getLine(indexLine - 1);
     newLine.push_back(";");
     FileTextEditor::deleteLine(indexLine);
@@ -741,8 +738,8 @@ void  NorminetteCorrector::updateBraces()
     for (ushint start = 0; start < FileTextEditor::size(); ++start)
     {
         const std::string symbol = FileTextEditor::getLine(start)[0];
-        ushint count = 0;
-
+       
+        //ushint count = 0; NAYEL
         if (symbol == "{")
         {
             if (countBracesStart == countBracesEnd)
@@ -1231,6 +1228,7 @@ bool NorminetteCorrector::isFirstWordUnaryMathOperator(std::vector<std::string>&
 }
 bool NorminetteCorrector::isUnaryMathOperator(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
 {
+    (void)indexLine;//NAYEL
     if (words[indexWord].size() != 1)
         return false;
 
@@ -1555,8 +1553,8 @@ void   NorminetteCorrector::correctTabulationInLine(ushint indexLine)
 
     if (indexLine > 0)
     {
-        const char symbol = FileTextEditor::getLine(indexLine - 1).back().back();
-        if (symbol == ')' && !isBracesIndex(indexLine))
+        const std::string word = FileTextEditor::getLine(indexLine - 1).back();
+        if ((word.back() == ')' || word == "else") && !isBracesIndex(indexLine))
         {
             tabs += '\t';
         }
@@ -1576,8 +1574,6 @@ ushint NorminetteCorrector::getTabulationCount(ushint indexLine)
 }
 ushint NorminetteCorrector::getTabulationCountInFunction(ushint indexFunction, ushint indexLine)
 {
-    ushint count = 0;
-    
     int countOpenBraces = 0;
     int countCloseBraces = 0;
 
@@ -1599,8 +1595,6 @@ ushint NorminetteCorrector::getTabulationCountInFunction(ushint indexFunction, u
         if (m_BracesIndex[indexFunction][index] < 0)
             --countCloseBraces;
     }
-    //for testing, for test
-    assert(true && "usumnasirleu hamar");
     return (countOpenBraces + countCloseBraces + 1);
 }
 bool NorminetteCorrector::isBracesIndex(const ushint indexLine) const 
@@ -1730,19 +1724,19 @@ shint NorminetteCorrector::getDeclarationSizeInLine(const std::vector<std::strin
 }
 void NorminetteCorrector::correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord, std::vector<ushint> sizeKeyWord)
 {
-    constexpr ushint tabSize = 8;
+    constexpr ushint tabSize = 4;
     //shint maxValue = getMaxDeclarationSize(sizeKeyWord);
     //maxValue = (maxValue / tabSize + 1) * tabSize;
     shint maxValue = (getMaxDeclarationSize(sizeKeyWord) / tabSize + 1) * tabSize;
 
     for (ushint index = 0; index < indexDeclarationLine.size(); ++index)
     {
-        std::vector<std::string>& line = FileTextEditor::getLine(indexDeclarationLine[index]);
-
+        //NAYEL
+        //std::vector<std::string>& line = FileTextEditor::getLine(indexDeclarationLine[index]);
         ushint lineKeyWordSize = sizeKeyWord[index];
         lineKeyWordSize = maxValue - lineKeyWordSize;
 
-        shint count = lineKeyWordSize / tabSize + 1;
+        shint count = (lineKeyWordSize % tabSize) == 0 ? (lineKeyWordSize / tabSize) : (lineKeyWordSize / tabSize + 1);
         std::string newWord = initTabCountWord(count);
         if (isDeclarationLineFunctionName(indexDeclarationLine[index]))
             newWord += '\t';
@@ -1784,7 +1778,6 @@ bool NorminetteCorrector::isDeclarationLineFunctionName(ushint indexLine)
     }
     else if (line.back().size() == 1)
     {
-
         return (line.back() == ")");
     }
     return false;
@@ -1812,11 +1805,7 @@ void NorminetteCorrector::addFewerLinesToDeclaration()
     {
         std::vector<std::string> keyWord;
         NorminetteCorrector::initVaribleKeyWords(keyWord);
-
         ushint indexDeclaration = NorminetteCorrector::searchDeclarationStartInFunction(keyWord, m_BracesIndex[index].front(), -m_BracesIndex[index].back());
-        
-
-
         if(FileTextEditor::getLine(indexDeclaration - 1).front() != "{")
             NorminetteCorrector::addNewLine(indexDeclaration, newEmptyLine);
     }

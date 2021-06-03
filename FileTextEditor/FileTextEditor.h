@@ -1,11 +1,11 @@
 #pragma once
-#include "../Header.h"
+#include "Header.h"
 #include "../FileEditor/FileEditor.h"
 
 class FileTextEditor : public FileEditor
 {
 private:
-    std::vector<std::vector<std::string>> m_text;
+    std::vector<std::vector<std::string> > m_text;
 
 public:
     //initialization
