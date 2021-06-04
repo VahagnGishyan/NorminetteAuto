@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../FileEditor"
+		},
+		{
+			"path": "../FileTextEditor"
+		},
+		{
+			"path": "../includes"
+		},
+		{
+			"path": "../NorminetteAuto"
+		},
+		{
+			"path": "../NorminetteCorrector"
+		}
+	]
+}

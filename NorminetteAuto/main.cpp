@@ -2,10 +2,12 @@
 
 int main(int argc, char** argv)
 {
-    for(ushint index = 1; index < argc; ++index)
-    {
-        NorminetteAuto::CorrectFile(argv[index]);
-    }
+    if(argc == 1)
+        return 0;
+
+    NorminetteAuto::CorrectFilesInFile(argv[1]);
 
     return (0);
 }
+
+

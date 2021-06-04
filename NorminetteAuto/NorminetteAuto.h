@@ -12,6 +12,7 @@ namespace     NorminetteAuto
     //void initFile();
 
     void CorrectFile(std::string filename);
+    void CorrectFilesInFile(std::string filename);
     
     //void print();
     //void clear();

@@ -7,6 +7,22 @@ void NorminetteAuto::CorrectFile(std::string filename)
     NorminetteCorrector data(filename);
     data.correctAll();
 }
+void NorminetteAuto::CorrectFilesInFile(std::string filename)
+{
+    std::cout<<"Start work 0"<<std::endl;
+
+    std::cout<<"Start work 1"<<std::endl;
+    FileEditor file(filename);
+    std::cout<<"Start work 2"<<std::endl;
+
+    for(ushint index = 0; index < file.size(); ++index)
+    {
+        std::cout<<"index = " <<index << std::endl;
+        std::cout<<"filename = " <<file.getLine(index)<<std::endl;
+        NorminetteAuto::CorrectFile("./Data/" + file.getLine(index));
+    }
+}
+
 
 void CalculateWorkTime::CorrectFile(std::string filename)
 {
@@ -31,3 +47,23 @@ void CalculateWorkTime::CorrectFile(std::string filename)
     sum /= cycle;
     std::cout << "time = " << sum << std::endl;
 }
+
+/*
+    m_fileName = fileName;
+    std::ifstream dataFileForInput(m_fileName);
+    if (!dataFileForInput)
+    {
+        std::cout << "Error, FileEditor.cpp, dataFileForInput.open() == false" << std::endl;
+        std::cout << "fileName = " << m_fileName << std::endl;
+    }
+    else
+    {
+        while (!dataFileForInput.eof())
+        {
+            std::string line;
+            getline(dataFileForInput, line);
+            addNewLineBack(line);
+        }
+    }
+    dataFileForInput.close();
+    */
