@@ -1,4 +1,3 @@
-#pragma once
 #include "FileEditor.h"
 
 //initialization 
@@ -152,9 +151,7 @@ void FileEditor::                    updateFile(std::string filename) const
         dataFileForOutput.clear();
         for (unsigned short index = 0; index < m_data.size(); ++index)
         {
-            dataFileForOutput << m_data[index];
-            if(index != m_data.size() - 1)
-                dataFileForOutput << std::endl;
+            dataFileForOutput << m_data[index] << std::endl;
         }
     }
 }

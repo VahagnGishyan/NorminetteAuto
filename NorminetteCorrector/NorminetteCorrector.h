@@ -157,15 +157,15 @@ public:
 
     void                      correctTabulationBeforeVariableNames();
     void                      searchFunctionNames(std::vector<ushint>& indexDeclarationLine);
-    void                      searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords);
-    void                      searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction, std::vector<std::string>& varibleKeyWords);
-    std::vector<ushint>       getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords);
+    void                      searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine);
+    void                      searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction);
+    std::vector<ushint>       getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine);
     std::vector<ushint>       getSizeKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>&);
     shint                     getDeclarationSizeInFunction(ushint indexDeclaration);
     shint                     getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line);
     shint                     getDeclarationSizeInLine(const std::vector<std::string>& line, ushint indexWord);
     void                      correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord, std::vector<ushint> sizeKeyWord);
-    bool		      isDeclarationInFunction(int indexFunction);
+    bool		              isDeclarationInFunction(int indexFunction);
     shint                     getMaxDeclarationSize(const std::vector<ushint>& indexDeclarationLine);
     std::string               initTabCountWord(int count);
     bool                      isDeclarationLineFunctionName(ushint indexLine);

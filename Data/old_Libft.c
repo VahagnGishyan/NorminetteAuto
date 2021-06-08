@@ -19,6 +19,6 @@ bool	is_null(const char *ptr)
 
 bool	get_dynamic_memory(char *ptr, int size)
 {
-	ptr =(char *) malloc(size);
+	ptr = (char *) malloc(size);
 	return (ptr == NULL);
 }

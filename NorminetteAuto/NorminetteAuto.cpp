@@ -1,4 +1,3 @@
-#pragma once
 
 #include "NorminetteAuto.h"
 
@@ -7,6 +6,7 @@ void NorminetteAuto::CorrectFile(std::string filename)
     NorminetteCorrector data(filename);
     data.correctAll();
     data.print();
+    data.clear();
 }
 void NorminetteAuto::CorrectFilesInFile(std::string filename)
 {
@@ -19,7 +19,6 @@ void NorminetteAuto::CorrectFilesInFile(std::string filename)
         NorminetteAuto::CorrectFile("../Data/" + file.getLine(index));
     }
 }
-
 
 void CalculateWorkTime::CorrectFile(std::string filename)
 {

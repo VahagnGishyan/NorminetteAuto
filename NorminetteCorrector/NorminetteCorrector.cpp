@@ -223,6 +223,8 @@ bool NorminetteCorrector::isTabulation(const std::string& word)
 //For corrector
 void NorminetteCorrector::correctAll()
 {
+    if(FileEditor::getLine(FileEditor::size()-1).empty())
+        FileEditor::deleteLineBack();
     FileEditor::updateFile(NorminetteCorrector::getOldFileName());
 
     if (FileEditor::empty())
@@ -1644,9 +1646,9 @@ void NorminetteCorrector::correctTabulationBeforeVariableNames()
 
     std::vector<ushint> indexDeclarationLine;
     searchFunctionNames(indexDeclarationLine);
-    searchDeclarationVaribaleNames(indexDeclarationLine, varibleKeyWords);
+    searchDeclarationVaribaleNames(indexDeclarationLine);
 
-    std::vector<ushint> indexKeyWord = getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(indexDeclarationLine, varibleKeyWords);
+    std::vector<ushint> indexKeyWord = getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(indexDeclarationLine);
     std::vector<ushint> sizeKeyWords = getSizeKeyWordsOfTabulationForVaribaleAndFunctionNames(indexDeclarationLine, indexKeyWord);
     correctTabulationForVaribaleAndFunctionNames(indexDeclarationLine, indexKeyWord, sizeKeyWords);
 }
@@ -1659,14 +1661,14 @@ void NorminetteCorrector::searchFunctionNames(std::vector<ushint>& indexDeclarat
         indexDeclarationLine[index] = m_BracesIndex[index].front() - 1;
     }
 }
-void NorminetteCorrector::searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords)
+void NorminetteCorrector::searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine)
 {
     for (ushint indexFunction = 0; indexFunction < m_BracesIndex.size(); ++indexFunction)
     {
-        searchDeclarationVaribaleNamesInFuntion(indexDeclarationLine, indexFunction, varibleKeyWords);
+        searchDeclarationVaribaleNamesInFuntion(indexDeclarationLine, indexFunction);
     }
 }
-void NorminetteCorrector::searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction, std::vector<std::string>& varibleKeyWords)
+void NorminetteCorrector::searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction)
 {
     for (ushint indexLine = m_BracesIndex[indexFunction].front() + 1; indexLine < -m_BracesIndex[indexFunction].back(); ++indexLine)
     {
@@ -1677,7 +1679,7 @@ void NorminetteCorrector::searchDeclarationVaribaleNamesInFuntion(std::vector<us
         indexDeclarationLine.push_back(indexLine);
     }
 }
-std::vector<ushint> NorminetteCorrector::getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords)
+std::vector<ushint> NorminetteCorrector::getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine)
 {
     std::vector<ushint> indexDeclarationOfLines(indexDeclarationLine.size());
 
