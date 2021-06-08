@@ -5,7 +5,7 @@ int main(int argc, char**argv)
 {
     for(ushint index = 1; index <= argc; ++index)
     {
-        NorminetteAuto::CorrectFile(argv[index]);
+        NorminetteAuto::CorrectFile("../Data/ft_atoi.c");
     }
     
     //NorminetteAuto::CorrectFilesInFile(argv[index]);

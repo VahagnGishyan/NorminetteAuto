@@ -1641,8 +1641,6 @@ bool NorminetteCorrector::isBracesIndex(const ushint indexLine) const
 
 void NorminetteCorrector::correctTabulationBeforeVariableNames()
 {
-    std::vector<std::string> varibleKeyWords;
-    NorminetteCorrector::initVaribleKeyWords(varibleKeyWords);
 
     std::vector<ushint> indexDeclarationLine;
     searchFunctionNames(indexDeclarationLine);
@@ -1761,7 +1759,7 @@ void NorminetteCorrector::correctTabulationForVaribaleAndFunctionNames(const std
 
         shint count = (lineKeyWordSize % tabSize) == 0 ? (lineKeyWordSize / tabSize) : (lineKeyWordSize / tabSize + 1);
         std::string newWord = initTabCountWord(count);
-        if (isDeclarationInFunction(m_BracesIndex[index].front()))
+        if (isDeclarationInFunction(NorminetteCorrector::getFunctionStart(indexDeclarationLine[index])) - 1)
             if (isDeclarationLineFunctionName(indexDeclarationLine[index]))
                 newWord += '\t';
 
