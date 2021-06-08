@@ -12,31 +12,30 @@
 
 #include "libft.h"
 
-int			my_iswspace(char c)
+int		my_iswspace(char c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v');
 }
 
-int			ft_atoi(const char* str)
+int		ft_atoi(const char *str)
 {
-	unsigned short		index;
-	unsigned short		negative;
-	unsigned short		result;
+	unsigned short	index;
+	unsigned short	negative;
+	unsigned short	result;
 
 	index = 0;
 	negative = 1;
 	result = 0;
-	while (my_iswspace(str[index]))
+	while (my_iswspace(str[index] ))
 		++index;
 	if (str[index] == '+' || str[index] == '-')
 		if (str[index++] == '-')
-			negative *= -1;
-	while (ft_isdigit(str[index]))
+		negative *= -1;
+	while (ft_isdigit(str[index] ))
 	{
 		result *= 10;
 		result += str[index] - '0';
 		++index;
 	}
-	return (result * negative);
-	
+	return (result *negative);
 }

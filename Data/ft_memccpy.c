@@ -12,17 +12,17 @@
 
 #include "Libft.h"
 
-void*		ft_memccpy(void* destination, const void* source, int value, size_t size)
+void	*ft_memccpy(void *dest, const void *srce, int value, size_t size)
 {
 	unsigned short	index;
 	unsigned char	symbol;
-	char* dest_ptr;
-	const char* srce_ptr;
+	char			*dest_ptr;
+	const char		*srce_ptr;
 
 	index = 0;
 	symbol = (char)value;
-	dest_ptr = (char*)destination;
-	srce_ptr = (const char*)source;
+	dest_ptr = (char *)dest;
+	srce_ptr = (const char *)srce;
 	while (index < size)
 	{
 		dest_ptr[index] = srce_ptr[index];

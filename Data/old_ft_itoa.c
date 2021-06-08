@@ -16,30 +16,26 @@ static size_t	itoa_compute_number_size(long number)
 {
 	size_t	size;
 
-	if (number < 0)
-		size = 1;
-	else
-		size = 0;
+	size = (number < 0 ? 1 : 0);
 	while (1)
 	{
 		number /= 10;
 		size++;
 		if (number == 0)
-			break ;
+			break;
 	}
 	return (size);
 }
-
-char	*ft_itoa(int n)
+char* 		ft_itoa(int n)
 {
 	long	number;
-	char	*array;
+	char* array;
 	size_t	size;
 
 	number = n;
 	size = itoa_compute_number_size(n);
 	if (get_dynamic_memory(array, (size + 1) * sizeof(char)))
-		return (NULL);
+		return NULL;
 	if (number < 0)
 	{
 		array[0] = '-';
@@ -52,7 +48,7 @@ char	*ft_itoa(int n)
 		number /= 10;
 		--size;
 		if (number == 0)
-			break ;
+			break;
 	}
 	return (array);
 }
