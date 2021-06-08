@@ -1,5 +1,5 @@
 #pragma once
-#include "Header.h"
+#include "../Header.h"
 #include "../FileTextEditor/FileTextEditor.h"
 
 //CodeBlock 0       : FileEditor, FileTextEditor
@@ -108,7 +108,7 @@ public:
     bool                      isThereAssignmentInLine(ushint indexLine);
     void                      separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine);
     void                      raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
-    bool                      isWordDeclarationKeyWord(const std::vector<std::string>& varibleKeyWords, const std::string& word) const;
+    bool                      isWordDeclarationKeyWord(const std::string& word);
 
     //CodeBlock 4, final corrections
     void                      correctForFinalize();
@@ -161,8 +161,8 @@ public:
     void                      searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction, std::vector<std::string>& varibleKeyWords);
     std::vector<ushint>       getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, std::vector<std::string>& varibleKeyWords);
     std::vector<ushint>       getSizeKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>&);
-    shint                     getDeclarationSizeInFunction(ushint indexDeclaration, const std::vector<std::string>& varibleKeyWords);
-    shint                     getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line, const std::vector<std::string>& varibleKeyWords);
+    shint                     getDeclarationSizeInFunction(ushint indexDeclaration);
+    shint                     getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line);
     shint                     getDeclarationSizeInLine(const std::vector<std::string>& line, ushint indexWord);
     void                      correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord, std::vector<ushint> sizeKeyWord);
     shint                     getMaxDeclarationSize(const std::vector<ushint>& indexDeclarationLine);

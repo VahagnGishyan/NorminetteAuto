@@ -249,7 +249,7 @@ void NorminetteCorrector::correctAll()
     NorminetteCorrector::updata();
     //FileEditor::print();
     //FileEditor::updateFile(FileEditor::getFileName());
-    FileEditor::updateFile(NorminetteCorrector::getNewFileName());
+    FileEditor::updateFile(NorminetteCorrector::getFileName());
 }
 
 //CodeBlock 1, basic check
@@ -1070,8 +1070,16 @@ bool NorminetteCorrector::isThereAssignmentInLine(ushint indexLine)
 void NorminetteCorrector::separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine)
 {
     std::vector<std::string> line = getLine(indexLine);
-
     std::vector<std::string> newLine;
+
+    if (!NorminetteCorrector::isWordDeclarationKeyWord(line.front()))
+    {
+        for (ushint index = 0; index < line.size(); ++index)
+        {
+            if (line[index] == "malloc")
+                return;
+        }
+    }
 
     ushint start = 0;
     for (; start < line.size(); ++start)
@@ -1107,8 +1115,13 @@ void NorminetteCorrector::raiseDeclarationUp(ushint& startDeclaration, ushint& i
     ++startDeclaration;
     --indexLine;
 }
-bool NorminetteCorrector::isWordDeclarationKeyWord(const std::vector<std::string>& varibleKeyWords, const std::string& word) const
+bool NorminetteCorrector::isWordDeclarationKeyWord(const std::string& word)
 {
+    std::vector<std::string> varibleKeyWords;
+    NorminetteCorrector::initVaribleKeyWords(varibleKeyWords);
+    NorminetteCorrector::initVaribleKeyWords(varibleKeyWords);
+
+
     if (word.size() < 3 || word.size() > 6 || !std::isalpha(word.front()))
         return false;
 
@@ -1126,6 +1139,7 @@ bool NorminetteCorrector::isWordDeclarationKeyWord(const std::vector<std::string
 void NorminetteCorrector::correctForFinalize()
 {
     correctMathOperators();
+    //NorminetteCorrector::print();
     correctBrackets();
     beforeSemicolonShouldBeNoSpace();
     correctComma();
@@ -1663,7 +1677,7 @@ std::vector<ushint> NorminetteCorrector::getIndexKeyWordsOfTabulationForVaribale
     for (ushint index = 0; index < indexDeclarationLine.size(); ++index)
     {
         std::vector<std::string>& line = FileTextEditor::getLine(indexDeclarationLine[index]);
-        indexDeclarationOfLines[index] = getDeclarationKeyWordIndexInLine(line, varibleKeyWords);
+        indexDeclarationOfLines[index] = getDeclarationKeyWordIndexInLine(line);
     }
 
     return indexDeclarationOfLines;
@@ -1680,26 +1694,26 @@ std::vector<ushint> NorminetteCorrector::getSizeKeyWordsOfTabulationForVaribaleA
 
     return sizeDeclarationOfLines;
 }
-shint NorminetteCorrector::getDeclarationSizeInFunction(ushint indexLine, const std::vector<std::string>& varibleKeyWords)
+shint NorminetteCorrector::getDeclarationSizeInFunction(ushint indexLine)
 {
     std::vector<std::string>& line = FileTextEditor::getLine(indexLine);
 
-    shint indexWord = getDeclarationKeyWordIndexInLine(line, varibleKeyWords);
+    shint indexWord = getDeclarationKeyWordIndexInLine(line);
 
     return getDeclarationSizeInLine(line, indexWord);
 }
-shint NorminetteCorrector::getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line, const std::vector<std::string>& varibleKeyWords)
+shint NorminetteCorrector::getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line)
 {
     ushint index = 0;
     bool key = true;
     for (; index < line.size(); ++index)
     {
-        if (key && isWordDeclarationKeyWord(varibleKeyWords, line[index]))
+        if (key && isWordDeclarationKeyWord(line[index]))
         {
             key = false;
             continue;
         }
-        if (!key && !isWordDeclarationKeyWord(varibleKeyWords, line[index]))
+        if (!key && !isWordDeclarationKeyWord(line[index]))
         {
             break;
         }
@@ -1724,7 +1738,7 @@ shint NorminetteCorrector::getDeclarationSizeInLine(const std::vector<std::strin
 }
 void NorminetteCorrector::correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord, std::vector<ushint> sizeKeyWord)
 {
-    constexpr ushint tabSize = 4;
+    constexpr ushint tabSize = 8;
     //shint maxValue = getMaxDeclarationSize(sizeKeyWord);
     //maxValue = (maxValue / tabSize + 1) * tabSize;
     shint maxValue = (getMaxDeclarationSize(sizeKeyWord) / tabSize + 1) * tabSize;

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Header.h"
+#include <ctime>
+#include "../Header.h"
 #include "../FileEditor/FileEditor.h"
 #include "../FileTextEditor/FileTextEditor.h"
 #include "../NorminetteCorrector/NorminetteCorrector.h"

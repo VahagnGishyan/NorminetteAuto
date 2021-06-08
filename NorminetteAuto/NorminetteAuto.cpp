@@ -1,25 +1,22 @@
-#include "NorminetteAuto.h"
+#pragma once
 
-#include <ctime>
+#include "NorminetteAuto.h"
 
 void NorminetteAuto::CorrectFile(std::string filename)
 {
     NorminetteCorrector data(filename);
     data.correctAll();
+    data.print();
 }
 void NorminetteAuto::CorrectFilesInFile(std::string filename)
 {
-    std::cout<<"Start work 0"<<std::endl;
-
-    std::cout<<"Start work 1"<<std::endl;
     FileEditor file(filename);
-    std::cout<<"Start work 2"<<std::endl;
 
     for(ushint index = 0; index < file.size(); ++index)
     {
         std::cout<<"index = " <<index << std::endl;
         std::cout<<"filename = " <<file.getLine(index)<<std::endl;
-        NorminetteAuto::CorrectFile("./Data/" + file.getLine(index));
+        NorminetteAuto::CorrectFile("../Data/" + file.getLine(index));
     }
 }
 
