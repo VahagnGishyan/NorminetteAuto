@@ -12,13 +12,13 @@
 
 #include "Libft.h"
 
-bool			is_null(const char *ptr)
+bool	is_null(const char *ptr)
 {
 	return (ptr == NULL);
 }
 
-bool			get_dynamic_memory(char *ptr, int size)
+bool	get_dynamic_memory(char *ptr, int size)
 {
-	ptr =(char *) malloc(size);
+	ptr = (char *) malloc(size);
 	return (ptr == NULL);
 }

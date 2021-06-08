@@ -102,9 +102,9 @@ public:
     void                      addNewVaribleKeyWords(std::vector<std::string>& varibleKeyWords, std::string keyWord);
 
     void                      correctInitialization();
-    void                      correctInitializationInFunction(std::vector<std::string> varibleKeyWords, int indexStartFunction, int indexEndFunction);
-    ushint                    searchDeclarationStartInFunction(std::vector<std::string> varibleKeyWords, int indexStartFunction, int indexEndFunction);
-    bool                      isThereDeclarationInLine(std::vector<std::string>& varibleKeyWords, ushint indexLine);
+    void                      correctInitializationInFunction(int indexStartFunction, int indexEndFunction);
+    ushint                    searchDeclarationStartInFunction(int indexStartFunction, int indexEndFunction);
+    bool                      isThereDeclarationInLine(ushint indexLine);
     bool                      isThereAssignmentInLine(ushint indexLine);
     void                      separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine);
     void                      raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
@@ -165,6 +165,7 @@ public:
     shint                     getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line);
     shint                     getDeclarationSizeInLine(const std::vector<std::string>& line, ushint indexWord);
     void                      correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord, std::vector<ushint> sizeKeyWord);
+    bool		      isDeclarationInFunction(int indexFunction);
     shint                     getMaxDeclarationSize(const std::vector<ushint>& indexDeclarationLine);
     std::string               initTabCountWord(int count);
     bool                      isDeclarationLineFunctionName(ushint indexLine);
