@@ -84,3 +84,35 @@ char	*ft_itoa(int n)
 	}
 	return (array);
 }
+
+void	*ft_memccpy(void *dest, const void *srce, int value, size_t size)
+{
+	unsigned short	index;
+	unsigned char	symbol;
+	char			*dest_ptr;
+	const char		*srce_ptr;
+
+	index = 0;
+	symbol = (char)value;
+	dest_ptr = (char *)dest;
+	srce_ptr = (const char *)srce;
+	while (index < size)
+	{
+		dest_ptr[index] = srce_ptr[index];
+		if (dest_ptr[index] == symbol)
+			return (dest_ptr + index + 1);
+		++index;
+	}
+	return (NULL);
+}
+
+void myTest()
+{
+
+int x;
+char y;
+
+y = '4';
+x = (int)(y);
+
+}

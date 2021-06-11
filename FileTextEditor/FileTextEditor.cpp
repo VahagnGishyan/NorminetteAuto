@@ -33,7 +33,7 @@ void FileTextEditor::                    updata()
     FileEditor::empty();
     for (ushint start = 0; start < size(); ++start)
     {
-        std::vector<std::string> line = FileTextEditor::getLine(start);
+        std::vector<std::string>& line = FileTextEditor::getLine(start);
 
         if (line.empty())
             continue;

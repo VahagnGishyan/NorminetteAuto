@@ -965,18 +965,10 @@ void NorminetteCorrector::correctInitialization()
     if (m_BracesIndex.empty())
         return;
 
-    std::vector<std::string> varibleKeyWords;
-    initVaribleKeyWords(varibleKeyWords);
-
-    //for test
-    ushint size = static_cast<ushint>(m_BracesIndex.size());
-
-    for (ushint start = 0; start < size; ++start)
+    for (ushint start = 0; start < static_cast<ushint>(m_BracesIndex.size()); ++start)
     {
         correctInitializationInFunction(m_BracesIndex[start].front() + 1, -m_BracesIndex[start].back() - 1);
     }
-
-    varibleKeyWords.clear();
 }
 void NorminetteCorrector::correctInitializationInFunction(int indexStartFunction, int indexEndFunction)
 {
@@ -1048,31 +1040,29 @@ ushint NorminetteCorrector::searchDeclarationStartInFunction(int indexStartFunct
 }
 bool NorminetteCorrector::isThereDeclarationInLine(ushint indexLine)
 {
-    std::vector<std::string> varibleKeyWords;
-    NorminetteCorrector::initVaribleKeyWords(varibleKeyWords);
-
-    std::vector<std::string> line = getLine(indexLine);
-
-    if (varibleKeyWords.empty())
-    {
-        NorminetteCorrector::initVaribleKeyWords(varibleKeyWords);
-    }
+    const std::vector<std::string>& line = getLine(indexLine);
 
     for (ushint start = 0; start < line.size(); ++start)
     {
-        for (ushint index = 0; index < varibleKeyWords.size(); ++index)
+        if (NorminetteCorrector::isWordDeclarationKeyWord(line[start]))
         {
-            if (searchInWords(line, varibleKeyWords[index]))
+            bool key = true;
+            for (shint index = start - 1; index >= 0; --index)
             {
-                return true;
+                if (!NorminetteCorrector::isalpha(line[index]))
+                {
+                    key = false;
+                    break;
+                }
             }
+            return key;
         }
     }
     return false;
 }
 bool NorminetteCorrector::isThereAssignmentInLine(ushint indexLine)
 {
-    std::vector<std::string> line = getLine(indexLine);
+    const std::vector<std::string>& line = getLine(indexLine);
 
     for (shint start = static_cast<shint>(line.size() - 1); start >= 0; --start)
     {
@@ -1085,7 +1075,7 @@ bool NorminetteCorrector::isThereAssignmentInLine(ushint indexLine)
 }
 void NorminetteCorrector::separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine)
 {
-    std::vector<std::string> line = getLine(indexLine);
+    const std::vector<std::string> line = getLine(indexLine);
     std::vector<std::string> newLine;
 
     if (!NorminetteCorrector::isWordDeclarationKeyWord(line.front()))
@@ -1117,6 +1107,7 @@ void NorminetteCorrector::separateDeclarationFromAssignment(ushint& startDeclara
     {
         newLine.push_back(line[start]);
     }
+
 
     FileTextEditor::setLine(indexLine + 1, newLine);
 }
@@ -1152,7 +1143,7 @@ bool NorminetteCorrector::isLineCCast(const std::vector<std::string>& line)
 }
 void NorminetteCorrector::raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine)
 {
-    std::vector<std::string> line = getLine(indexLine);
+    const std::vector<std::string>& line = getLine(indexLine);
 
     NorminetteCorrector::deleteLine(indexLine);
 
@@ -1332,7 +1323,9 @@ bool NorminetteCorrector::isWordUnaryMathOperator(const std::string& symbol)
 }
 bool NorminetteCorrector::isMathOperator(const std::string& word) const
 {
-    const std::vector<std::string> keyWords{ "+","-","*","/","%","&","|","=", "!", "+=","-=","*=","/=","%=", "==", "!="};
+    const std::vector<std::string> keyWords{ "+","-","*","/","%","&","|",
+        "=", "!", "+=","-=","*=","/=","%=", "==", "!=", "<", ">", "<=",
+        ">=", "<!", ">!", "<<", ">>"};
 
     for (ushint index = 0; index < keyWords.size(); ++index)
     {

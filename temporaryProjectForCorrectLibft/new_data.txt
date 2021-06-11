@@ -22,7 +22,6 @@ int		ft_atoi(const char *str)
 	unsigned short	result;
 	unsigned short	index;
 	unsigned short	negative;
-
 	index = 0;
 	negative = 1;
 	result = 0;
@@ -43,7 +42,6 @@ int		ft_atoi(const char *str)
 staticsize_t	itoa_compute_number_size(long number)
 {
 	size_t		size;
-
 	if (number < 0)
 		size = 1;
 	else
@@ -63,11 +61,10 @@ char		*ft_itoa(int n)
 	long		number;
 	char		*array;
 	size_t		size;
-
-	if (get_dynamic_memory(array ,(size + 1) *sizeof(char) ))
-		number = n;
+	number = n;
 	size = itoa_compute_number_size(n);
-	return (NULL);
+	if (get_dynamic_memory(array ,(size + 1) *sizeof(char) ))
+		return (NULL);
 	if (number < 0)
 	{
 		array[0] = '-';
@@ -83,4 +80,32 @@ char		*ft_itoa(int n)
 			break;
 	}
 	return (array);
+}
+
+void		*ft_memccpy(void *dest, const void *srce, int value, size_t size)
+{
+	unsigned short	index;
+	unsigned char	symbol;
+	char		*dest_ptr;
+	const char	*srce_ptr;
+	index = 0;
+	symbol = (char) value;
+	dest_ptr = (char *) dest;
+	srce_ptr = (const char *) srce;
+	while (index < size)
+	{
+		dest_ptr[index] = srce_ptr[index];
+		if (dest_ptr[index] == symbol)
+			return (dest_ptr + index + 1);
+		++index;
+	}
+	return (NULL);
+}
+
+void		myTest()
+{
+	int		x;
+	char		y;
+	y = '4';
+	x = (int) ( y);
 }
