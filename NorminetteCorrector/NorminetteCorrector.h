@@ -36,6 +36,8 @@ public:
     bool                     searchInWords(const std::vector<std::string>& words, const std::string& keyWord);    //return true if found
     void                     divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight);
     bool                     isdigit(const std::string& word) const;
+    bool                     isalpha(const std::string& word) const;
+    bool                     isTabulation(const std::string& word);
     std::string              getOldFileName();
     std::string              getNewFileName();
 
@@ -48,7 +50,7 @@ public:
     void                     deleteLineBack();
 
     void                     updata();
-    bool                     isTabulation(const std::string& word);
+
 
     //For corrector
     void                     correctAll();
@@ -107,6 +109,8 @@ public:
     bool                      isThereDeclarationInLine(ushint indexLine);
     bool                      isThereAssignmentInLine(ushint indexLine);
     void                      separateDeclarationFromAssignment(ushint& startDeclaration, ushint indexLine);
+    bool		      isLineMalloc(const std::vector<std::string>& line);
+    bool		      isLineCCast(const std::vector<std::string>& line);
     void                      raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
     bool                      isWordDeclarationKeyWord(const std::string& word);
 
@@ -165,7 +169,7 @@ public:
     shint                     getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line);
     shint                     getDeclarationSizeInLine(const std::vector<std::string>& line, ushint indexWord);
     void                      correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord, std::vector<ushint> sizeKeyWord);
-    bool		              isDeclarationInFunction(int indexFunction);
+    bool		      isDeclarationInFunction(int indexFunction);
     shint                     getMaxDeclarationSize(const std::vector<ushint>& indexDeclarationLine);
     std::string               initTabCountWord(int count);
     bool                      isDeclarationLineFunctionName(ushint indexLine);

@@ -59,7 +59,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="filename.txt">
+    <Text Include="data.txt">
       <Filter>Data</Filter>
     </Text>
   </ItemGroup>

@@ -83,6 +83,28 @@ bool NorminetteCorrector::isdigit(const std::string& word) const
 
     return (true);
 }
+bool NorminetteCorrector::isalpha(const std::string& word) const
+{
+    for (ushint index = 0; index < word.size(); ++index)
+    {
+        if (!std::isalpha(word[index]))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+bool NorminetteCorrector::isTabulation(const std::string& word)
+{
+    if (word.empty())
+        return false;
+    for (ushint index = 0; index < word.size(); ++index)
+    {
+        if (word[index] != '\t')
+            return false;
+    }
+    return true;
+}
 std::string NorminetteCorrector::getOldFileName()
 {
     std::string fileRoad = getFileName();
@@ -191,7 +213,7 @@ void NorminetteCorrector::updata()
             {
                 newLine += line[index];
             }
-            else if (isTabulation(line[index + 1]))
+            else if (isTabulation(line[(int)index + 1]))
             {
                 newLine += line[index];
             }
@@ -208,24 +230,14 @@ void NorminetteCorrector::updata()
 
     FileTextEditor::clear();
 }
-bool NorminetteCorrector::isTabulation(const std::string& word)
-{
-    if (word.empty())
-        return false;
-    for (ushint index = 0; index < word.size(); ++index)
-    {
-        if (word[index] != '\t')
-            return false;
-    }
-    return true;
-}
+
 
 //For corrector
 void NorminetteCorrector::correctAll()
 {
     if(FileEditor::getLine(FileEditor::size()-1).empty())
         FileEditor::deleteLineBack();
-    FileEditor::updateFile(NorminetteCorrector::getOldFileName());
+    //FileEditor::updateFile(NorminetteCorrector::getOldFileName());
 
     if (FileEditor::empty())
         return;
@@ -251,7 +263,7 @@ void NorminetteCorrector::correctAll()
     NorminetteCorrector::updata();
     //FileEditor::print();
     //FileEditor::updateFile(FileEditor::getFileName());
-    FileEditor::updateFile(NorminetteCorrector::getFileName());
+    FileEditor::updateFile(NorminetteCorrector::getNewFileName());
 }
 
 //CodeBlock 1, basic check
@@ -747,7 +759,7 @@ void  NorminetteCorrector::updateBraces()
             if (countBracesStart == countBracesEnd)
             {
                 ++indexForBracesArr;
-                m_BracesIndex.resize(indexForBracesArr + 1);
+                m_BracesIndex.resize((int)indexForBracesArr + 1);
             }
             m_BracesIndex[indexForBracesArr].push_back(start);
             ++countBracesStart;
@@ -937,6 +949,7 @@ void NorminetteCorrector::initVaribleKeyWords(std::vector<std::string>& varibleK
     varibleKeyWords.push_back("void");
     varibleKeyWords.push_back("char");
     varibleKeyWords.push_back("bool");
+    varibleKeyWords.push_back("size_t");
     //varibleKeyWords.push_back("unsigned int");
 }
 void NorminetteCorrector::addNewVaribleKeyWords(std::vector<std::string>& varibleKeyWords, std::string keyWord)
@@ -953,9 +966,7 @@ void NorminetteCorrector::correctInitialization()
         return;
 
     std::vector<std::string> varibleKeyWords;
-
-    if (varibleKeyWords.empty())
-        initVaribleKeyWords(varibleKeyWords);
+    initVaribleKeyWords(varibleKeyWords);
 
     //for test
     ushint size = static_cast<ushint>(m_BracesIndex.size());
@@ -1079,10 +1090,9 @@ void NorminetteCorrector::separateDeclarationFromAssignment(ushint& startDeclara
 
     if (!NorminetteCorrector::isWordDeclarationKeyWord(line.front()))
     {
-        for (ushint index = 0; index < line.size(); ++index)
+        if (isLineMalloc(line) || isLineCCast(line))
         {
-            if (line[index] == "malloc")
-                return;
+            return;
         }
     }
 
@@ -1109,6 +1119,36 @@ void NorminetteCorrector::separateDeclarationFromAssignment(ushint& startDeclara
     }
 
     FileTextEditor::setLine(indexLine + 1, newLine);
+}
+bool NorminetteCorrector::isLineMalloc(const std::vector<std::string>& line)
+{
+    for (ushint index = 0; index < line.size(); ++index)
+    {
+        if (line[index] == "malloc")
+            return true;
+    }
+    return false;
+}
+bool NorminetteCorrector::isLineCCast(const std::vector<std::string>& line)
+{
+    for (ushint start = 1; start < line.size(); ++start)
+    {
+        if (NorminetteCorrector::isWordDeclarationKeyWord(line[start]))
+        {
+            for (shint index = start; index >= 0; --index)
+            {
+                if (NorminetteCorrector::isalpha(line[index]))
+                {
+                    continue;
+                }
+                if (line[index] == "(")
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 void NorminetteCorrector::raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine)
 {
@@ -1144,7 +1184,6 @@ bool NorminetteCorrector::isWordDeclarationKeyWord(const std::string& word)
 void NorminetteCorrector::correctForFinalize()
 {
     correctMathOperators();
-    //NorminetteCorrector::print();
     correctBrackets();
     beforeSemicolonShouldBeNoSpace();
     correctComma();
@@ -1187,7 +1226,7 @@ void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine, ushint& i
     std::vector<std::string> line = FileTextEditor::getLine(indexLine);
     
     int indexEnd = indexWord + 1;
-    if (line[indexWord + 1] == "*" || line[indexWord + 1] == "&")
+    if (line[(int)indexWord + 1] == "*" || line[(int)indexWord + 1] == "&")
     {
         indexEnd = latestMathOperatorIndex(indexLine, indexWord + 1);
     }
@@ -1222,14 +1261,14 @@ void NorminetteCorrector::searchBinaryMathOperatorInLine(ushint indexLine, std::
     {
         if (isMathOperator(words[indexWord]))
         {
-            if (isMathOperator(words[indexWord + 1]))
+            if (isMathOperator(words[(int)indexWord + 1]))
             {
                 correctMathOperatorsInLine(indexLine, indexWord);
                 words = FileTextEditor::getLine(indexLine);
             }
             else if (isPointerMathOperator(words[indexWord]) or isReferenceMathOperator(words[indexWord]))
             {
-                if (!isdigit(words[indexWord + 1]))
+                if (!isdigit(words[(int)indexWord + 1]))
                 {
                     FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
                     words = FileTextEditor::getLine(indexLine);
@@ -1256,7 +1295,7 @@ bool NorminetteCorrector::isUnaryMathOperator(ushint indexLine, std::vector<std:
         return false;
     }
 
-    if (isMathOperator(words[indexWord + 1]))
+    if (isMathOperator(words[(int)indexWord + 1]))
     {
         return false;
     }
@@ -1381,7 +1420,7 @@ void NorminetteCorrector::correctIncrementOrDecrement(ushint indexLine, ushint i
 {
     std::vector<std::string> line = FileTextEditor::getLine(indexLine);
 
-    if (std::isalpha(line[indexWord + 1].front()) || std::isdigit(line[indexWord + 1].front()))
+    if (std::isalpha(line[(int)indexWord + 1].front()) || std::isdigit(line[(int)indexWord + 1].front()))
     {
         FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
     }

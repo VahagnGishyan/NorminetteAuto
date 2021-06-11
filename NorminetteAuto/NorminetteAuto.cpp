@@ -4,6 +4,7 @@
 void NorminetteAuto::CorrectFile(std::string filename)
 {
     NorminetteCorrector data(filename);
+    data.print();
     data.correctAll();
     data.print();
     data.clear();

@@ -1,15 +1,15 @@
 #include "NorminetteAuto.h"
 #include <iostream>
    
-int main(int argc, char**argv) 
+int main(/*int argc, char**argv*/) 
 {
-    for(ushint index = 1; index <= argc; ++index)
-    {
-        NorminetteAuto::CorrectFile(argv[index]);
-    }
+    //for(ushint index = 1; index <= argc; ++index)
+    //{
+    //    NorminetteAuto::CorrectFile(argv[index]);
+    //}
     
     //NorminetteAuto::CorrectFilesInFile(argv[index]);
-    //NorminetteAuto::CorrectFile("../Data/Libft.c");
+    NorminetteAuto::CorrectFile("data.txt");
 
     //std::ofstream file("newFile.c");
     //file.write("#include <iostream>\0", 20);
