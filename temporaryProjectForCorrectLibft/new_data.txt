@@ -12,12 +12,12 @@
 
 #include "libft.h"
 
-int		my_iswspace(char c)
+int 		my_iswspace(char c) 
 {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v');
 }
 
-int		ft_atoi(const char *str)
+int 		ft_atoi(const char *str) 
 {
 	unsigned short	result;
 	unsigned short	index;
@@ -39,7 +39,7 @@ int		ft_atoi(const char *str)
 	return (result *negative);
 }
 
-staticsize_t	itoa_compute_number_size(long number)
+static size_t 	itoa_compute_number_size(long number) 
 {
 	size_t		size;
 	if (number < 0)
@@ -56,7 +56,7 @@ staticsize_t	itoa_compute_number_size(long number)
 	return (size);
 }
 
-char		*ft_itoa(int n)
+char 		*ft_itoa(int n) 
 {
 	long		number;
 	char		*array;
@@ -82,7 +82,7 @@ char		*ft_itoa(int n)
 	return (array);
 }
 
-void		*ft_memccpy(void *dest, const void *srce, int value, size_t size)
+void 		*ft_memccpy(void *dest, const void *srce, int value, size_t size) 
 {
 	unsigned short	index;
 	unsigned char	symbol;
@@ -102,7 +102,7 @@ void		*ft_memccpy(void *dest, const void *srce, int value, size_t size)
 	return (NULL);
 }
 
-void		myTest()
+void 		myTest() 
 {
 	int		x;
 	char		y;

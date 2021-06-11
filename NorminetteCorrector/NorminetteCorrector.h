@@ -50,6 +50,8 @@ public:
     void                     deleteLineBack();
 
     void                     updata();
+    std::string              updataFunctionName(int index);
+    std::string              updataLine(int index);
 
 
     //For corrector
@@ -159,16 +161,18 @@ public:
     ushint                    getTabulationCountInFunction(ushint indexFunction, ushint indexLine);
     bool                      isBracesIndex(const ushint indexLine) const;
 
-    void                      correctTabulationBeforeVariableNames();
+    void                      correctTabulationBeforeVariable();
+    void                      correctTabulationBeforeFunction();
     void                      searchFunctionNames(std::vector<ushint>& indexDeclarationLine);
     void                      searchDeclarationVaribaleNames(std::vector<ushint>& indexDeclarationLine);
     void                      searchDeclarationVaribaleNamesInFuntion(std::vector<ushint>& indexDeclarationLine, ushint indexFunction);
-    std::vector<ushint>       getIndexKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine);
-    std::vector<ushint>       getSizeKeyWordsOfTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>&);
+    std::vector<ushint>       getIndexTypeKeyWordsOfTabulation(const std::vector<ushint>& indexDeclarationLine);
+    std::vector<ushint>       getSizeTypeKeyWordsOfTabulation(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>&);
     shint                     getDeclarationSizeInFunction(ushint indexDeclaration);
     shint                     getDeclarationKeyWordIndexInLine(const std::vector<std::string>& line);
     shint                     getDeclarationSizeInLine(const std::vector<std::string>& line, ushint indexWord);
-    void                      correctTabulationForVaribaleAndFunctionNames(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord, std::vector<ushint> sizeKeyWord);
+    void                      correctTabulationBeforeVaribleName(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord, std::vector<ushint> sizeKeyWord);
+    void                      correctTabulationBeforeFunctionName(const std::vector<ushint>& indexDeclarationLine, const std::vector<ushint>& indexKeyWord, std::vector<ushint> sizeKeyWord);
     bool		      isDeclarationInFunction(int indexFunction);
     shint                     getMaxDeclarationSize(const std::vector<ushint>& indexDeclarationLine);
     std::string               initTabCountWord(int count);
