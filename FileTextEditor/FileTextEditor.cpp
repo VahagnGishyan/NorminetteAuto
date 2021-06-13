@@ -69,7 +69,7 @@ void FileTextEditor::                    print()
 }
 int  FileTextEditor::                    size() 
 {
-    return (m_text.size());
+    return ((int)m_text.size());
 }
 bool FileTextEditor::                    empty() 
 {
@@ -275,7 +275,7 @@ int  FileTextEditor::                    searchWordInLine(int indexLine, const s
 }
 int  FileTextEditor::                    getLineSize(int indexLine)
 {
-    return (m_text.at(indexLine).size());
+    return ((int)m_text.at(indexLine).size());
 }
 
 //work form File

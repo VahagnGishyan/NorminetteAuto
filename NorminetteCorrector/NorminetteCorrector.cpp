@@ -280,6 +280,7 @@ void NorminetteCorrector::correctAll()
     //FileEditor::print();
 
     FileTextEditor::init(m_startLine, FileEditor::size());
+    NorminetteCorrector::initVaribleKeyWords();
     //FileTextEditor::print();
 
     correctInsideLine();
@@ -956,31 +957,27 @@ shint NorminetteCorrector::getFunctionEnd(ushint indexInFunctionBody)
 }
 
 //For initilization member data
-void NorminetteCorrector::initVaribleKeyWords(std::vector<std::string>& varibleKeyWords)
+void NorminetteCorrector::initVaribleKeyWords()
 {
-    if (!varibleKeyWords.empty())
-    {
-        varibleKeyWords.clear();
-    }
+    if (!m_varibleKeyWords.empty())
+        return;
 
+    m_varibleKeyWords.reserve(14);
 
-    varibleKeyWords.reserve(12);
-
-    varibleKeyWords.push_back("short");
-    varibleKeyWords.push_back("ushort");
-    varibleKeyWords.push_back("ushint");
-    varibleKeyWords.push_back("int");
-    varibleKeyWords.push_back("uint");
-    varibleKeyWords.push_back("long");
-    varibleKeyWords.push_back("ulong");
-    varibleKeyWords.push_back("float");
-    varibleKeyWords.push_back("double");
-    varibleKeyWords.push_back("void");
-    varibleKeyWords.push_back("char");
-    varibleKeyWords.push_back("bool");
-    varibleKeyWords.push_back("size_t");
-    varibleKeyWords.push_back("static");
-    //varibleKeyWords.push_back("unsigned int");
+    m_varibleKeyWords.push_back("short");
+    m_varibleKeyWords.push_back("ushort");
+    m_varibleKeyWords.push_back("ushint");
+    m_varibleKeyWords.push_back("int");
+    m_varibleKeyWords.push_back("uint");
+    m_varibleKeyWords.push_back("long");
+    m_varibleKeyWords.push_back("ulong");
+    m_varibleKeyWords.push_back("float");
+    m_varibleKeyWords.push_back("double");
+    m_varibleKeyWords.push_back("void");
+    m_varibleKeyWords.push_back("char");
+    m_varibleKeyWords.push_back("bool");
+    m_varibleKeyWords.push_back("size_t");
+    m_varibleKeyWords.push_back("static");
 }
 void NorminetteCorrector::addNewVaribleKeyWords(std::vector<std::string>& varibleKeyWords, std::string keyWord)
 {
@@ -1183,17 +1180,15 @@ void NorminetteCorrector::raiseDeclarationUp(ushint& startDeclaration, ushint& i
 }
 bool NorminetteCorrector::isWordDeclarationKeyWord(const std::string& word)
 {
-    std::vector<std::string> varibleKeyWords;
-    NorminetteCorrector::initVaribleKeyWords(varibleKeyWords);
-    NorminetteCorrector::initVaribleKeyWords(varibleKeyWords);
+    NorminetteCorrector::initVaribleKeyWords();
 
 
     if (word.size() < 3 || word.size() > 6 || !std::isalpha(word.front()))
         return false;
 
-    for (ushint index = 0; index < varibleKeyWords.size(); ++index)
+    for (ushint index = 0; index < m_varibleKeyWords.size(); ++index)
     {
-        if (varibleKeyWords[index] == word)
+        if (m_varibleKeyWords[index] == word)
         {
             return true;
         }
@@ -1355,7 +1350,7 @@ bool NorminetteCorrector::isMathOperator(const std::string& word) const
 {
     const std::vector<std::string> keyWords{ "+","-","*","/","%","&","|",
         "=", "!", "+=","-=","*=","/=","%=", "==", "!=", "<", ">", "<=",
-        ">=", "<!", ">!", "<<", ">>"};
+        ">=", "<!", ">!", "<<", ">>", "||", "&&"};
 
     for (ushint index = 0; index < keyWords.size(); ++index)
     {
@@ -1483,10 +1478,6 @@ int  NorminetteCorrector::latestMathOperatorIndex(std::vector<std::string>& line
 
 void NorminetteCorrector::correctBrackets()
 {
-    correctRoundBrackets();
-}
-void NorminetteCorrector::correctRoundBrackets()
-{
     for (ushint indexLine = 0; indexLine < FileTextEditor::size(); ++indexLine)
     {
         searchBracketsInLine(indexLine);
@@ -1494,7 +1485,7 @@ void NorminetteCorrector::correctRoundBrackets()
 }
 void NorminetteCorrector::searchBracketsInLine(int indexLine)
 {
-    std::vector<std::string> words = FileTextEditor::getLine(indexLine);
+    std::vector<std::string>& words = FileTextEditor::getLine(indexLine);
 
     for (ushint indexWord = 0; indexWord < words.size(); ++indexWord)
     {
@@ -1521,11 +1512,10 @@ void NorminetteCorrector::correctOpenRoundBrackets(ushint indexLine, std::vector
     if (indexWord == 0)
     {
         FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
-        words = FileTextEditor::getLine(indexLine);
         return;
     }
         
-    const std::vector<std::string> keyWords{ "if", "while", "return" };
+    const std::vector<std::string> keyWords{ "if", "while", "return", "," };
     bool key = true;
     for (ushint indexKeyWord = 0; indexKeyWord < keyWords.size(); ++indexKeyWord)
     {
@@ -1542,43 +1532,39 @@ void NorminetteCorrector::correctOpenRoundBrackets(ushint indexLine, std::vector
     {
         FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord + 1);
         --indexWord;
-        words = FileTextEditor::getLine(indexLine);
     }
     else
     {
         FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
-        words = FileTextEditor::getLine(indexLine);
     }
 }
 void NorminetteCorrector::correctCloseRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
 {
+    if ((indexWord + 1) != words.size() && NorminetteCorrector::isalpha(words[indexWord + 1]))
+        FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord + 1);
     FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
-    words = FileTextEditor::getLine(indexLine);
 }
 void NorminetteCorrector::correctOpenSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
 {
     if (indexWord == 0)
     {
         FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
-        words = FileTextEditor::getLine(indexLine);
         return;
     }
 
     FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord + 1);
-    words = FileTextEditor::getLine(indexLine);
     --indexWord;
 }
 void NorminetteCorrector::correctCloseSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
 {
     FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
-    words = FileTextEditor::getLine(indexLine);
 }
 
 void NorminetteCorrector::beforeSemicolonShouldBeNoSpace()
 {
     for (ushint start = 0; start < FileTextEditor::size(); ++start)
     {
-        std::vector<std::string> line = FileTextEditor::getLine(start);
+        std::vector<std::string>& line = FileTextEditor::getLine(start);
         if (line.back() == ";")
         {
             FileTextEditor::combineWords(start, static_cast<ushint>(line.size() - 2), static_cast<ushint>(line.size() - 1));
@@ -1594,7 +1580,7 @@ void NorminetteCorrector::correctComma()
 }
 void NorminetteCorrector::correctCommaInLine(ushint indexLine)
 {
-    std::vector<std::string> line = FileTextEditor::getLine(indexLine);
+    std::vector<std::string>& line = FileTextEditor::getLine(indexLine);
 
     if (line.size() <= 4)
         return;
@@ -1604,7 +1590,6 @@ void NorminetteCorrector::correctCommaInLine(ushint indexLine)
         if (line[indexWord] == ",")
         {
             FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
-            line = FileTextEditor::getLine(indexLine);
         }
     }
 }
@@ -1639,7 +1624,7 @@ void   NorminetteCorrector::correctTabulationInLine(ushint indexLine)
 
     if (indexLine > 0)
     {
-        const std::string word = FileTextEditor::getLine(indexLine - 1).back();
+        const std::string& word = FileTextEditor::getLine(indexLine - 1).back();
         if ((word.back() == ')' || word == "else") && !isBracesIndex(indexLine))
         {
             tabs += '\t';

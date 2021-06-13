@@ -7,7 +7,6 @@ int main(/*int argc, char**argv*/)
     //{
     //    NorminetteAuto::CorrectFile(argv[index]);
     //}
-    
     //NorminetteAuto::CorrectFilesInFile(argv[index]);
     NorminetteAuto::CorrectFile("data.txt");
 

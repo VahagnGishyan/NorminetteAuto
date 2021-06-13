@@ -63,7 +63,7 @@ char 		*ft_itoa(int n)
 	size_t		size;
 	number = n;
 	size = itoa_compute_number_size(n);
-	if (get_dynamic_memory(array ,(size + 1) *sizeof(char) ))
+	if (get_dynamic_memory(array, (size + 1) *sizeof(char) ))
 		return (NULL);
 	if (number < 0)
 	{
@@ -89,7 +89,7 @@ void 		*ft_memccpy(void *dest, const void *srce, int value, size_t size)
 	char		*dest_ptr;
 	const char	*srce_ptr;
 	index = 0;
-	symbol = (char) value;
+	symbol = (char)value;
 	dest_ptr = (char *) dest;
 	srce_ptr = (const char *) srce;
 	while (index < size)
@@ -106,6 +106,8 @@ void 		myTest()
 {
 	int		x;
 	char		y;
+	if (x == y || (bool)x)
+		++x;
 	y = '4';
 	x = (int) ( y);
 }

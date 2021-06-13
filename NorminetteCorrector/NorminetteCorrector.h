@@ -14,7 +14,7 @@ private:
     //std::vector<unsigned short>	    m_PreprocessorIndex;
     std::vector<std::vector<short> >	    m_BracesIndex;
     //std::vector<bool>			    m_ErrorStatusRegister;
-    //std::vector<std::string>		    m_varibleKeyWords;
+    std::vector<std::string>		    m_varibleKeyWords;
 
 public:
     NorminetteCorrector() : FileTextEditor(), m_startLine(0)
@@ -102,7 +102,7 @@ public:
     shint                     getFunctionEnd(ushint indexInFunctionBody);
 
     //For initilization member data
-    void                      initVaribleKeyWords(std::vector<std::string>& varibleKeyWords);
+    void                      initVaribleKeyWords();
     void                      addNewVaribleKeyWords(std::vector<std::string>& varibleKeyWords, std::string keyWord);
 
     void                      correctInitialization();
@@ -115,6 +115,13 @@ public:
     bool		      isLineCCast(const std::vector<std::string>& line);
     void                      raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
     bool                      isWordDeclarationKeyWord(const std::string& word);
+
+    //void                      correctUserKeyWords();
+    //void                      correctStructs();
+
+    //void                      correctEnum();
+
+    //void                      correctTypedef();
 
     //CodeBlock 4, final corrections
     void                      correctForFinalize();
@@ -143,7 +150,6 @@ public:
     int                       latestMathOperatorIndex(std::vector<std::string>& line, ushint indexWord);
 
     void                      correctBrackets();
-    void                      correctRoundBrackets();
     void                      searchBracketsInLine(int indexLine);
     void                      correctOpenRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
     void                      correctCloseRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);

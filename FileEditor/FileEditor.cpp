@@ -30,7 +30,7 @@ FileEditor::                         FileEditor(const std::string& fileName)
 //to work
 int  FileEditor::                    size() const
 {
-    return m_data.size();
+    return ((int)m_data.size());
 }
 void FileEditor::                    print() const
 {
@@ -85,7 +85,7 @@ void FileEditor::                    addNewLine(const unsigned short indexLine, 
 }
 void FileEditor::                    deleteLine(const int indexLine)
 {
-    for (unsigned short int index = indexLine; index < size() - 1; ++index)
+    for (int index = indexLine; index < size() - 1; ++index)
     {
         m_data[index] = m_data[index + 1];
     }
@@ -191,7 +191,7 @@ void FileEditor::                    openFile(const std::string& fileName)
 //Additions
 int FileEditor::                     getLineSize(const int start) const
 {
-    return m_data.at(start).size();
+    return ((int)m_data.at(start).size());
 }
 std::string FileEditor::             getFileName()  const
 {
