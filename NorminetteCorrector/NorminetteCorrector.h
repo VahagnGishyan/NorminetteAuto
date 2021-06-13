@@ -37,6 +37,7 @@ public:
     void                     divideLineIntoThreeNewLines(int indexLine, int indexLeft, int indexRight);
     bool                     isdigit(const std::string& word) const;
     bool                     isalpha(const std::string& word) const;
+    bool                     is¿lphaWithSemicolonInEnd(const std::string& word);
     bool                     isTabulation(const std::string& word);
     std::string              getOldFileName();
     std::string              getNewFileName();
@@ -116,12 +117,6 @@ public:
     void                      raiseDeclarationUp(ushint& startDeclaration, ushint& indexLine);
     bool                      isWordDeclarationKeyWord(const std::string& word);
 
-    //void                      correctUserKeyWords();
-    //void                      correctStructs();
-
-    //void                      correctEnum();
-
-    //void                      correctTypedef();
 
     //CodeBlock 4, final corrections
     void                      correctForFinalize();
@@ -144,13 +139,18 @@ public:
     bool                      isPointerMathOperator(const char symbol) const;
     bool                      isReferenceMathOperator(const char symbol) const;
     bool                      isIncrementOrDecrement(const std::string& word) const;
+    //bool                      isÃultiplicationŒperator(const std::string& word);
 
     void                      correctIncrementOrDecrement(ushint indexLine, ushint indexWord);
     int                       latestMathOperatorIndex(ushint indexLine, ushint indexWord);
     int                       latestMathOperatorIndex(std::vector<std::string>& line, ushint indexWord);
 
     void                      correctBrackets();
-    void                      searchBracketsInLine(int indexLine);
+    void                      correctBracketsInLine(int indexLine);
+    bool                      isOpenRoundBrackets(const std::string& word);
+    bool                      isCloseRoundBrackets(const std::string& word);
+    bool                      isOpenSquareBrackets(const std::string& word);
+    bool                      isCloseSquareBrackets(const std::string& word);
     void                      correctOpenRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
     void                      correctCloseRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);
     void                      correctOpenSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord);

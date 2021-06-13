@@ -94,6 +94,19 @@ bool NorminetteCorrector::isalpha(const std::string& word) const
     }
     return true;
 }
+bool NorminetteCorrector::is¿lphaWithSemicolonInEnd(const std::string& word)
+{
+    for (ushint index = 0; index < word.size(); ++index)
+    {
+        if (!std::isalpha(word[index]))
+        {
+            if ((index = word.size() - 1) && word.back() == ';')
+                return true;
+            return false;
+        }
+    }
+    return true;
+}
 bool NorminetteCorrector::isTabulation(const std::string& word)
 {
     if (word.empty())
@@ -1196,6 +1209,7 @@ bool NorminetteCorrector::isWordDeclarationKeyWord(const std::string& word)
     return false;
 }
 
+
 //CodeBlock 4, final corrections
 void NorminetteCorrector::correctForFinalize()
 {
@@ -1257,7 +1271,15 @@ void NorminetteCorrector::correctMathOperatorsInLine(ushint indexLine, ushint& i
     if (isPointerOrReferenceMathOperator(line[indexWord]))
     {
         if (line[indexWord] != "&&")
-            FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
+        {
+            return;
+        }
+        if (indexWord != 0 && line[indexWord] == "*")
+        {
+            return;
+        }
+
+        FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
     }
 }
 void NorminetteCorrector::searchUnaryMathOperatorInLine(ushint indexLine, std::vector<std::string>& words)
@@ -1284,7 +1306,7 @@ void NorminetteCorrector::searchBinaryMathOperatorInLine(ushint indexLine, std::
             }
             else if (isPointerMathOperator(words[indexWord]) or isReferenceMathOperator(words[indexWord]))
             {
-                if (!isdigit(words[(int)indexWord + 1]))
+                if (!isdigit(words[(int)indexWord + 1]) && isWordDeclarationKeyWord(words[indexWord - 1]))
                 {
                     FileTextEditor::combineWords(indexLine, indexWord, indexWord + 1);
                     words = FileTextEditor::getLine(indexLine);
@@ -1434,6 +1456,11 @@ bool NorminetteCorrector::isIncrementOrDecrement(const std::string& Symbol) cons
         return false;
     }
 }
+//bool NorminetteCorrector::isÃultiplicationŒperator(const std::string& word)
+//{
+//    return ();
+//}
+
 void NorminetteCorrector::correctIncrementOrDecrement(ushint indexLine, ushint indexWord)
 {
     std::vector<std::string> line = FileTextEditor::getLine(indexLine);
@@ -1480,33 +1507,50 @@ void NorminetteCorrector::correctBrackets()
 {
     for (ushint indexLine = 0; indexLine < FileTextEditor::size(); ++indexLine)
     {
-        searchBracketsInLine(indexLine);
+        correctBracketsInLine(indexLine);
     }
 }
-void NorminetteCorrector::searchBracketsInLine(int indexLine)
+void NorminetteCorrector::correctBracketsInLine(int indexLine)
 {
     std::vector<std::string>& words = FileTextEditor::getLine(indexLine);
 
     for (ushint indexWord = 0; indexWord < words.size(); ++indexWord)
     {
-        if      (words[indexWord] == "(")
+        if      (isOpenRoundBrackets(words[indexWord]))
         {
             correctOpenRoundBrackets(indexLine, words, indexWord);
         }
-        else if (words[indexWord] == ")")
+        else if (isCloseRoundBrackets(words[indexWord]))
         {
             correctCloseRoundBrackets(indexLine, words, indexWord);
         }
-        else if (words[indexWord] == "[")
+        else if (isOpenSquareBrackets(words[indexWord]))
         {
             correctOpenSquareBrackets(indexLine, words, indexWord);
         }
-        else if (words[indexWord] == "]")
+        else if (isCloseSquareBrackets(words[indexWord]))
         {
             correctCloseSquareBrackets(indexLine, words, indexWord);
         }
     }
 }
+bool NorminetteCorrector::isOpenRoundBrackets(const std::string& word)
+{
+    return (word.back() == '(');
+}
+bool NorminetteCorrector::isCloseRoundBrackets(const std::string& word)
+{
+    return (word.back() == ')');
+}
+bool NorminetteCorrector::isOpenSquareBrackets(const std::string& word)
+{
+    return (word.back() == '[');
+}
+bool NorminetteCorrector::isCloseSquareBrackets(const std::string& word)
+{
+    return (word.back() == ']');
+}
+
 void NorminetteCorrector::correctOpenRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
 {
     if (indexWord == 0)
@@ -1522,10 +1566,12 @@ void NorminetteCorrector::correctOpenRoundBrackets(ushint indexLine, std::vector
         if (keyWords[indexKeyWord] == words[indexWord - 1])
         {
             key = false;
+            break;
         }
         else if (NorminetteCorrector::isMathOperator(words[indexWord - 1]))
         {
             key = false;
+            break;
         }
     }
     if (key)
@@ -1540,9 +1586,16 @@ void NorminetteCorrector::correctOpenRoundBrackets(ushint indexLine, std::vector
 }
 void NorminetteCorrector::correctCloseRoundBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
 {
-    if ((indexWord + 1) != words.size() && NorminetteCorrector::isalpha(words[indexWord + 1]))
+    if ((indexWord + 1) != words.size() && NorminetteCorrector::is¿lphaWithSemicolonInEnd(words[indexWord + 1]))
+    {
         FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord + 1);
-    FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
+        --indexWord;
+    }
+    else
+    {
+        FileTextEditor::combineWords(indexLine, indexWord - 1, indexWord);
+        --indexWord;
+    }
 }
 void NorminetteCorrector::correctOpenSquareBrackets(ushint indexLine, std::vector<std::string>& words, ushint& indexWord)
 {
@@ -1567,7 +1620,8 @@ void NorminetteCorrector::beforeSemicolonShouldBeNoSpace()
         std::vector<std::string>& line = FileTextEditor::getLine(start);
         if (line.back() == ";")
         {
-            FileTextEditor::combineWords(start, static_cast<ushint>(line.size() - 2), static_cast<ushint>(line.size() - 1));
+            if(line[line.size() - 2] != "break")
+                FileTextEditor::combineWords(start, static_cast<ushint>(line.size() - 2), static_cast<ushint>(line.size() - 1));
         }
     }
 }
